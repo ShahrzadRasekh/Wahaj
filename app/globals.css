@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ----------------------------- */
+/*  Global Website Styling       */
+/* ----------------------------- */
+
+/* Luxury black background + smooth scrolling */
+html,
+body {
+  background-color: #050609; /* Deep luxury charcoal/black */
+  color: #f5f5f5;
+  min-height: 100%;
+  scroll-behavior: smooth;
+
+  /* Smooth text rendering */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Reset margins/padding for consistent layout */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Remove blue tap highlight on mobile */
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Optional: gold selection highlight */
+::selection {
+  background-color: #fbbf24;
+  color: black;
+}

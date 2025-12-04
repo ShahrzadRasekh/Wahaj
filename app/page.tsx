@@ -1,0 +1,562 @@
+'use client';
+
+import Link from 'next/link';
+
+/* -------------------------------------- */
+/*  Example static product/category data  */
+/* -------------------------------------- */
+
+const featuredProducts = [
+  {
+    id: 1,
+    name: 'PAMP 10 Gram',
+    price: '5,207.69',
+    badge: 'Best Seller',
+    image: '/products/pamp-10g.jpg',
+  },
+  {
+    id: 2,
+    name: '2023 1.24 g Niue Gold Coin',
+    price: '1,344.29',
+    badge: 'New Arrival',
+    image: '/products/niue-1-24g.jpg',
+  },
+  {
+    id: 3,
+    name: 'Valcambi Bars 20 Gram',
+    price: '10,120.50',
+    badge: 'Best Seller',
+    image: '/products/valcambi-20g.jpg',
+  },
+  {
+    id: 4,
+    name: '2 g Auriz Coin Pure Gold',
+    price: '1,062.05',
+    badge: 'New Arrival',
+    image: '/products/auriz-2g.jpg',
+  },
+  {
+    id: 5,
+    name: 'Perth Mint 10 g Bar',
+    price: '5,310.42',
+    badge: 'New Arrival',
+    image: '/products/perth-10g.jpg',
+  },
+  {
+    id: 6,
+    name: 'Masjid Pendant 2 g',
+    price: '720.30',
+    badge: '',
+    image: '/products/masjid-pendant.jpg',
+  },
+  {
+    id: 7,
+    name: 'Ayat Pendant Oval 4 g',
+    price: '1,180.75',
+    badge: '',
+    image: '/products/ayat-oval.jpg',
+  },
+  {
+    id: 8,
+    name: 'Suisse 50 g Gold Bar',
+    price: '24,950.00',
+    badge: 'Best Seller',
+    image: '/products/suisse-50g.jpg',
+  },
+];
+
+/* -------------------------------------- */
+/*               HOME PAGE                */
+/* -------------------------------------- */
+
+export default function HomePage() {
+  return (
+    <div className="min-h-screen flex flex-col bg-white">
+      <Header />
+
+      <main className="flex-1">
+        <HeroSection />
+        <USPSection />
+        <CategorySection />
+        {/* We’ll refine below sections later, for now they keep the darker style */}
+        <FeaturedSection />
+        <AppPromoSection />
+        <StorySection />
+        <ContactStrip />
+      </main>
+
+      <Footer />
+    </div>
+  );
+}
+
+/* -------------------------------------- */
+/*                HEADER                  */
+/* -------------------------------------- */
+
+function Header() {
+  return (
+    <header className="fixed inset-x-0 top-0 z-40 bg-black/35 backdrop-blur-md border-b border-white/10">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
+        {/* LEFT: LOGO */}
+        <Link href="/" className="flex items-center gap-2">
+          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-yellow-300 via-amber-500 to-yellow-700 shadow-lg shadow-yellow-500/40">
+            <span className="text-xs font-black tracking-[0.15em] text-black">
+              WG
+            </span>
+          </div>
+          <div className="leading-tight">
+            <div className="text-sm font-semibold tracking-[0.25em] uppercase text-slate-50">
+              Wahaj
+              <span className="text-yellow-300"> Gold</span>
+            </div>
+            <div className="text-[10px] uppercase tracking-[0.24em] text-slate-200">
+              Gold &amp; Diamonds LLC
+            </div>
+          </div>
+        </Link>
+
+        {/* CENTER: NAV LINKS */}
+        <nav className="hidden items-center gap-8 text-xs font-medium uppercase tracking-[0.18em] text-slate-100 lg:flex">
+          {[
+            'Bullion',
+            'Storage Solution',
+            'News',
+            'Blogs',
+            'About',
+            'Contact',
+          ].map((item) => (
+            <Link
+              key={item}
+              href="#"
+              className="text-[11px] text-slate-200 hover:text-yellow-300 transition"
+            >
+              {item}
+            </Link>
+          ))}
+        </nav>
+
+        {/* RIGHT: GOLD PRICES + ICONS */}
+        <div className="flex items-center gap-5 text-[11px]">
+          <div className="hidden items-center gap-4 text-slate-100 md:flex">
+            <div className="flex flex-col leading-tight">
+              <span className="text-[10px] uppercase tracking-[0.16em] text-yellow-200">
+                GOLD Oz
+              </span>
+              <span className="font-semibold text-yellow-300">4,207.26</span>
+            </div>
+            <div className="flex flex-col leading-tight">
+              <span className="text-[10px] uppercase tracking-[0.16em] text-yellow-200">
+                GOLD g
+              </span>
+              <span className="font-semibold text-yellow-300">498.74</span>
+            </div>
+          </div>
+
+          {/* Very simple placeholder icons for now */}
+          <div className="flex items-center gap-3 text-slate-100">
+            <button className="text-lg hover:text-yellow-300" aria-label="Cart">
+              🛒
+            </button>
+            <button
+              className="text-lg hover:text-yellow-300"
+              aria-label="Account"
+            >
+              👤
+            </button>
+            <button className="flex items-center gap-1 rounded-full border border-white/30 px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-slate-100 hover:border-yellow-300 hover:text-yellow-200">
+              <span className="text-base">☰</span>
+              <span className="hidden sm:inline">More</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+  );
+}
+
+/* -------------------------------------- */
+/*               HERO SECTION             */
+/* -------------------------------------- */
+
+function HeroSection() {
+  return (
+    <section className="relative min-h-[520px] md:min-h-[620px] lg:min-h-[720px]">
+      {/* BACKGROUND IMAGE */}
+      <div
+        className="absolute inset-0 bg-cover bg-center"
+        style={{
+          // put hero-gold-cards.jpg into /public
+          backgroundImage: "url('/hero-gold-cards.jpg')",
+        }}
+      />
+      {/* DARK OVERLAY */}
+      <div className="absolute inset-0 bg-black/55" />
+
+      {/* CONTENT */}
+      <div className="relative mx-auto flex max-w-6xl flex-col justify-center px-4 pt-28 pb-16 md:pt-32">
+        <div className="max-w-xl text-white">
+          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-100">
+            Invest in your future with trusted bullion
+          </p>
+
+          <h1 className="mt-4 text-4xl font-extrabold tracking-[0.12em] md:text-5xl lg:text-6xl">
+            WAHAJ GOLD
+          </h1>
+
+          <p className="mt-4 text-sm text-slate-100 md:text-base">
+            Secure, simple and transparent buying online. Discover certified
+            gold bars &amp; gift collections crafted for investors and
+            collectors.
+          </p>
+
+          <div className="mt-7 flex flex-wrap gap-4">
+            <button className="rounded-full bg-[#d12b2b] px-7 py-3 text-xs font-semibold uppercase tracking-[0.22em] text-white shadow-md hover:bg-[#b81f1f]">
+              Bullion
+            </button>
+            <button className="rounded-full bg-[#d12b2b] px-7 py-3 text-xs font-semibold uppercase tracking-[0.22em] text-white shadow-md hover:bg-[#b81f1f]">
+              Gift Collections
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* -------------------------------------- */
+/*      SERVICES SECTION (4 CARDS)        */
+/*         Like RAK Gold screenshot       */
+/* -------------------------------------- */
+
+function USPSection() {
+  const services = [
+    {
+      title: 'FAST DELIVERY',
+      desc: 'Enjoy fast delivery on all orders. Receive your stunning Gold bars & jewellery quickly and securely.',
+      icon: '🚚',
+    },
+    {
+      title: 'SECURE ORDERING',
+      desc: 'Shop with confidence. Our website ensures secure ordering with advanced encryption for your safety.',
+      icon: '🔒',
+    },
+    {
+      title: 'CERTIFIED PRODUCTS',
+      desc: 'Our certified products guarantee authenticity and quality, providing you with genuine gold you can trust.',
+      icon: '🏅',
+    },
+    {
+      title: '100% SATISFACTION',
+      desc: 'We guarantee 100% satisfaction. Enjoy worry-free shopping with us.',
+      icon: '✔️',
+    },
+  ];
+
+  return (
+    <section className="bg-white py-16">
+      <div className="mx-auto max-w-6xl px-4">
+        <div className="grid gap-6 md:grid-cols-4">
+          {services.map((item) => (
+            <div
+              key={item.title}
+              className="rounded-2xl bg-white shadow-lg shadow-gray-200/60 p-6 text-center border border-gray-100"
+            >
+              <div className="text-4xl mb-4">{item.icon}</div>
+              <h3 className="text-sm font-bold tracking-wide text-gray-800">
+                {item.title}
+              </h3>
+              <p className="mt-3 text-sm text-gray-600">{item.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* -------------------------------------- */
+/*          CATEGORIES SECTION            */
+/*       Like RAK Gold screenshot         */
+/* -------------------------------------- */
+
+function CategorySection() {
+  const categories = [
+    {
+      title: 'BULLION',
+      image: '/category-bullion.jpg', // add to /public
+    },
+    {
+      title: 'GIFT COLLECTIONS',
+      image: '/category-gifts.jpg', // add to /public
+    },
+  ];
+
+  return (
+    <section className="bg-white pb-20 pt-4">
+      <div className="mx-auto max-w-6xl px-4">
+        <h2 className="text-2xl font-semibold text-gray-900 tracking-tight">
+          Categories
+        </h2>
+        <div className="mt-1 w-8 h-[2px] bg-black" />
+
+        <div className="mt-10 grid gap-8 md:grid-cols-2">
+          {categories.map((cat) => (
+            <div
+              key={cat.title}
+              className="rounded-3xl overflow-hidden bg-[#f6f9fc] shadow-md shadow-gray-200/60"
+            >
+              <div
+                className="h-72 bg-cover bg-center"
+                style={{
+                  backgroundImage: `url(${cat.image})`,
+                }}
+              />
+              <div className="px-6 py-4">
+                <h3 className="font-semibold text-gray-900 text-lg">
+                  <span className="inline-block w-5 h-[2px] bg-black mr-2" />
+                  {cat.title}
+                </h3>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* -------------------------------------- */
+/*             FEATURED PRODUCTS          */
+/*  (kept darker for now; we can later    */
+/*   switch this to white if you prefer)  */
+/* -------------------------------------- */
+
+function FeaturedSection() {
+  return (
+    <section className="bg-white py-16">
+      <div className="mx-auto max-w-6xl px-4">
+        {/* Title + arrows */}
+        <div className="flex items-center justify-between gap-4">
+          <h2 className="text-2xl font-semibold text-gray-900">
+            Featured Collection
+          </h2>
+
+          <div className="flex items-center gap-2">
+            <button className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 hover:bg-gray-100">
+              ←
+            </button>
+            <button className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 hover:bg-gray-100">
+              →
+            </button>
+          </div>
+        </div>
+
+        {/* Product grid */}
+        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {featuredProducts.map((product) => (
+            <article
+              key={product.id}
+              className="flex flex-col rounded-2xl bg-white shadow-[0_12px_25px_rgba(15,23,42,0.06)] border border-gray-100 overflow-hidden"
+            >
+              {/* Top image area */}
+              <div className="relative bg-[#f6f9fc] flex items-center justify-center px-6 pt-6 pb-2">
+                {product.image ? (
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="h-40 w-auto object-contain"
+                  />
+                ) : (
+                  <div className="h-40 w-full rounded-xl bg-gradient-to-br from-yellow-100 via-amber-300 to-yellow-700" />
+                )}
+
+                {product.badge && (
+                  <span className="absolute right-4 top-4 rounded-full bg-[#b91c1c] px-3 py-1 text-xs font-semibold text-white">
+                    {product.badge}
+                  </span>
+                )}
+              </div>
+
+              {/* Product name + price */}
+              <div className="flex flex-1 flex-col px-5 pb-4 pt-3">
+                <h3 className="text-sm font-semibold text-gray-900 leading-snug line-clamp-2">
+                  {product.name}
+                </h3>
+
+                <div className="mt-2 text-xs text-gray-500">
+                  <span className="text-[11px] uppercase tracking-[0.18em]">
+                    AED
+                  </span>{' '}
+                  <span className="text-base font-semibold text-gray-900">
+                    {product.price}
+                  </span>
+                </div>
+
+                {/* bottom icons row */}
+                <div className="mt-4 flex items-center justify-between text-xs text-gray-400">
+                  <button
+                    className="flex h-7 w-7 items-center justify-center rounded-full border border-gray-200 hover:border-red-400 hover:text-red-500"
+                    aria-label="Add to favourites"
+                  >
+                    ♥
+                  </button>
+                  <button className="flex items-center gap-1 rounded-full bg-red-500 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-white hover:bg-red-600">
+                    <span>🛒</span>
+                    <span>Add</span>
+                  </button>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* -------------------------------------- */
+/*            APP PROMO SECTION           */
+/* -------------------------------------- */
+
+function AppPromoSection() {
+  return (
+    <section className="border-t border-black/5 bg-[#050609]">
+      <div className="mx-auto flex max-w-6xl flex-col gap-8 px-4 py-10 md:flex-row md:items-center md:py-14">
+        <div className="flex-1">
+          <h2 className="text-lg font-semibold md:text-xl text-slate-50">
+            Take the metal market with you.
+          </h2>
+          <p className="mt-2 text-xs text-slate-300">
+            Track live gold &amp; silver prices, follow your favourite products
+            and place secure orders.
+          </p>
+        </div>
+        <div className="flex-1">
+          <div className="relative mx-auto h-72 max-w-xs rounded-[2.2rem] border border-white/15 bg-gradient-to-b from-slate-900 to-black p-4 shadow-2xl shadow-black/80">
+            <div className="mx-auto h-full w-full rounded-3xl bg-gradient-to-b from-yellow-100 via-amber-300 to-[#050609]" />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* -------------------------------------- */
+/*            STORY SECTION               */
+/* -------------------------------------- */
+
+function StorySection() {
+  return (
+    <section className="border-t border-black/5 bg-[#050609]">
+      <div className="mx-auto flex max-w-6xl flex-col gap-10 px-4 py-10 md:flex-row md:items-center md:py-14">
+        <div className="flex-1">
+          <div className="aspect-[4/3] rounded-3xl bg-[radial-gradient(circle_at_top,#facc15_0,transparent_55%),radial-gradient(circle_at_bottom,#0b1120_0,transparent_60%)]" />
+        </div>
+        <div className="flex-1">
+          <h2 className="text-lg font-semibold md:text-xl text-slate-50">
+            A modern experience for a timeless asset.
+          </h2>
+          <p className="mt-3 text-xs text-slate-300">
+            Wahaj Gold blends the trust of physical bullion with a digital-first
+            experience that feels simple, clear and human.
+          </p>
+          <p className="mt-2 text-xs text-slate-400">
+            From our showroom in Dubai to insured delivery across the UAE, every
+            step is designed to honour the value you hold.
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* -------------------------------------- */
+/*           CONTACT STRIP CTA            */
+/* -------------------------------------- */
+
+function ContactStrip() {
+  return (
+    <section className="border-t border-black/5 bg-[#050609]">
+      <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 px-4 py-10 text-center md:flex-row md:justify-between md:text-left">
+        <div>
+          <h3 className="text-sm font-semibold md:text-base text-slate-50">
+            Need guidance on your next purchase?
+          </h3>
+          <p className="mt-2 max-w-xl text-xs text-slate-300">
+            Talk to a Wahaj Gold specialist to compare options &amp; find the
+            right mix of bars and coins for you.
+          </p>
+        </div>
+        <div className="flex flex-wrap justify-center gap-3 text-[11px]">
+          <button className="rounded-full bg-yellow-400 px-6 py-3 text-[11px] uppercase tracking-[0.22em] text-black hover:bg-yellow-300">
+            Request a callback
+          </button>
+          <button className="rounded-full border border-white/20 px-6 py-3 text-[11px] uppercase tracking-[0.22em] text-slate-200 hover:border-yellow-300 hover:text-yellow-200">
+            Chat on WhatsApp
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* -------------------------------------- */
+/*                 FOOTER                 */
+/* -------------------------------------- */
+
+function Footer() {
+  return (
+    <footer className="bg-black">
+      <div className="mx-auto max-w-6xl px-4 py-10 text-[11px] text-slate-400">
+        <div className="grid gap-8 md:grid-cols-4">
+          <div>
+            <div className="text-sm font-semibold tracking-[0.25em] uppercase text-slate-50">
+              Wahaj
+              <span className="text-yellow-300"> Gold</span>
+            </div>
+            <p className="mt-3 text-[11px] text-slate-400">
+              Premium bullion, coins and gift bars with secure online ordering
+              and insured UAE-wide delivery.
+            </p>
+          </div>
+          <div>
+            <h4 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-200">
+              Shop
+            </h4>
+            <ul className="mt-3 space-y-1">
+              <li>Bullion Bars</li>
+              <li>Coins</li>
+              <li>Gift Collections</li>
+              <li>Silver &amp; Platinum</li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-200">
+              Company
+            </h4>
+            <ul className="mt-3 space-y-1">
+              <li>About</li>
+              <li>FAQs</li>
+              <li>News &amp; Insights</li>
+              <li>Terms &amp; Privacy</li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-200">
+              Contact
+            </h4>
+            <ul className="mt-3 space-y-1">
+              <li>Dubai, UAE</li>
+              <li>info@wahajgold.ae</li>
+              <li>+971 50 000 0000</li>
+            </ul>
+          </div>
+        </div>
+        <p className="mt-8 text-[10px] text-slate-500">
+          © {new Date().getFullYear()} Wahaj Gold. All rights reserved.
+        </p>
+      </div>
+    </footer>
+  );
+}
