@@ -94,6 +94,66 @@ const promoSlides = [
 ];
 
 
+
+const worthProducts = [
+  {
+    id: 1,
+    name: "American Buffalo 2023 One Ounce",
+    price: "18,394.15",
+    image: "/products/buffalo-1oz.jpg",
+    metal: "Gold",
+  },
+  {
+    id: 2,
+    name: "10 g Silver Bar – Emirates Gold",
+    price: "158.68",
+    image: "/products/emirates-silver-10g.jpg",
+    metal: "Silver",
+  },
+  {
+    id: 3,
+    name: "1/2 Ounce Oval Hook Pendant",
+    price: "7,924.18",
+    image: "/products/oval-hook-half-oz.jpg",
+    metal: "Gold",
+  },
+  {
+    id: 4,
+    name: "Etihad Bars 10 Gram",
+    price: "5,085.28",
+    image: "/products/etihad-10g.jpg",
+    metal: "Gold",
+  },
+];
+
+
+/* -------------------------------------- */
+/*            APP PROMO SECTION           */
+/* -------------------------------------- */
+
+function AppPromoSection() {
+  return (
+    <section className="border-t border-black/5 bg-[#050609]">
+      <div className="mx-auto flex max-w-6xl flex-col gap-8 px-4 py-10 md:flex-row md:items-center md:py-14">
+        <div className="flex-1">
+          <h2 className="text-lg font-semibold md:text-xl text-slate-50">
+            Take the metal market with you.
+          </h2>
+          <p className="mt-2 text-xs text-slate-300">
+            Track live gold &amp; silver prices, follow your favourite products
+            and place secure orders.
+          </p>
+        </div>
+        <div className="flex-1">
+          <div className="relative mx-auto h-72 max-w-xs rounded-[2.2rem] border border-white/15 bg-gradient-to-b from-slate-900 to-black p-4 shadow-2xl shadow-black/80">
+            <div className="mx-auto h-full w-full rounded-3xl bg-gradient-to-b from-yellow-100 via-amber-300 to-[#050609]" />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* -------------------------------------- */
 /*               HOME PAGE                */
 /* -------------------------------------- */
@@ -110,6 +170,7 @@ export default function HomePage() {
         {/* We’ll refine below sections later, for now they keep the darker style */}
         <FeaturedSection />
         <PromoSlideshowSection />
+        <WorthSection /> 
         <AppPromoSection />
         <StorySection />
         <ContactStrip />
@@ -557,31 +618,79 @@ function PromoSlideshowSection() {
 }
 
 /* -------------------------------------- */
-/*            APP PROMO SECTION           */
+/*      WORTH YOUR WHILE SECTION          */
+/*   Similar to Rakgold screenshot        */
 /* -------------------------------------- */
 
-function AppPromoSection() {
+function WorthSection() {
   return (
-    <section className="border-t border-black/5 bg-[#050609]">
-      <div className="mx-auto flex max-w-6xl flex-col gap-8 px-4 py-10 md:flex-row md:items-center md:py-14">
-        <div className="flex-1">
-          <h2 className="text-lg font-semibold md:text-xl text-slate-50">
-            Take the metal market with you.
+    <section className="bg-white py-16 border-t border-gray-100">
+      <div className="mx-auto max-w-6xl px-4">
+        {/* Title + arrows */}
+        <div className="flex items-center justify-between gap-4">
+          <h2 className="text-2xl font-semibold text-gray-900">
+            Worth Your While
           </h2>
-          <p className="mt-2 text-xs text-slate-300">
-            Track live gold &amp; silver prices, follow your favourite products
-            and place secure orders.
-          </p>
-        </div>
-        <div className="flex-1">
-          <div className="relative mx-auto h-72 max-w-xs rounded-[2.2rem] border border-white/15 bg-gradient-to-b from-slate-900 to-black p-4 shadow-2xl shadow-black/80">
-            <div className="mx-auto h-full w-full rounded-3xl bg-gradient-to-b from-yellow-100 via-amber-300 to-[#050609]" />
+
+          <div className="flex items-center gap-2">
+            <button className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 hover:bg-gray-100">
+              ←
+            </button>
+            <button className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 hover:bg-gray-100">
+              →
+            </button>
           </div>
+        </div>
+
+        {/* Product row (4 cards) */}
+        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {worthProducts.map((product) => (
+            <article
+              key={product.id}
+              className="flex flex-col rounded-2xl bg-[#f6f9fc] shadow-[0_12px_25px_rgba(15,23,42,0.06)] border border-gray-100 overflow-hidden"
+            >
+              {/* Image */}
+              <div className="flex items-center justify-center bg-[#f6f9fc] px-6 pt-6 pb-2">
+                {product.image ? (
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="h-40 w-auto object-contain"
+                  />
+                ) : (
+                  <div className="h-40 w-full rounded-xl bg-gradient-to-br from-yellow-100 via-amber-300 to-yellow-700" />
+                )}
+              </div>
+
+              {/* Text */}
+              <div className="flex flex-1 flex-col px-5 pb-5 pt-4">
+                <h3 className="text-sm font-semibold text-gray-900 leading-snug line-clamp-2">
+                  {product.name}
+                </h3>
+
+                <div className="mt-2 text-xs text-gray-500">
+                  <span className="text-[11px] uppercase tracking-[0.18em]">
+                    AED
+                  </span>{" "}
+                  <span className="text-base font-semibold text-gray-900">
+                    {product.price}
+                  </span>
+                </div>
+
+                <p className="mt-1 text-[11px] text-gray-400">
+                  Live {product.metal.toLowerCase()} rate applied
+                </p>
+              </div>
+            </article>
+          ))}
         </div>
       </div>
     </section>
   );
 }
+
+
+
 
 /* -------------------------------------- */
 /*            STORY SECTION               */
