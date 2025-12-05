@@ -163,8 +163,7 @@ const brandLogos = [
   "/brands/sam.png",
   "/brands/valcambi.png",
   "/brands/perthmint.png",
-  "/brands/emirates.png",
-];
+  ];
 
 /* -------------------------------------- */
 /*               HOME PAGE                */
@@ -807,20 +806,20 @@ function BrandMarqueeSection() {
         {/* Left + Right gradient fade */}
         <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-white to-transparent" />
         <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-white to-transparent" />
-
         {/* Infinite scroll container */}
         <div className="flex w-max animate-marquee gap-12 px-4">
           {brandLogos.concat(brandLogos).map((logo, i) => (
             <img
-              key={i}
-              src={logo}
-              className="h-12 w-auto opacity-50 hover:opacity-100 transition duration-300"
-              alt="brand logo"
-            />
-          ))}
+            key={i}
+            src={logo}
+            className="h-12 w-auto opacity-50 transition duration-300 hover:opacity-100 hover:brightness-125 hover:contrast-125 hover:saturate-[1.8]"
+            alt="brand logo"
+          />
+                       
+            ))}
         </div>
       </div>
-    </section>
+      </section>
   );
 }
 
