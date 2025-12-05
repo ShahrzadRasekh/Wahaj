@@ -126,33 +126,45 @@ const worthProducts = [
   },
 ];
 
+const latestNews = [
+  {
+    id: 1,
+    title: "Gold edges higher as dollar softens and traders eye Fed path",
+    date: "Thu, 04 Dec 2025 00:00:00 GMT",
+    source: "Market Insights",
+    image: "/news/dollar-gold.jpg",
+  },
+  {
+    id: 2,
+    title: "Sales of investment bars and coins rise ahead of new year",
+    date: "Thu, 04 Dec 2025 00:00:00 GMT",
+    source: "Wahaj Research Desk",
+    image: "/news/salesforce-gold.jpg",
+  },
+  {
+    id: 3,
+    title: "Central banks continue to add gold to reserves",
+    date: "Wed, 03 Dec 2025 00:00:00 GMT",
+    source: "Global Gold Review",
+    image: "/news/central-banks.jpg",
+  },
+  {
+    id: 4,
+    title: "Silver demand hits record as solar growth accelerates",
+    date: "Tue, 02 Dec 2025 00:00:00 GMT",
+    source: "Energy Metals Report",
+    image: "/news/silver-solar.jpg",
+  },
+];
 
-/* -------------------------------------- */
-/*            APP PROMO SECTION           */
-/* -------------------------------------- */
-
-function AppPromoSection() {
-  return (
-    <section className="border-t border-black/5 bg-[#050609]">
-      <div className="mx-auto flex max-w-6xl flex-col gap-8 px-4 py-10 md:flex-row md:items-center md:py-14">
-        <div className="flex-1">
-          <h2 className="text-lg font-semibold md:text-xl text-slate-50">
-            Take the metal market with you.
-          </h2>
-          <p className="mt-2 text-xs text-slate-300">
-            Track live gold &amp; silver prices, follow your favourite products
-            and place secure orders.
-          </p>
-        </div>
-        <div className="flex-1">
-          <div className="relative mx-auto h-72 max-w-xs rounded-[2.2rem] border border-white/15 bg-gradient-to-b from-slate-900 to-black p-4 shadow-2xl shadow-black/80">
-            <div className="mx-auto h-full w-full rounded-3xl bg-gradient-to-b from-yellow-100 via-amber-300 to-[#050609]" />
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
+const brandLogos = [
+  "/brands/pamp.png",
+  "/brands/aletihad.png",
+  "/brands/sam.png",
+  "/brands/valcambi.png",
+  "/brands/perthmint.png",
+  "/brands/emirates.png",
+];
 
 /* -------------------------------------- */
 /*               HOME PAGE                */
@@ -171,9 +183,9 @@ export default function HomePage() {
         <FeaturedSection />
         <PromoSlideshowSection />
         <WorthSection /> 
-        <AppPromoSection />
-        <StorySection />
+        <LatestNewsSection />
         <ContactStrip />
+        <BrandMarqueeSection />
       </main>
 
       <Footer />
@@ -368,7 +380,6 @@ function USPSection() {
 
 /* -------------------------------------- */
 /*          CATEGORIES SECTION            */
-/*       Like RAK Gold screenshot         */
 /* -------------------------------------- */
 
 function CategorySection() {
@@ -419,8 +430,6 @@ function CategorySection() {
 
 /* -------------------------------------- */
 /*             FEATURED PRODUCTS          */
-/*  (kept darker for now; we can later    */
-/*   switch this to white if you prefer)  */
 /* -------------------------------------- */
 
 function FeaturedSection() {
@@ -619,7 +628,6 @@ function PromoSlideshowSection() {
 
 /* -------------------------------------- */
 /*      WORTH YOUR WHILE SECTION          */
-/*   Similar to Rakgold screenshot        */
 /* -------------------------------------- */
 
 function WorthSection() {
@@ -689,37 +697,134 @@ function WorthSection() {
   );
 }
 
-
-
-
 /* -------------------------------------- */
-/*            STORY SECTION               */
+/*            LATEST NEWS SECTION         */
+/*     2 big cards + arrows, responsive   */
 /* -------------------------------------- */
 
-function StorySection() {
+function LatestNewsSection() {
+  const [index, setIndex] = useState(0);
+
+  const visible = latestNews.slice(index, index + 2);
+  // if near the end and less than 2 left, wrap around
+  if (visible.length < 2) {
+    visible.push(...latestNews.slice(0, 2 - visible.length));
+  }
+
+  const next = () => setIndex((prev) => (prev + 1) % latestNews.length);
+  const prev = () =>
+    setIndex((prev) =>
+      prev - 1 < 0 ? (latestNews.length + prev - 1) % latestNews.length : prev - 1
+    );
+
   return (
-    <section className="border-t border-black/5 bg-[#050609]">
-      <div className="mx-auto flex max-w-6xl flex-col gap-10 px-4 py-10 md:flex-row md:items-center md:py-14">
-        <div className="flex-1">
-          <div className="aspect-[4/3] rounded-3xl bg-[radial-gradient(circle_at_top,#facc15_0,transparent_55%),radial-gradient(circle_at_bottom,#0b1120_0,transparent_60%)]" />
+    <section className="bg-white pb-16 pt-6">
+      <div className="mx-auto flex max-w-6xl flex-col gap-8 px-4 md:flex-row md:items-start">
+        {/* LEFT: NEWS CARDS */}
+        <div className="grid flex-1 gap-6 sm:grid-cols-2">
+          {visible.map((item) => (
+            <article
+              key={item.id}
+              className="flex flex-col overflow-hidden rounded-3xl bg-white shadow-[0_14px_30px_rgba(15,23,42,0.08)] border border-gray-100"
+            >
+              {/* Image */}
+              <div className="relative h-56 bg-gray-200">
+                {item.image ? (
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    className="h-full w-full object-cover"
+                  />
+                ) : null}
+
+                <span className="absolute left-3 top-3 rounded-md bg-black/70 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-white">
+                  TV
+                </span>
+              </div>
+
+              {/* Text */}
+              <div className="flex flex-1 flex-col px-4 pb-4 pt-3">
+                <p className="text-[11px] font-semibold text-gray-600">
+                  {item.date}
+                </p>
+                <h3 className="mt-2 text-sm font-semibold text-gray-900 leading-snug line-clamp-2">
+                  {item.title}
+                </h3>
+                <p className="mt-2 text-[11px] text-gray-500">
+                  — {item.source}
+                </p>
+
+                <button className="mt-3 self-start text-[11px] font-semibold uppercase tracking-[0.16em] text-amber-700 hover:text-amber-900">
+                  Read more →
+                </button>
+              </div>
+            </article>
+          ))}
         </div>
-        <div className="flex-1">
-          <h2 className="text-lg font-semibold md:text-xl text-slate-50">
-            A modern experience for a timeless asset.
-          </h2>
-          <p className="mt-3 text-xs text-slate-300">
-            Wahaj Gold blends the trust of physical bullion with a digital-first
-            experience that feels simple, clear and human.
-          </p>
-          <p className="mt-2 text-xs text-slate-400">
-            From our showroom in Dubai to insured delivery across the UAE, every
-            step is designed to honour the value you hold.
-          </p>
+
+        {/* RIGHT: TITLE + ARROWS */}
+        <div className="flex w-full flex-col items-start justify-between md:w-64 md:items-end">
+          <div className="md:text-right">
+            <h2 className="text-2xl font-semibold text-gray-900">
+              Latest News
+            </h2>
+            <p className="mt-2 text-sm text-gray-500 max-w-xs">
+              Curated market headlines to keep your decisions informed.
+            </p>
+          </div>
+
+          <div className="mt-4 flex items-center gap-3 md:mt-6">
+            <button
+              onClick={prev}
+              className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200"
+              aria-label="Previous news"
+            >
+              ←
+            </button>
+            <button
+              onClick={next}
+              className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200"
+              aria-label="Next news"
+            >
+              →
+            </button>
+          </div>
         </div>
       </div>
     </section>
   );
 }
+
+/* -------------------------------------- */
+/*               BRAND MARQUEE            */
+/*   Smooth infinite scrolling logos      */
+/* -------------------------------------- */
+
+function BrandMarqueeSection() {
+  return (
+    <section className="bg-white py-10">
+      <div className="relative overflow-hidden">
+        {/* Left + Right gradient fade */}
+        <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-white to-transparent" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-white to-transparent" />
+
+        {/* Infinite scroll container */}
+        <div className="flex w-max animate-marquee gap-12 px-4">
+          {brandLogos.concat(brandLogos).map((logo, i) => (
+            <img
+              key={i}
+              src={logo}
+              className="h-12 w-auto opacity-50 hover:opacity-100 transition duration-300"
+              alt="brand logo"
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+
 
 /* -------------------------------------- */
 /*           CONTACT STRIP CTA            */
