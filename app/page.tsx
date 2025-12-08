@@ -3,6 +3,35 @@
 import Link from 'next/link';
 import { useState, useEffect } from "react";
 
+
+const heroSlides = [
+  {
+    id: 1,
+    label: "Invest in your future with trusted bullion",
+    title: "WAHAJ GOLD",
+    subtitle:
+      "Secure, simple and transparent buying online. Discover certified gold bars & gift collections crafted for investors and collectors.",
+    image: "/hero/hero-1.jpg", // put this in public/hero/
+  },
+  {
+    id: 2,
+    label: "Curated bullion from world-class refineries",
+    title: "PURE GOLD. CLEAR PRICING.",
+    subtitle:
+      "From classic kilobars to minted ingots, Wahaj Gold brings global brands to your fingertips with live, transparent rates.",
+    image: "/hero/hero-2.jpg",
+  },
+  {
+    id: 3,
+    label: "Gifting made unforgettable",
+    title: "GOLD THAT TELLS A STORY.",
+    subtitle:
+      "Mark milestones with personalised gold gifts, beautifully packed and delivered across the UAE with care.",
+    image: "/hero/hero-3.jpg",
+  },
+];
+
+
 /* -------------------------------------- */
 /*  Example static product/category data  */
 /* -------------------------------------- */
@@ -282,42 +311,103 @@ function Header() {
 /* -------------------------------------- */
 
 function HeroSection() {
+  const [index, setIndex] = useState(0);
+
+  // Auto-play every 9 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIndex((prev) => (prev + 1) % heroSlides.length);
+    }, 9000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const current = heroSlides[index];
+
+  const goTo = (i: number) => {
+    if (i < 0) {
+      setIndex(heroSlides.length - 1);
+    } else {
+      setIndex(i % heroSlides.length);
+    }
+  };
+
   return (
     <section className="relative min-h-[520px] md:min-h-[620px] lg:min-h-[720px]">
-      {/* BACKGROUND IMAGE */}
-      <div
-        className="absolute inset-0 bg-cover bg-center"
-        style={{
-          // put hero-gold-cards.jpg into /public
-          backgroundImage: "url('/hero-gold-cards.jpg')",
-        }}
-      />
-      {/* DARK OVERLAY */}
-      <div className="absolute inset-0 bg-black/55" />
+      {/* BACKGROUND SLIDES */}
+      <div className="absolute inset-0 overflow-hidden">
+        {heroSlides.map((slide, i) => (
+          <div
+            key={slide.id}
+            className={`absolute inset-0 bg-cover bg-center transition-opacity duration-700 ease-out ${
+              i === index ? "opacity-100" : "opacity-0"
+            }`}
+            style={{
+              backgroundImage: slide.image
+                ? `url('${slide.image}')`
+                : "linear-gradient(to right,#111827,#1f2933)",
+            }}
+          />
+        ))}
+
+        {/* DARKER OVERLAY */}
+        <div className="absolute inset-0 bg-black/45" />
+        {/* If you want even darker: bg-black/55 */}
+      </div>
 
       {/* CONTENT */}
       <div className="relative mx-auto flex max-w-6xl flex-col justify-center px-4 pt-28 pb-16 md:pt-32">
         <div className="max-w-xl text-white">
-          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-100">
-            Invest in your future with trusted bullion
+          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-gray-200">
+            {current.label}
           </p>
 
           <h1 className="mt-4 text-4xl font-extrabold tracking-[0.12em] md:text-5xl lg:text-6xl">
-            WAHAJ GOLD
+            {current.title}
           </h1>
 
-          <p className="mt-4 text-sm text-slate-100 md:text-base">
-            Secure, simple and transparent buying online. Discover certified
-            gold bars &amp; gift collections crafted for investors and
-            collectors.
+          <p className="mt-4 text-sm text-gray-100 md:text-base">
+            {current.subtitle}
           </p>
 
           <div className="mt-7 flex flex-wrap gap-4">
             <button className="rounded-full bg-[#d12b2b] px-7 py-3 text-xs font-semibold uppercase tracking-[0.22em] text-white shadow-md hover:bg-[#b81f1f]">
               Bullion
             </button>
-            <button className="rounded-full bg-[#d12b2b] px-7 py-3 text-xs font-semibold uppercase tracking-[0.22em] text-white shadow-md hover:bg-[#b81f1f]">
+            <button className="rounded-full border border-white/30 bg-white/20 backdrop-blur px-7 py-3 text-xs font-semibold uppercase tracking-[0.22em] text-white shadow-sm hover:bg-white/30">
               Gift Collections
+            </button>
+          </div>
+        </div>
+
+        {/* Dots + arrows */}
+        <div className="mt-8 flex items-center justify-between">
+          <div className="flex gap-2">
+            {heroSlides.map((slide, i) => (
+              <button
+                key={slide.id}
+                onClick={() => goTo(i)}
+                className={`h-2.5 rounded-full transition-all ${
+                  i === index
+                    ? "w-6 bg-white"
+                    : "w-2 bg-white/50 hover:bg-white"
+                }`}
+                aria-label={`Go to slide ${i + 1}`}
+              />
+            ))}
+          </div>
+
+          <div className="flex gap-2">
+            <button
+              onClick={() => goTo(index - 1)}
+              className="flex h-9 w-9 items-center justify-center rounded-full bg-white/80 text-gray-800 shadow-sm hover:bg-white"
+            >
+              ←
+            </button>
+            <button
+              onClick={() => goTo(index + 1)}
+              className="flex h-9 w-9 items-center justify-center rounded-full bg-white/80 text-gray-800 shadow-sm hover:bg-white"
+            >
+              →
             </button>
           </div>
         </div>
@@ -325,6 +415,7 @@ function HeroSection() {
     </section>
   );
 }
+
 
 /* -------------------------------------- */
 /*      SERVICES SECTION (4 CARDS)        */
