@@ -248,24 +248,24 @@ function Header() {
         </Link>
 
         {/* CENTER: NAV LINKS */}
-        <nav className="hidden items-center gap-8 text-xs font-medium uppercase tracking-[0.18em] text-slate-100 lg:flex">
-          {[
-            'Bullion',
-            'Storage Solution',
-            'News',
-            'Blogs',
-            'About',
-            'Contact',
-          ].map((item) => (
-            <Link
-              key={item}
-              href="#"
-              className="text-[11px] text-slate-200 hover:text-yellow-300 transition"
-            >
-              {item}
-            </Link>
-          ))}
-        </nav>
+<nav className="hidden items-center gap-8 text-xs font-medium uppercase tracking-[0.18em] text-slate-100 lg:flex">
+  {[
+    { label: "Bullion", href: "/bullion" },
+    { label: "Storage Solution", href: "/storage" },
+    { label: "News", href: "/news" },
+    { label: "Blogs", href: "/blogs" },
+    { label: "About", href: "/about" },
+    { label: "Contact", href: "/contact" },
+  ].map((item) => (
+    <Link
+      key={item.label}
+      href={item.href}
+      className="text-[11px] text-slate-200 hover:text-yellow-300 transition"
+    >
+      {item.label}
+    </Link>
+  ))}
+</nav>
 
         {/* RIGHT: GOLD PRICES + ICONS */}
         <div className="flex items-center gap-5 text-[11px]">

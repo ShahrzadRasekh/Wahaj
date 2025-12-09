@@ -50,3 +50,19 @@ a {
 .animate-marquee {
   animation: marquee 18s linear infinite;
 }
+
+@keyframes slideUpFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up {
+  opacity: 0;
+  animation: slideUpFadeIn 700ms ease-out forwards;
+}
