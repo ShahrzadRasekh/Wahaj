@@ -286,7 +286,7 @@ function Header() {
 
           {/* Very simple placeholder icons for now */}
           <div className="flex items-center gap-3 text-slate-100">
-            <button className="text-lg hover:text-yellow-300" aria-label="Cart">
+             {/*<button className="text-lg hover:text-yellow-300" aria-label="Cart">
               🛒
             </button>
             <button
@@ -294,7 +294,7 @@ function Header() {
               aria-label="Account"
             >
               👤
-            </button>
+            </button>*/}
             <button className="flex items-center gap-1 rounded-full border border-white/30 px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-slate-100 hover:border-yellow-300 hover:text-yellow-200">
               <span className="text-base">☰</span>
               <span className="hidden sm:inline">More</span>
@@ -350,8 +350,8 @@ function HeroSection() {
         ))}
 
         {/* DARKER OVERLAY */}
-        <div className="absolute inset-0 bg-black/45" />
-        {/* If you want even darker: bg-black/55 */}
+        <div className="absolute inset-0 bg-black/60" />
+        {/* If you want even darker: bg-black/60 */}
       </div>
 
       {/* CONTENT */}
