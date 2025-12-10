@@ -1,80 +1,37 @@
 // app/api/contact/route.ts
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from "next/server";
+import { Resend } from "resend";
 
-export const runtime = 'nodejs'; // works on Vercel & StackBlitz
+const resend = new Resend(process.env.RESEND_API_KEY);
 
-export async function POST(req: NextRequest) {
+export async function POST(request: Request) {
   try {
-    const formData = await req.formData();
+    const form = await request.formData();
 
-    const name = String(formData.get('name') || '').trim();
-    const email = String(formData.get('email') || '').trim();
-    const address = String(formData.get('address') || '').trim();
-    const message = String(formData.get('message') || '').trim();
+    const name = form.get("name")?.toString();
+    const email = form.get("email")?.toString();
+    const address = form.get("address")?.toString();
+    const message = form.get("message")?.toString();
 
-    const resendApiKey = process.env.RESEND_API_KEY;
-    const to = process.env.CONTACT_TO_EMAIL || 'support@example.com';
-    const from =
-      process.env.CONTACT_FROM_EMAIL || 'Wahaj Gold <onboarding@resend.dev>';
-
-    if (!resendApiKey) {
-      console.error('[CONTACT] RESEND_API_KEY is missing');
-      throw new Error('Missing RESEND_API_KEY');
-    }
-
-    const subject = `New contact form message from ${
-      name || 'Wahaj Gold website'
-    }`;
-
-    const html = `
-      <h2>New Contact Form Submission</h2>
-      <p><strong>Name:</strong> ${name || '-'}</p>
-      <p><strong>Email:</strong> ${email || '-'}</p>
-      <p><strong>Address:</strong> ${address || '-'}</p>
-      <p><strong>Message:</strong></p>
-      <p>${message.replace(/\n/g, '<br/>') || '-'}</p>
-    `;
-
-    // Call Resend HTTP API directly
-    const resendResponse = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${resendApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        from,
-        to: [to],
-        subject,
-        html,
-        // let admin reply directly to the user who filled the form
-        replyTo: email || undefined,
-      }),
+    // SEND EMAIL
+    await resend.emails.send({
+      from: "Wahaj Gold <onboarding@resend.dev>",
+      to: process.env.CONTACT_TO_EMAIL || "your@email.com",
+      subject: `New contact form message from ${name}`,
+      html: `
+        <h2>New contact message</h2>
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Address:</strong> ${address}</p>
+        <p><strong>Message:</strong></p>
+        <p>${message?.replace(/\n/g, "<br/>")}</p>
+      `,
     });
 
-    if (!resendResponse.ok) {
-      const errorText = await resendResponse.text();
-      console.error(
-        '[CONTACT] Resend API error:',
-        resendResponse.status,
-        errorText
-      );
-      throw new Error('Resend API error');
-    }
-
-    console.log('[CONTACT] Email sent successfully');
-
-    // redirect back to /contact on the SAME origin
-    return NextResponse.redirect(
-      new URL('/contact?success=1', req.url),
-      303 // "See Other" after POST
-    );
+    // Return success and redirect to contact page
+    return NextResponse.redirect(new URL("/contact?success=1", request.url));
   } catch (error) {
-    console.error('[CONTACT] Error in /api/contact POST:', error);
-
-    return NextResponse.redirect(
-      new URL('/contact?error=1', req.url),
-      303
-    );
+    console.error("CONTACT FORM ERROR:", error);
+    return NextResponse.redirect(new URL("/contact?error=1", request.url));
   }
 }
