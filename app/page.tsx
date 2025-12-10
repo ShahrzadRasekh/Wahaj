@@ -15,18 +15,18 @@ const heroSlides = [
   },
   {
     id: 2,
-    label: "Curated bullion from world-class refineries",
-    title: "PURE GOLD. CLEAR PRICING.",
+    label: "Invest in your future with trusted bullion",
+    title: "WAHAJ GOLD",
     subtitle:
-      "From classic kilobars to minted ingots, Wahaj Gold brings global brands to your fingertips with live, transparent rates.",
+      "Secure, simple and transparent buying online. Discover certified gold bars & gift collections crafted for investors and collectors.",
     image: "/hero/hero-2.jpg",
   },
   {
     id: 3,
-    label: "Gifting made unforgettable",
-    title: "GOLD THAT TELLS A STORY.",
+    label: "Invest in your future with trusted bullion",
+    title: "WAHAJ GOLD",
     subtitle:
-      "Mark milestones with personalised gold gifts, beautifully packed and delivered across the UAE with care.",
+      "Secure, simple and transparent buying online. Discover certified gold bars & gift collections crafted for investors and collectors.",
     image: "/hero/hero-3.jpg",
   },
 ];
@@ -251,9 +251,6 @@ function Header() {
 <nav className="hidden items-center gap-8 text-xs font-medium uppercase tracking-[0.18em] text-slate-100 lg:flex">
   {[
     { label: "Bullion", href: "/bullion" },
-    { label: "Storage Solution", href: "/storage" },
-    { label: "News", href: "/news" },
-    { label: "Blogs", href: "/blogs" },
     { label: "About", href: "/about" },
     { label: "Contact", href: "/contact" },
   ].map((item) => (
@@ -313,23 +310,16 @@ function Header() {
 function HeroSection() {
   const [index, setIndex] = useState(0);
 
-  // Auto-play every 9 seconds
+  // Auto-play every 5 seconds (faster)
   useEffect(() => {
     const interval = setInterval(() => {
       setIndex((prev) => (prev + 1) % heroSlides.length);
-    }, 9000);
+    }, 5000);
     return () => clearInterval(interval);
   }, []);
 
-  const current = heroSlides[index];
-
-  const goTo = (i: number) => {
-    if (i < 0) {
-      setIndex(heroSlides.length - 1);
-    } else {
-      setIndex(i % heroSlides.length);
-    }
-  };
+  // Use content from first slide (or any fixed slide you like)
+  const heroContent = heroSlides[0];
 
   return (
     <section className="relative min-h-[520px] md:min-h-[620px] lg:min-h-[720px]">
@@ -338,7 +328,7 @@ function HeroSection() {
         {heroSlides.map((slide, i) => (
           <div
             key={slide.id}
-            className={`absolute inset-0 bg-cover bg-center transition-opacity duration-700 ease-out ${
+            className={`absolute inset-0 bg-cover bg-center hero-zoom transition-opacity duration-700 ease-out ${
               i === index ? "opacity-100" : "opacity-0"
             }`}
             style={{
@@ -349,73 +339,50 @@ function HeroSection() {
           />
         ))}
 
-        {/* DARKER OVERLAY */}
+        {/* Dark overlay on top of images */}
         <div className="absolute inset-0 bg-black/60" />
-        {/* If you want even darker: bg-black/60 */}
       </div>
 
-      {/* CONTENT */}
-      <div className="relative mx-auto flex max-w-6xl flex-col justify-center px-4 pt-28 pb-16 md:pt-32">
-        <div className="max-w-xl text-white">
-          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-gray-200">
-            {current.label}
-          </p>
+      {/* CONTENT – centered vertically a bit lower */}
+      <div className="relative mx-auto flex max-w-6xl min-h-[520px] flex-col justify-center px-4 pb-20 pt-12 md:min-h-[620px] md:pt-16">
+  <div className="
+    max-w-xl 
+    rounded-3xl 
+    bg-black/10 
+    backdrop-blur-[1px]
+    px-6 py-6 md:px-8 md:py-8 
+    text-white 
+    ml-[-30px] md:ml-[-60px]
+    shadow-none
+    text-center
+  ">
+    {heroContent.label && (
+      <p className="text-xs font-semibold uppercase tracking-[0.28em] text-gray-200">
+        {heroContent.label}
+      </p>
+    )}
 
-          <h1 className="mt-4 text-4xl font-extrabold tracking-[0.12em] md:text-5xl lg:text-6xl">
-            {current.title}
-          </h1>
+    <h1 className="mt-4 text-4xl font-extrabold tracking-[0.12em] md:text-5xl lg:text-6xl">
+      {heroContent.title}
+    </h1>
 
-          <p className="mt-4 text-sm text-gray-100 md:text-base">
-            {current.subtitle}
-          </p>
+    <p className="mt-4 text-sm text-gray-100 md:text-base">
+      {heroContent.subtitle}
+    </p>
 
-          <div className="mt-7 flex flex-wrap gap-4">
-            <button className="rounded-full bg-[#d12b2b] px-7 py-3 text-xs font-semibold uppercase tracking-[0.22em] text-white shadow-md hover:bg-[#b81f1f]">
-              Bullion
-            </button>
-            <button className="rounded-full border border-white/30 bg-white/20 backdrop-blur px-7 py-3 text-xs font-semibold uppercase tracking-[0.22em] text-white shadow-sm hover:bg-white/30">
-              Gift Collections
-            </button>
-          </div>
-        </div>
-
-        {/* Dots + arrows */}
-        <div className="mt-8 flex items-center justify-between">
-          <div className="flex gap-2">
-            {heroSlides.map((slide, i) => (
-              <button
-                key={slide.id}
-                onClick={() => goTo(i)}
-                className={`h-2.5 rounded-full transition-all ${
-                  i === index
-                    ? "w-6 bg-white"
-                    : "w-2 bg-white/50 hover:bg-white"
-                }`}
-                aria-label={`Go to slide ${i + 1}`}
-              />
-            ))}
-          </div>
-
-          <div className="flex gap-2">
-            <button
-              onClick={() => goTo(index - 1)}
-              className="flex h-9 w-9 items-center justify-center rounded-full bg-white/80 text-gray-800 shadow-sm hover:bg-white"
-            >
-              ←
-            </button>
-            <button
-              onClick={() => goTo(index + 1)}
-              className="flex h-9 w-9 items-center justify-center rounded-full bg-white/80 text-gray-800 shadow-sm hover:bg-white"
-            >
-              →
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
+    <div className="mt-7 flex flex-wrap gap-4">
+      <button className="rounded-full bg-[#d12b2b] px-7 py-3 text-xs font-semibold uppercase tracking-[0.22em] text-white shadow-md hover:bg-[#b81f1f]">
+        Bullion
+      </button>
+      <button className="rounded-full border border-white/20 bg-white/10 backdrop-blur px-7 py-3 text-xs font-semibold uppercase tracking-[0.22em] text-white shadow-sm hover:bg-white/20">
+        Gift Collections
+      </button>
+    </div>
+  </div>
+</div>
+ </section>
   );
 }
-
 
 /* -------------------------------------- */
 /*      SERVICES SECTION (4 CARDS)        */
