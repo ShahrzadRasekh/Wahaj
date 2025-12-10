@@ -21,7 +21,7 @@ export async function POST(req: Request) {
 
     await resend.emails.send({
       from,
-      to: to || "support@example.com",
+      to: to || "info@wahaj.com",
       subject: `New contact form message from ${name || "Wahaj Gold website"}`,
       replyTo: email || undefined,
       html: `
