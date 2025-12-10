@@ -1,16 +1,11 @@
 // app/contact/page.tsx
 import React from "react";
+// If you don't use path aliases, change this to "../../components/ContactForm"
+import ContactForm from "@/components/ContactForm";
 
-interface ContactPageProps {
-  searchParams?: { [key: string]: string | string[] | undefined };
-}
-
-export default function ContactPage({ searchParams }: ContactPageProps) {
-  const success = searchParams?.success === "1";
-  const error = searchParams?.error === "1";
-
+export default function ContactPage() {
   return (
-    <main className="min-h-screen bg-[#f5f5f7] text-slate-900">
+    <main className="min-h-screen bg-gray-100 text-slate-900">
       <div className="mx-auto max-w-6xl px-4 py-12">
         {/* Breadcrumb */}
         <div className="mb-4 text-xs text-slate-500">
@@ -57,24 +52,11 @@ export default function ContactPage({ searchParams }: ContactPageProps) {
 
           {/* RIGHT COLUMN – content + form */}
           <section className="space-y-10">
-            {/* Title + messages */}
+            {/* Title */}
             <div>
               <h1 className="text-4xl font-bold tracking-tight text-slate-900">
                 Contact
               </h1>
-
-              {success && (
-                <div className="mt-4 rounded-lg border border-emerald-500/40 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
-                  Thank you. Your message has been sent successfully.
-                </div>
-              )}
-
-              {error && (
-                <div className="mt-4 rounded-lg border border-red-500/40 bg-red-50 px-4 py-3 text-sm text-red-800">
-                  Sorry, something went wrong while sending your message. Please
-                  try again in a moment.
-                </div>
-              )}
             </div>
 
             {/* Address + contact details */}
@@ -135,92 +117,13 @@ export default function ContactPage({ searchParams }: ContactPageProps) {
               </div>
             </div>
 
-            {/* Get In Touch form */}
+            {/* Get In Touch form (client-side, uses /api/contact) */}
             <div className="space-y-6">
               <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
                 Get In Touch
               </h2>
 
-              <form
-                action="/api/contact"
-                method="POST"
-                className="space-y-6 text-sm text-slate-900"
-              >
-                {/* Name + Email */}
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div className="space-y-1">
-                    <label
-                      htmlFor="name"
-                      className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-600"
-                    >
-                      Name
-                    </label>
-                    <input
-                      id="name"
-                      name="name"
-                      type="text"
-                      className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-yellow-500 focus:ring-1 focus:ring-yellow-400"
-                    />
-                  </div>
-
-                  <div className="space-y-1">
-                    <label
-                      htmlFor="email"
-                      className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-600"
-                    >
-                      Email
-                    </label>
-                    <input
-                      id="email"
-                      name="email"
-                      type="email"
-                      className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-yellow-500 focus:ring-1 focus:ring-yellow-400"
-                    />
-                  </div>
-                </div>
-
-                {/* Address */}
-                <div className="space-y-1">
-                  <label
-                    htmlFor="address"
-                    className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-600"
-                  >
-                    Address
-                  </label>
-                  <input
-                    id="address"
-                    name="address"
-                    type="text"
-                    className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-yellow-500 focus:ring-1 focus:ring-yellow-400"
-                  />
-                </div>
-
-                {/* Message */}
-                <div className="space-y-1">
-                  <label
-                    htmlFor="message"
-                    className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-600"
-                  >
-                    Message
-                  </label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    rows={6}
-                    className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-yellow-500 focus:ring-1 focus:ring-yellow-400"
-                  />
-                </div>
-
-                {/* Button */}
-                <div className="flex justify-end pt-2">
-                  <button
-                    type="submit"
-                    className="rounded-full bg-[#b91c1c] px-10 py-3 text-xs font-semibold uppercase tracking-[0.22em] text-white shadow-md shadow-red-500/30 transition hover:bg-[#991b1b]"
-                  >
-                    Send Message
-                  </button>
-                </div>
-              </form>
+              <ContactForm />
             </div>
           </section>
         </div>
