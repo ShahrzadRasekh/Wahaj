@@ -1,42 +1,82 @@
-import { NextResponse } from "next/server";
-import { Resend } from "resend";
+// app/api/contact/route.ts
+import { NextRequest, NextResponse } from 'next/server';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+export const runtime = 'nodejs'; // ensure Node runtime on Vercel
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
 
-    const name = (formData.get("name") || "").toString();
-    const email = (formData.get("email") || "").toString();
-    const address = (formData.get("address") || "").toString();
-    const message = (formData.get("message") || "").toString();
+    const name = String(formData.get('name') || '').trim();
+    const email = String(formData.get('email') || '').trim();
+    const address = String(formData.get('address') || '').trim();
+    const message = String(formData.get('message') || '').trim();
 
-    const to = process.env.CONTACT_TO_EMAIL;
-    const from = process.env.CONTACT_FROM_EMAIL || "onboarding@resend.dev";
+    // --- ENV VARS -------------------------------------------------
+    const resendApiKey = process.env.RESEND_API_KEY;
+    const to = process.env.CONTACT_TO_EMAIL || 'support@example.com';
+    const from =
+      process.env.CONTACT_FROM_EMAIL || 'Wahaj Gold <onboarding@resend.dev>';
 
-    if (!to) {
-      console.error("CONTACT_TO_EMAIL is not set");
+    if (!resendApiKey) {
+      console.error('[CONTACT] RESEND_API_KEY is missing');
+      throw new Error('Missing RESEND_API_KEY');
     }
 
-    await resend.emails.send({
-      from,
-      to: to || "info@wahaj.com",
-      subject: `New contact form message from ${name || "Wahaj Gold website"}`,
-      replyTo: email || undefined,
-      html: `
-        <h2>New Contact Form Submission</h2>
-        <p><strong>Name:</strong> ${name || "-"}</p>
-        <p><strong>Email:</strong> ${email || "-"}</p>
-        <p><strong>Address:</strong> ${address || "-"}</p>
-        <p><strong>Message:</strong></p>
-        <p>${message.replace(/\n/g, "<br/>") || "-"}</p>
-      `,
+    // --- BUILD EMAIL ----------------------------------------------
+    const subject = `New contact form message from ${
+      name || 'Wahaj Gold website'
+    }`;
+
+    const html = `
+      <h2>New Contact Form Submission</h2>
+      <p><strong>Name:</strong> ${name || '-'}</p>
+      <p><strong>Email:</strong> ${email || '-'}</p>
+      <p><strong>Address:</strong> ${address || '-'}</p>
+      <p><strong>Message:</strong></p>
+      <p>${message.replace(/\n/g, '<br/>') || '-'}</p>
+    `;
+
+    // --- CALL RESEND HTTP API ------------------------------------
+    const resendResponse = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${resendApiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from,
+        to: [to],
+        subject,
+        html,
+        // for “reply to this user”, Resend expects replyTo in the HTTP body as well
+        replyTo: email || undefined,
+      }),
     });
 
-    return NextResponse.redirect("/contact?success=1");
+    if (!resendResponse.ok) {
+      const errText = await resendResponse.text();
+      console.error(
+        '[CONTACT] Resend API error',
+        resendResponse.status,
+        errText
+      );
+      throw new Error('Resend API error');
+    }
+
+    console.log('[CONTACT] Email sent successfully');
+
+    // redirect back to /contact with success flag
+    return NextResponse.redirect(
+      new URL('/contact?success=1', req.url),
+      303 // "See Other" is safer after POST
+    );
   } catch (error) {
-    console.error("Error sending contact email:", error);
-    return NextResponse.redirect("/contact?error=1");
+    console.error('[CONTACT] Error in POST /api/contact:', error);
+
+    return NextResponse.redirect(
+      new URL('/contact?error=1', req.url),
+      303
+    );
   }
 }
