@@ -1,48 +1,61 @@
+// components/ContactForm.tsx
 "use client";
 
-import { useState } from "react";
-
-type Status = "idle" | "loading" | "success" | "error";
+import React, { useState, FormEvent } from "react";
 
 export default function ContactForm() {
-  const [status, setStatus] = useState<Status>("idle");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [address, setAddress] = useState("");
+  const [message, setMessage] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    setStatus("loading");
-
-    const formData = new FormData(e.currentTarget);
+    setSubmitting(true);
+    setSuccess(null);
+    setError(null);
 
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
-        body: formData,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name, email, address, message }),
       });
 
+      const data = await res.json().catch(() => ({}));
+
       if (!res.ok) {
-        throw new Error("Request failed");
+        setError(
+          typeof data.error === "string"
+            ? data.error
+            : "Sorry, something went wrong. Please try again."
+        );
+        return;
       }
 
-      const data = await res.json();
-      if (!data.ok) {
-        throw new Error("Server responded with error");
-      }
+      setSuccess("Thank you. Your message has been sent successfully.");
+      setName("");
+      setEmail("");
+      setAddress("");
+      setMessage("");
 
-      setStatus("success");
-      e.currentTarget.reset(); // clear the form
+      // Optionally auto-hide the success message after a few seconds
+      setTimeout(() => setSuccess(null), 6000);
     } catch (err) {
-      console.error(err);
-      setStatus("error");
+      console.error("Contact form submit error:", err);
+      setError("Network error. Please check your connection and try again.");
+    } finally {
+      setSubmitting(false);
     }
   }
 
-  const isLoading = status === "loading";
-
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="space-y-6 text-sm text-slate-900"
-    >
+    <form onSubmit={handleSubmit} className="space-y-6">
       {/* Name + Email */}
       <div className="grid gap-4 md:grid-cols-2">
         <div className="space-y-1">
@@ -56,6 +69,9 @@ export default function ContactForm() {
             id="name"
             name="name"
             type="text"
+            required
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-yellow-500 focus:ring-1 focus:ring-yellow-400"
           />
         </div>
@@ -71,6 +87,9 @@ export default function ContactForm() {
             id="email"
             name="email"
             type="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-yellow-500 focus:ring-1 focus:ring-yellow-400"
           />
         </div>
@@ -88,6 +107,8 @@ export default function ContactForm() {
           id="address"
           name="address"
           type="text"
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
           className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-yellow-500 focus:ring-1 focus:ring-yellow-400"
         />
       </div>
@@ -104,31 +125,29 @@ export default function ContactForm() {
           id="message"
           name="message"
           rows={6}
+          required
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
           className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-yellow-500 focus:ring-1 focus:ring-yellow-400"
         />
       </div>
 
-      {/* Status + Button */}
-      <div className="flex items-center justify-between pt-2">
-        <div className="h-5 text-xs">
-          {status === "success" && (
-            <span className="text-emerald-600">
-              Thank you. Your message has been sent successfully.
-            </span>
-          )}
-          {status === "error" && (
-            <span className="text-red-600">
-              Sorry, something went wrong. Please try again.
-            </span>
-          )}
-        </div>
+      {/* Feedback messages */}
+      {success && (
+        <p className="text-sm text-emerald-700">{success}</p>
+      )}
+      {error && (
+        <p className="text-sm text-red-600">{error}</p>
+      )}
 
+      {/* Button */}
+      <div className="flex justify-end pt-2">
         <button
           type="submit"
-          disabled={isLoading}
-          className="rounded-full bg-[#b91c1c] px-10 py-3 text-xs font-semibold uppercase tracking-[0.22em] text-white shadow-md shadow-red-500/30 transition hover:bg-[#991b1b] disabled:cursor-not-allowed disabled:opacity-70"
+          disabled={submitting}
+          className="rounded-full bg-[#b91c1c] px-10 py-3 text-xs font-semibold uppercase tracking-[0.22em] text-white shadow-md shadow-red-500/30 transition hover:bg-[#991b1b] disabled:opacity-60 disabled:cursor-not-allowed"
         >
-          {isLoading ? "Sending…" : "Send Message"}
+          {submitting ? "SENDING..." : "SEND MESSAGE"}
         </button>
       </div>
     </form>

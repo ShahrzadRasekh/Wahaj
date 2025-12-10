@@ -1,55 +1,80 @@
 // app/api/contact/route.ts
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY || "");
+const resendApiKey = process.env.RESEND_API_KEY;
+const toEmail = process.env.CONTACT_TO_EMAIL;          // where you receive messages
+const fromEmail = process.env.CONTACT_FROM_EMAIL ?? "onboarding@resend.dev"; // Resend sandbox
 
-export async function POST(req: NextRequest) {
+const resend = resendApiKey ? new Resend(resendApiKey) : null;
+
+export async function POST(req: Request) {
   try {
-    const form = await req.formData();
+    if (!resend || !resendApiKey) {
+      console.error("RESEND_API_KEY is not set");
+      return NextResponse.json(
+        { error: "Email service is not configured. (Missing RESEND_API_KEY)" },
+        { status: 500 }
+      );
+    }
 
-    const name = form.get("name")?.toString() || "";
-    const email = form.get("email")?.toString() || "";
-    const address = form.get("address")?.toString() || "";
-    const message = form.get("message")?.toString() || "";
+    if (!toEmail) {
+      console.error("CONTACT_TO_EMAIL is not set");
+      return NextResponse.json(
+        { error: "Email destination is not configured. (Missing CONTACT_TO_EMAIL)" },
+        { status: 500 }
+      );
+    }
 
-    // Basic validation (optional)
+    const body = await req.json();
+    const { name, email, address, message } = body as {
+      name?: string;
+      email?: string;
+      address?: string;
+      message?: string;
+    };
+
     if (!name || !email || !message) {
       return NextResponse.json(
-        { ok: false, error: "Missing required fields" },
+        { error: "Please fill in your name, email and message." },
         { status: 400 }
       );
     }
 
-    const to = process.env.CONTACT_TO_EMAIL;
-    if (!to) {
-      console.error("CONTACT_TO_EMAIL is not set in environment variables.");
-      // We still return ok:true so your UI looks fine even while you configure env vars
-      return NextResponse.json({
-        ok: true,
-        warning: "CONTACT_TO_EMAIL not configured on server.",
-      });
-    }
+    const subject = `New contact form message from ${name || "Wahaj Gold website"}`;
 
-    // Try to send the email via Resend
-    await resend.emails.send({
-      from: "Wahaj Gold <onboarding@resend.dev>",
-      to,
-      subject: `New contact form message from ${name || "Wahaj Gold website"}`,
-      html: `
-        <h2>New Contact Form Submission</h2>
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Address:</strong> ${address}</p>
-        <p><strong>Message:</strong></p>
-        <p>${(message || "").replace(/\n/g, "<br/>")}</p>
-      `,
+    const html = `
+      <h2>New Contact Form Submission</h2>
+      <p><strong>Name:</strong> ${name}</p>
+      <p><strong>Email:</strong> ${email}</p>
+      <p><strong>Address:</strong> ${address || "-"}</p>
+      <p><strong>Message:</strong></p>
+      <p>${(message || "").replace(/\n/g, "<br/>")}</p>
+    `;
+
+    const { error } = await resend.emails.send({
+      from: `Wahaj Gold Website <${fromEmail}>`,
+      to: toEmail,
+      subject,
+      html,
+      // We can add reply_to later once everything works
+      // reply_to: email,
     });
 
-    // ✅ Tell the browser everything went well
-    return NextResponse.json({ ok: true });
+    if (error) {
+      console.error("Resend error:", error);
+      return NextResponse.json(
+        { error: "Failed to send email via Resend." },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({ success: true }, { status: 200 });
   } catch (err) {
-    console.error("Error in /api/contact:", err);
-    return NextResponse.json({ ok: false }, { status: 500 });
+    console.error("Unexpected /api/contact error:", err);
+    return NextResponse.json(
+      { error: "Unexpected server error while sending your message." },
+      { status: 500 }
+    );
   }
 }
