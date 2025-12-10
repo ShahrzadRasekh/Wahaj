@@ -7,7 +7,17 @@ export const metadata: Metadata = {
     "Find Wahaj Gold’s address, contact details and business hours in Dubai, United Arab Emirates.",
 };
 
-export default function ContactPage() {
+type ContactPageProps = {
+  searchParams?: {
+    success?: string;
+    error?: string;
+  };
+};
+
+export default function ContactPage({ searchParams }: ContactPageProps) {
+  const success = searchParams?.success === "1";
+  const error = searchParams?.error === "1";
+
   return (
     <main className="min-h-screen bg-[#f5f5f7]">
       <div className="mx-auto max-w-6xl px-4 pb-20 pt-20">
@@ -52,7 +62,20 @@ export default function ContactPage() {
 
           {/* RIGHT COLUMN – CONTACT INFO + MAP + FORM */}
           <div>
-            <h1 className="mb-8 text-3xl font-bold text-gray-900">Contact</h1>
+            <h1 className="mb-4 text-3xl font-bold text-gray-900">Contact</h1>
+
+            {/* SUCCESS / ERROR ALERTS */}
+            {success && (
+              <div className="mb-6 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+                Thank you. Your message has been sent successfully.
+              </div>
+            )}
+            {error && (
+              <div className="mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                Sorry, something went wrong while sending your message. Please
+                try again, or contact us directly by phone or email.
+              </div>
+            )}
 
             {/* ADDRESS + CONTACT DETAILS */}
             <div className="grid gap-10 md:grid-cols-2">
@@ -124,7 +147,11 @@ export default function ContactPage() {
                 Get In Touch
               </h2>
 
-              <form className="mt-8 space-y-5 text-sm">
+              <form
+                className="mt-8 space-y-5 text-sm"
+                action="/api/contact"
+                method="POST"
+              >
                 {/* Name + Email row */}
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className="space-y-1">
@@ -136,6 +163,7 @@ export default function ContactPage() {
                     </label>
                     <input
                       id="name"
+                      name="name"
                       type="text"
                       className="w-full rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900 outline-none focus:border-gray-400"
                     />
@@ -150,6 +178,7 @@ export default function ContactPage() {
                     </label>
                     <input
                       id="email"
+                      name="email"
                       type="email"
                       className="w-full rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900 outline-none focus:border-gray-400"
                     />
@@ -166,6 +195,7 @@ export default function ContactPage() {
                   </label>
                   <input
                     id="address"
+                    name="address"
                     type="text"
                     className="w-full rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900 outline-none focus:border-gray-400"
                   />
@@ -181,6 +211,7 @@ export default function ContactPage() {
                   </label>
                   <textarea
                     id="message"
+                    name="message"
                     rows={5}
                     className="w-full rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900 outline-none focus:border-gray-400"
                   />

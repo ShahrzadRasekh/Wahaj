@@ -1,41 +1,50 @@
-// app/api/contact/route.ts
 import { NextResponse } from "next/server";
-import { contactFormSchema } from "@/lib/validation";
+import { Resend } from "resend";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
+    const formData = await req.formData();
 
-    // ✅ Validate using Zod
-    const result = contactFormSchema.safeParse(body);
+    const name = (formData.get("name") || "").toString();
+    const email = (formData.get("email") || "").toString();
+    const address = (formData.get("address") || "").toString();
+    const message = (formData.get("message") || "").toString();
 
-    if (!result.success) {
-      // Collect error messages
-      const errors = result.error.flatten().fieldErrors;
-      return NextResponse.json(
-        { success: false, errors },
-        { status: 400 }
-      );
+    if (!email && !message) {
+      // basic validation; you can make this stricter later
+      const url = new URL("/contact?error=1", req.url);
+      return NextResponse.redirect(url);
     }
 
-    // ✅ At this point TypeScript knows result is success
-    const data = result.data;
+    const to = process.env.CONTACT_TO_EMAIL;
+    const from = process.env.CONTACT_FROM_EMAIL || "onboarding@resend.dev";
 
-    // Optional: extra destructuring
-    const { name, email, phone, appointment, message } = data;
+    if (!to) {
+      console.error("CONTACT_TO_EMAIL is not set");
+    }
 
-    // TODO: Save to DB, send email, etc.
-    // e.g. await db.contact.create({ data });
+    await resend.emails.send({
+      from,
+      to: to || "support@example.com",
+      subject: `New contact form message from ${name || "Wahaj Gold website"}`,
+      reply_to: email || undefined,
+      html: `
+        <h2>New Contact Form Submission</h2>
+        <p><strong>Name:</strong> ${name || "-"}</p>
+        <p><strong>Email:</strong> ${email || "-"}</p>
+        <p><strong>Address:</strong> ${address || "-"}</p>
+        <p><strong>Message:</strong></p>
+        <p>${message.replace(/\n/g, "<br/>") || "-"}</p>
+      `,
+    });
 
-    return NextResponse.json(
-      { success: true, message: "Form submitted successfully" },
-      { status: 200 }
-    );
-  } catch (err) {
-    console.error("Contact form error:", err);
-    return NextResponse.json(
-      { success: false, error: "Something went wrong" },
-      { status: 500 }
-    );
+    const url = new URL("/contact?success=1", req.url);
+    return NextResponse.redirect(url);
+  } catch (error) {
+    console.error("Error sending contact email:", error);
+    const url = new URL("/contact?error=1", req.url);
+    return NextResponse.redirect(url);
   }
 }
