@@ -12,12 +12,6 @@ export async function POST(req: Request) {
     const address = (formData.get("address") || "").toString();
     const message = (formData.get("message") || "").toString();
 
-    if (!email && !message) {
-      // basic validation; you can make this stricter later
-      const url = new URL("/contact?error=1", req.url);
-      return NextResponse.redirect(url);
-    }
-
     const to = process.env.CONTACT_TO_EMAIL;
     const from = process.env.CONTACT_FROM_EMAIL || "onboarding@resend.dev";
 
@@ -29,7 +23,7 @@ export async function POST(req: Request) {
       from,
       to: to || "support@example.com",
       subject: `New contact form message from ${name || "Wahaj Gold website"}`,
-      reply_to: email || undefined,
+      replyTo: email || undefined,
       html: `
         <h2>New Contact Form Submission</h2>
         <p><strong>Name:</strong> ${name || "-"}</p>
@@ -40,11 +34,9 @@ export async function POST(req: Request) {
       `,
     });
 
-    const url = new URL("/contact?success=1", req.url);
-    return NextResponse.redirect(url);
+    return NextResponse.redirect("/contact?success=1");
   } catch (error) {
     console.error("Error sending contact email:", error);
-    const url = new URL("/contact?error=1", req.url);
-    return NextResponse.redirect(url);
+    return NextResponse.redirect("/contact?error=1");
   }
 }
