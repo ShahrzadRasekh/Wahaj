@@ -1,7 +1,15 @@
 // components/ContactForm.tsx
 "use client";
 
-import React, { useState, FormEvent } from "react";
+import React, { useEffect, useState, FormEvent } from "react";
+
+const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+
+declare global {
+  interface Window {
+    grecaptcha: any;
+  }
+}
 
 export default function ContactForm() {
   const [name, setName] = useState("");
@@ -12,6 +20,46 @@ export default function ContactForm() {
   const [success, setSuccess] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  // Load reCAPTCHA script on mount
+  useEffect(() => {
+    if (!siteKey) {
+      console.warn("NEXT_PUBLIC_RECAPTCHA_SITE_KEY is not set");
+      return;
+    }
+
+    // Avoid adding the script multiple times
+    if (document.querySelector("#recaptcha-v3-script")) return;
+
+    const script = document.createElement("script");
+    script.id = "recaptcha-v3-script";
+    script.src = `https://www.google.com/recaptcha/api.js?render=${siteKey}`;
+    script.async = true;
+    document.head.appendChild(script);
+  }, []);
+
+  async function getRecaptchaToken(): Promise<string | null> {
+    if (!siteKey) {
+      // If you prefer, you can hard-fail here instead of allowing the request.
+      console.warn("reCAPTCHA site key missing; skipping verification.");
+      return null;
+    }
+
+    if (!window.grecaptcha) {
+      console.error("grecaptcha not yet loaded");
+      return null;
+    }
+
+    try {
+      const token = await window.grecaptcha.execute(siteKey, {
+        action: "contact",
+      });
+      return token;
+    } catch (err) {
+      console.error("Error executing grecaptcha:", err);
+      return null;
+    }
+  }
+
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setSubmitting(true);
@@ -19,12 +67,20 @@ export default function ContactForm() {
     setError(null);
 
     try {
+      const recaptchaToken = await getRecaptchaToken();
+
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ name, email, address, message }),
+        body: JSON.stringify({
+          name,
+          email,
+          address,
+          message,
+          recaptchaToken,
+        }),
       });
 
       const data = await res.json().catch(() => ({}));
@@ -44,7 +100,6 @@ export default function ContactForm() {
       setAddress("");
       setMessage("");
 
-      // Optionally auto-hide the success message after a few seconds
       setTimeout(() => setSuccess(null), 6000);
     } catch (err) {
       console.error("Contact form submit error:", err);
@@ -133,12 +188,8 @@ export default function ContactForm() {
       </div>
 
       {/* Feedback messages */}
-      {success && (
-        <p className="text-sm text-emerald-700">{success}</p>
-      )}
-      {error && (
-        <p className="text-sm text-red-600">{error}</p>
-      )}
+      {success && <p className="text-sm text-emerald-700">{success}</p>}
+      {error && <p className="text-sm text-red-600">{error}</p>}
 
       {/* Button */}
       <div className="flex justify-end pt-2">
