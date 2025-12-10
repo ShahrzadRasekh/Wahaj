@@ -1,7 +1,7 @@
 // app/api/contact/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 
-export const runtime = 'nodejs'; // ensure Node runtime on Vercel
+export const runtime = 'nodejs'; // works on Vercel & StackBlitz
 
 export async function POST(req: NextRequest) {
   try {
@@ -12,7 +12,6 @@ export async function POST(req: NextRequest) {
     const address = String(formData.get('address') || '').trim();
     const message = String(formData.get('message') || '').trim();
 
-    // --- ENV VARS -------------------------------------------------
     const resendApiKey = process.env.RESEND_API_KEY;
     const to = process.env.CONTACT_TO_EMAIL || 'support@example.com';
     const from =
@@ -23,7 +22,6 @@ export async function POST(req: NextRequest) {
       throw new Error('Missing RESEND_API_KEY');
     }
 
-    // --- BUILD EMAIL ----------------------------------------------
     const subject = `New contact form message from ${
       name || 'Wahaj Gold website'
     }`;
@@ -37,7 +35,7 @@ export async function POST(req: NextRequest) {
       <p>${message.replace(/\n/g, '<br/>') || '-'}</p>
     `;
 
-    // --- CALL RESEND HTTP API ------------------------------------
+    // Call Resend HTTP API directly
     const resendResponse = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
@@ -49,30 +47,30 @@ export async function POST(req: NextRequest) {
         to: [to],
         subject,
         html,
-        // for “reply to this user”, Resend expects replyTo in the HTTP body as well
+        // let admin reply directly to the user who filled the form
         replyTo: email || undefined,
       }),
     });
 
     if (!resendResponse.ok) {
-      const errText = await resendResponse.text();
+      const errorText = await resendResponse.text();
       console.error(
-        '[CONTACT] Resend API error',
+        '[CONTACT] Resend API error:',
         resendResponse.status,
-        errText
+        errorText
       );
       throw new Error('Resend API error');
     }
 
     console.log('[CONTACT] Email sent successfully');
 
-    // redirect back to /contact with success flag
+    // redirect back to /contact on the SAME origin
     return NextResponse.redirect(
       new URL('/contact?success=1', req.url),
-      303 // "See Other" is safer after POST
+      303 // "See Other" after POST
     );
   } catch (error) {
-    console.error('[CONTACT] Error in POST /api/contact:', error);
+    console.error('[CONTACT] Error in /api/contact POST:', error);
 
     return NextResponse.redirect(
       new URL('/contact?error=1', req.url),
