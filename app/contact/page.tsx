@@ -1,59 +1,230 @@
+// app/contact/page.tsx
 import React from "react";
 
-export default function ContactPage({ searchParams }: any) {
+interface ContactPageProps {
+  searchParams?: { [key: string]: string | string[] | undefined };
+}
+
+export default function ContactPage({ searchParams }: ContactPageProps) {
   const success = searchParams?.success === "1";
   const error = searchParams?.error === "1";
 
   return (
-    <div className="container mx-auto px-4 py-20">
-      <h1 className="text-4xl font-bold mb-10">Contact</h1>
-
-      {/* Show success or error messages */}
-      {success && (
-        <div className="mb-6 rounded-md bg-green-100 px-4 py-3 text-green-800">
-          Your message has been sent successfully.
-        </div>
-      )}
-
-      {error && (
-        <div className="mb-6 rounded-md bg-red-100 px-4 py-3 text-red-800">
-          Something went wrong. Please try again later.
-        </div>
-      )}
-
-      {/* Contact form */}
-      <form
-        action="/api/contact"
-        method="POST"
-        className="space-y-6 bg-white p-6 rounded-lg shadow"
-      >
-        <div>
-          <label className="block mb-1 text-sm font-medium">Name</label>
-          <input name="name" className="w-full border px-3 py-2 rounded" />
+    <main className="min-h-screen bg-[#f5f5f7] text-slate-900">
+      <div className="mx-auto max-w-6xl px-4 py-12">
+        {/* Breadcrumb */}
+        <div className="mb-4 text-xs text-slate-500">
+          <span className="cursor-pointer hover:text-slate-700">Home</span>
+          <span className="mx-1">›</span>
+          <span className="font-medium text-slate-700">Contact</span>
         </div>
 
-        <div>
-          <label className="block mb-1 text-sm font-medium">Email</label>
-          <input name="email" type="email" className="w-full border px-3 py-2 rounded" />
-        </div>
+        <div className="grid gap-10 lg:grid-cols-[280px,minmax(0,1fr)]">
+          {/* LEFT COLUMN – vertical cards / banners */}
+          <aside className="space-y-6">
+            {/* Main pink banner */}
+            <div className="flex h-80 items-center justify-center rounded-[32px] bg-[#f51f4d] px-8 text-center text-xs font-semibold uppercase tracking-[0.22em] text-white shadow-xl shadow-[#f51f4d]/40">
+              <div className="space-y-4">
+                <p className="text-[10px] tracking-[0.28em]">
+                  Discover Wahaj Gold Collections
+                </p>
+                <p className="text-[11px] leading-relaxed normal-case tracking-normal">
+                  Replace this block later with your own vertical contact banner
+                  image (for example: <br />
+                  <span className="font-mono text-[10px]">
+                    /contact/banner-main.jpg
+                  </span>
+                  ).
+                </p>
+              </div>
+            </div>
 
-        <div>
-          <label className="block mb-1 text-sm font-medium">Address</label>
-          <input name="address" className="w-full border px-3 py-2 rounded" />
-        </div>
+            {/* Dark navy promo card */}
+            <div className="flex h-52 items-center justify-center rounded-[32px] bg-[#050b18] px-8 text-center text-[11px] tracking-[0.18em] text-slate-100 shadow-2xl shadow-black/40">
+              <div>
+                <div className="mb-3 text-[10px] font-semibold uppercase tracking-[0.3em] text-slate-300">
+                  Buy Gold With Confidence
+                </div>
+                <p className="text-[11px] leading-relaxed tracking-normal text-slate-300 normal-case">
+                  Use this space later for a simple promo message or highlight.
+                </p>
+              </div>
+            </div>
 
-        <div>
-          <label className="block mb-1 text-sm font-medium">Message</label>
-          <textarea name="message" rows={5} className="w-full border px-3 py-2 rounded"></textarea>
-        </div>
+            {/* Plain dark card placeholder */}
+            <div className="h-52 rounded-[32px] bg-[#16181c] shadow-2xl shadow-black/40" />
+          </aside>
 
-        <button
-          type="submit"
-          className="bg-red-700 text-white px-6 py-3 rounded-full hover:bg-red-800"
-        >
-          Send Message
-        </button>
-      </form>
-    </div>
+          {/* RIGHT COLUMN – content + form */}
+          <section className="space-y-10">
+            {/* Title + messages */}
+            <div>
+              <h1 className="text-4xl font-bold tracking-tight text-slate-900">
+                Contact
+              </h1>
+
+              {success && (
+                <div className="mt-4 rounded-lg border border-emerald-500/40 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+                  Thank you. Your message has been sent successfully.
+                </div>
+              )}
+
+              {error && (
+                <div className="mt-4 rounded-lg border border-red-500/40 bg-red-50 px-4 py-3 text-sm text-red-800">
+                  Sorry, something went wrong while sending your message. Please
+                  try again in a moment.
+                </div>
+              )}
+            </div>
+
+            {/* Address + contact details */}
+            <div className="grid gap-10 md:grid-cols-2">
+              {/* Address */}
+              <div className="space-y-2">
+                <h2 className="text-base font-semibold text-slate-900">
+                  Address
+                </h2>
+                <div className="space-y-1 text-sm text-slate-700">
+                  <p>Wahaj Gold (example)</p>
+                  <p>Gold Souq Area</p>
+                  <p>Dubai, United Arab Emirates</p>
+                  <p className="pt-2 text-xs text-slate-500">
+                    Update this section later with your exact building / shop
+                    details.
+                  </p>
+                </div>
+              </div>
+
+              {/* Contact details */}
+              <div className="space-y-2">
+                <h2 className="text-base font-semibold text-slate-900">
+                  Contact Details
+                </h2>
+                <div className="space-y-1 text-sm text-slate-700">
+                  <p>+971 XX XXX XXXX</p>
+                  <p>+971 X XXX XXXX</p>
+                  <p>support@wahajgold.com</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Business time */}
+            <div className="space-y-2">
+              <h2 className="text-base font-semibold text-slate-900">
+                Business Time
+              </h2>
+              <p className="text-sm text-slate-700">
+                Monday to Saturday: 10:00 AM – 21:00 PM (GST)
+              </p>
+            </div>
+
+            {/* Map / world image placeholder */}
+            <div className="rounded-[32px] border border-dashed border-slate-200 bg-white px-10 py-20 shadow-lg shadow-slate-300/30">
+              <div className="flex h-full items-center justify-center text-center text-xs text-slate-500">
+                <div>
+                  <p>World map / location image placeholder.</p>
+                  <p className="mt-2">
+                    Later you can replace this with a real map or branded image
+                    (e.g.
+                    <span className="mx-1 font-mono text-[10px]">
+                      /contact/world-map.png
+                    </span>
+                    ).
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Get In Touch form */}
+            <div className="space-y-6">
+              <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
+                Get In Touch
+              </h2>
+
+              <form
+                action="/api/contact"
+                method="POST"
+                className="space-y-6 text-sm text-slate-900"
+              >
+                {/* Name + Email */}
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="space-y-1">
+                    <label
+                      htmlFor="name"
+                      className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-600"
+                    >
+                      Name
+                    </label>
+                    <input
+                      id="name"
+                      name="name"
+                      type="text"
+                      className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-yellow-500 focus:ring-1 focus:ring-yellow-400"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label
+                      htmlFor="email"
+                      className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-600"
+                    >
+                      Email
+                    </label>
+                    <input
+                      id="email"
+                      name="email"
+                      type="email"
+                      className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-yellow-500 focus:ring-1 focus:ring-yellow-400"
+                    />
+                  </div>
+                </div>
+
+                {/* Address */}
+                <div className="space-y-1">
+                  <label
+                    htmlFor="address"
+                    className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-600"
+                  >
+                    Address
+                  </label>
+                  <input
+                    id="address"
+                    name="address"
+                    type="text"
+                    className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-yellow-500 focus:ring-1 focus:ring-yellow-400"
+                  />
+                </div>
+
+                {/* Message */}
+                <div className="space-y-1">
+                  <label
+                    htmlFor="message"
+                    className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-600"
+                  >
+                    Message
+                  </label>
+                  <textarea
+                    id="message"
+                    name="message"
+                    rows={6}
+                    className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-yellow-500 focus:ring-1 focus:ring-yellow-400"
+                  />
+                </div>
+
+                {/* Button */}
+                <div className="flex justify-end pt-2">
+                  <button
+                    type="submit"
+                    className="rounded-full bg-[#b91c1c] px-10 py-3 text-xs font-semibold uppercase tracking-[0.22em] text-white shadow-md shadow-red-500/30 transition hover:bg-[#991b1b]"
+                  >
+                    Send Message
+                  </button>
+                </div>
+              </form>
+            </div>
+          </section>
+        </div>
+      </div>
+    </main>
   );
 }
