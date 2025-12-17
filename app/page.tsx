@@ -49,7 +49,7 @@ const featuredProducts = [
     id: 2,
     name: 'My Love',
     price: '1,344.29',
-    badge: 'Best Seller',
+    badge: { label: "Best Seller", variant: "gold" },
     image: '/products/Bouquet.jpg',
     description:'My Love immortalizes the fleeting beauty of flowers in gold, creating an eternal symbol of affection. Just as love endures, this bouquet remains forever fresh',
   },
@@ -89,7 +89,7 @@ const featuredProducts = [
     id: 7,
     name: 'Moon Flower',
     price: '1,180.75',
-    badge: 'New Arrival',
+    badge: { label: "New Arrival", variant: "gold" },
     image: '/products/MoonFlower.jpg',
     description:'Just like the moon, everything in life has its own cycle. The moon rises as the day ends for us and we begin our recovery from it',
   },
@@ -536,6 +536,34 @@ function CategorySection() {
     </section>
   );
 }
+function LuxuryBadge({
+  label,
+  variant = "gold",
+}: {
+  label: string;
+  variant?: "gold" | "black" | "ruby";
+}) {
+  const styles =
+    variant === "black"
+      ? "bg-gradient-to-r from-[#0b0f14] via-[#111827] to-[#0b0f14] text-white border-white/10 shadow-[0_10px_25px_rgba(0,0,0,0.35)]"
+      : variant === "ruby"
+      ? "bg-gradient-to-r from-[#7f1d1d] via-[#b91c1c] to-[#7f1d1d] text-white border-white/10 shadow-[0_10px_25px_rgba(185,28,28,0.25)]"
+      : "bg-gradient-to-r from-[#f7e7b0] via-[#e5b472] to-[#caa24b] text-[#1b1408] border-white/40 shadow-[0_10px_25px_rgba(229,180,114,0.25)]";
+
+  return (
+    <span
+      className={[
+        "inline-flex items-center gap-2 rounded-full border px-3 py-1",
+        "text-[10px] font-semibold uppercase tracking-[0.22em]",
+        "backdrop-blur-sm",
+        styles,
+      ].join(" ")}
+    >
+      <span className="h-1.5 w-1.5 rounded-full bg-current opacity-70" />
+      {label}
+    </span>
+  );
+}
 
 
 /* -------------------------------------- */
@@ -581,11 +609,15 @@ function FeaturedSection() {
                   <div className="h-40 w-full rounded-xl bg-gradient-to-br from-yellow-100 via-amber-300 to-yellow-700" />
                 )}
 
-                {product.badge && (
-                  <span className="absolute right-4 top-4 rounded-full bg-[#b91c1c] px-3 py-1 text-xs font-semibold text-white">
-                    {product.badge}
-                  </span>
-                )}
+{product.badge && (
+  <div className="absolute right-4 top-4">
+    <LuxuryBadge
+      label={typeof product.badge === "string" ? product.badge : product.badge.label}
+      variant={typeof product.badge === "string" ? "gold" : product.badge.variant}
+    />
+  </div>
+)}
+
               </div>
 
               {/* Product name + price */}
