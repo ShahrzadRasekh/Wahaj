@@ -36,12 +36,12 @@ const heroSlides = [
 /*  Example static product/category data  */
 /* -------------------------------------- */
 
-const featuredProducts = [
+const featuredProducts: FeaturedProduct[] = [
   {
     id: 1,
     name: 'Strength',
     price: '5,207.69',
-   // badge: 'Best Seller',
+    // badge: { label: "Best Seller", variant: "gold" },
     image: '/products/LionKing.jpg',
     description: 'Roaring with power and leadership, Strength represents the fearless ruler of the plains, guiding with wisdom and courage.',
   },
@@ -57,7 +57,7 @@ const featuredProducts = [
     id: 3,
     name: 'Sea Queen',
     price: '10,120.50',
-    //badge: 'Best Seller',
+    // badge: { label: "Best Seller", variant: "gold" },
     image: '/products/Mermaid.jpg',
     description:'Embodying the calm yet unpredictable beauty of the sea, Sea Queen exudes the strength and mystery of its ruler, the mermaid. ',
   },
@@ -65,7 +65,7 @@ const featuredProducts = [
     id: 4,
     name: 'My Mother',
     price: '1,062.05',
-   // badge: 'New Arrival',
+    // badge: { label: "Best Seller", variant: "gold" },
     image: '/products/MyMother.jpg',
     description:'My Mother captures the essence of a mother’s embrace—the first source of love, trust, and protection a daughter feels. ',
   },
@@ -73,7 +73,7 @@ const featuredProducts = [
     id: 5,
     name: 'My Heart',
     price: '5,310.42',
-    //badge: 'New Arrival',
+    // badge: { label: "Best Seller", variant: "gold" },
     image: '/products/MyHeart.jpg',
     description:'A tribute to the nurturing bond between mother and son, My Heart reflects the gentle wisdom and enduring care that protects and guides.',
   },
@@ -81,7 +81,7 @@ const featuredProducts = [
     id: 6,
     name: 'Makkah',
     price: '720.30',
-   // badge: 'New Arrival',
+    // badge: { label: "Best Seller", variant: "gold" },
     image: '/products/makkahbar.jpg',
     description:'Makkah is “the fountain head and cradle of Islam”. It’s Islam’s holiest city, as it is the birthplace of Prophet Muhmmad (PBUH) and the faith itself.',
   },
@@ -97,11 +97,12 @@ const featuredProducts = [
     id: 8,
     name: 'Love Tree',
     price: '24,950.00',
-    //badge: 'Best Seller',
+    // badge: { label: "Best Seller", variant: "gold" },
     image: '/products/Love-Tree.jpg',
     description:'Trees are used to represent life, wisdom, power, growth, and prosperity. While many believe that flowers are the only symbol that represent love',
   },
 ];
+
 
 const promoSlides = [
   {
@@ -565,6 +566,23 @@ function LuxuryBadge({
   );
 }
 
+type BadgeVariant = "gold" | "ruby" | "black";
+
+type ProductBadge =
+  | string
+  | {
+      label: string;
+      variant?: BadgeVariant;
+    };
+
+type FeaturedProduct = {
+  id: number;
+  name: string;
+  price: string;
+  image: string;
+  description?: string;
+  badge?: ProductBadge;
+};
 
 /* -------------------------------------- */
 /*             FEATURED PRODUCTS          */
@@ -610,14 +628,21 @@ function FeaturedSection() {
                 )}
 
 {product.badge && (
-  <div className="absolute right-4 top-4">
+  <div className="absolute right-4 top-4 z-10">
     <LuxuryBadge
-      label={typeof product.badge === "string" ? product.badge : product.badge.label}
-      variant={typeof product.badge === "string" ? "gold" : product.badge.variant}
+      label={
+        typeof product.badge === "string"
+          ? product.badge
+          : product.badge.label
+      }
+      variant={
+        typeof product.badge === "string"
+          ? "gold"
+          : (product.badge.variant ?? "gold")
+      }
     />
   </div>
 )}
-
               </div>
 
               {/* Product name + price */}
