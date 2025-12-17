@@ -158,17 +158,17 @@ const worthProducts = [
 const latestNews = [
   {
     id: 1,
-    title: "Gold edges higher as dollar softens and traders eye Fed path",
+    title: "SAM Precious Metals Produces the World’s Largest Silver Bar, Weighing 1971 kgs to Represent the UAE’s Founding Year",
     date: "Thu, 04 Dec 2025 00:00:00 GMT",
     source: "Market Insights",
-    image: "/news/dollar-gold.jpg",
+    image: "/news/largestsilverbar.jpg",
   },
   {
     id: 2,
-    title: "Sales of investment bars and coins rise ahead of new year",
+    title: "Strengthening Global Academic Pathways for Francophone Communities",
     date: "Thu, 04 Dec 2025 00:00:00 GMT",
     source: "Wahaj Research Desk",
-    image: "/news/salesforce-gold.jpg",
+    image: "/news/spmacademy.jpg",
   },
   {
     id: 3,
