@@ -43,6 +43,7 @@ const featuredProducts = [
     price: '5,207.69',
    // badge: 'Best Seller',
     image: '/products/LionKing.jpg',
+    description: 'Roaring with power and leadership, Strength represents the fearless ruler of the plains, guiding with wisdom and courage.',
   },
   {
     id: 2,
@@ -50,6 +51,7 @@ const featuredProducts = [
     price: '1,344.29',
     badge: 'Best Seller',
     image: '/products/Bouquet.jpg',
+    description:'My Love immortalizes the fleeting beauty of flowers in gold, creating an eternal symbol of affection. Just as love endures, this bouquet remains forever fresh',
   },
   {
     id: 3,
@@ -57,6 +59,7 @@ const featuredProducts = [
     price: '10,120.50',
     //badge: 'Best Seller',
     image: '/products/Mermaid.jpg',
+    description:'Embodying the calm yet unpredictable beauty of the sea, Sea Queen exudes the strength and mystery of its ruler, the mermaid. ',
   },
   {
     id: 4,
@@ -64,6 +67,7 @@ const featuredProducts = [
     price: '1,062.05',
    // badge: 'New Arrival',
     image: '/products/MyMother.jpg',
+    description:'My Mother captures the essence of a mother’s embrace—the first source of love, trust, and protection a daughter feels. ',
   },
   {
     id: 5,
@@ -71,6 +75,7 @@ const featuredProducts = [
     price: '5,310.42',
     //badge: 'New Arrival',
     image: '/products/MyHeart.jpg',
+    description:'A tribute to the nurturing bond between mother and son, My Heart reflects the gentle wisdom and enduring care that protects and guides.',
   },
   {
     id: 6,
@@ -78,6 +83,7 @@ const featuredProducts = [
     price: '720.30',
    // badge: 'New Arrival',
     image: '/products/makkahbar.jpg',
+    description:'Makkah is “the fountain head and cradle of Islam”. It’s Islam’s holiest city, as it is the birthplace of Prophet Muhmmad (PBUH) and the faith itself.',
   },
   {
     id: 7,
@@ -85,6 +91,7 @@ const featuredProducts = [
     price: '1,180.75',
     badge: 'New Arrival',
     image: '/products/MoonFlower.jpg',
+    description:'Just like the moon, everything in life has its own cycle. The moon rises as the day ends for us and we begin our recovery from it',
   },
   {
     id: 8,
@@ -92,6 +99,7 @@ const featuredProducts = [
     price: '24,950.00',
     //badge: 'Best Seller',
     image: '/products/Love-Tree.jpg',
+    description:'Trees are used to represent life, wisdom, power, growth, and prosperity. While many believe that flowers are the only symbol that represent love',
   },
 ];
 
@@ -550,19 +558,19 @@ function FeaturedSection() {
                   </span>
                 </div>
 
-                {/* bottom icons row */}
-                <div className="mt-4 flex items-center justify-between text-xs text-gray-400">
-                  <button
-                    className="flex h-7 w-7 items-center justify-center rounded-full border border-gray-200 hover:border-red-400 hover:text-red-500"
-                    aria-label="Add to favourites"
-                  >
-                    ♥
-                  </button>
-                  <button className="flex items-center gap-1 rounded-full bg-red-500 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-white hover:bg-red-600">
-                    <span>🛒</span>
-                    <span>Add</span>
-                  </button>
-                </div>
+                 {/* description + favourite heart */}
+<div className="mt-3 flex items-start justify-between gap-3">
+  <p className="text-[12px] leading-snug text-gray-500 line-clamp-2">
+    {product.description}
+  </p>
+
+  <button
+    className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-gray-200 text-gray-400 hover:border-red-400 hover:text-red-500"
+    aria-label="Add to favourites"
+  >
+    ♥
+  </button>
+</div>
               </div>
             </article>
           ))}
