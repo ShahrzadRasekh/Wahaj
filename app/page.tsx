@@ -180,17 +180,17 @@ const latestNews = [
   },
   {
     id: 3,
-    title: "Central banks continue to add gold to reserves",
+    title: "SAM Precious Metals: Leading the Industry with Transparency, Responsible Sourcing & Education Programs  ",
     date: "Wed, 03 Dec 2025 00:00:00 GMT",
     source: "Global Gold Review",
-    image: "/news/central-banks.jpg",
+    image: "/news/Magazine-ad.jpg",
   },
   {
     id: 4,
-    title: "Silver demand hits record as solar growth accelerates",
+    title: "SAM Advances Global Academic Development Through Partnership With École de Commerce de Lyon",
     date: "Tue, 02 Dec 2025 00:00:00 GMT",
     source: "Energy Metals Report",
-    image: "/news/silver-solar.jpg",
+    image: "/news/samacademydevelopment.jpg",
   },
 ];
 
