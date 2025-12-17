@@ -450,48 +450,93 @@ function USPSection() {
 function CategorySection() {
   const categories = [
     {
-      title: 'BULLION',
-      image: '/category-bullion.jpg', // add to /public
+      title: "BULLION",
+      subtitle: "Bars, coins, and certified investment pieces",
+      image: "/category-bullion.jpg",
+      href: "/bullion",
     },
     {
-      title: 'GIFT COLLECTIONS',
-      image: '/category-gifts.jpg', // add to /public
+      title: "GIFT COLLECTIONS",
+      subtitle: "Curated gold designs for meaningful moments",
+      image: "/category-gifts.jpg",
+      href: "/gifts",
     },
   ];
 
   return (
-    <section className="bg-white pb-20 pt-4">
+    <section className="bg-white pb-20 pt-6">
       <div className="mx-auto max-w-6xl px-4">
-        <h2 className="text-2xl font-semibold text-gray-900 tracking-tight">
-          Categories
-        </h2>
-        <div className="mt-1 w-8 h-[2px] bg-black" />
+        {/* Section header */}
+        <div>
+          <h2 className="text-2xl font-semibold text-gray-900 tracking-tight">
+            Categories
+          </h2>
+          <div className="mt-2 h-[2px] w-10 bg-black" />
+        </div>
 
+        {/* Cards */}
         <div className="mt-10 grid gap-8 md:grid-cols-2">
           {categories.map((cat) => (
-            <div
+            <Link
               key={cat.title}
-              className="rounded-3xl overflow-hidden bg-[#f6f9fc] shadow-md shadow-gray-200/60"
+              href={cat.href}
+              className="group rounded-3xl border border-gray-100 bg-white px-8 py-10 shadow-[0_14px_35px_rgba(15,23,42,0.08)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_22px_55px_rgba(15,23,42,0.14)]"
             >
-              <div
-                className="h-72 bg-cover bg-center"
-                style={{
-                  backgroundImage: `url(${cat.image})`,
-                }}
-              />
-              <div className="px-6 py-4">
-                <h3 className="font-semibold text-gray-900 text-lg">
-                  <span className="inline-block w-5 h-[2px] bg-black mr-2" />
+              {/* Image frame */}
+              <div className="mx-auto flex h-48 w-full max-w-sm items-center justify-center">
+                <div className="
+                  relative 
+                  rounded-2xl 
+                  border border-yellow-300/40
+                  bg-white
+                  p-2
+                  shadow-[0_10px_30px_rgba(234,179,8,0.15)]
+                  transition-all
+                  duration-500
+                  group-hover:shadow-[0_14px_45px_rgba(234,179,8,0.25)]
+                ">
+                  <img
+                    src={cat.image}
+                    alt={cat.title}
+                    className="
+                      h-40 
+                      w-64 
+                      object-cover 
+                      rounded-xl
+                      transition-transform 
+                      duration-500 
+                      group-hover:scale-[1.03]
+                    "
+                    loading="lazy"
+                  />
+                </div>
+              </div>
+
+              {/* Text */}
+              <div className="mt-8 text-center">
+                <h3 className="text-sm font-semibold uppercase tracking-[0.22em] text-gray-900">
                   {cat.title}
                 </h3>
+                <p className="mt-3 text-sm text-gray-500 max-w-xs mx-auto">
+                  {cat.subtitle}
+                </p>
+
+                {/* CTA */}
+                <div className="mt-6 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-yellow-700 transition group-hover:text-yellow-800">
+                  Explore
+                  <span className="transition-transform group-hover:translate-x-1">
+                    →
+                  </span>
+                </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
     </section>
   );
 }
+
 
 /* -------------------------------------- */
 /*             FEATURED PRODUCTS          */
