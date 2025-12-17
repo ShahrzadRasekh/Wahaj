@@ -589,6 +589,27 @@ type FeaturedProduct = {
 /* -------------------------------------- */
 
 function FeaturedSection() {
+  const [favorites, setFavorites] = useState<number[]>([]);
+
+useEffect(() => {
+  const stored = localStorage.getItem("favorites");
+  if (stored) {
+    setFavorites(JSON.parse(stored));
+  }
+}, []);
+
+useEffect(() => {
+  localStorage.setItem("favorites", JSON.stringify(favorites));
+}, [favorites]);
+
+const toggleFavorite = (id: number) => {
+  setFavorites((prev) =>
+    prev.includes(id)
+      ? prev.filter((favId) => favId !== id)
+      : [...prev, id]
+  );
+};
+
   return (
     <section className="bg-white py-16">
       <div className="mx-auto max-w-6xl px-4">
@@ -667,11 +688,18 @@ function FeaturedSection() {
   </p>
 
   <button
-    className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-gray-200 text-gray-400 hover:border-red-400 hover:text-red-500"
-    aria-label="Add to favourites"
-  >
-    ♥
-  </button>
+  onClick={() => toggleFavorite(product.id)}
+  aria-label="Toggle favourite"
+  className={[
+    "mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border transition",
+    favorites.includes(product.id)
+      ? "border-red-500 text-red-500 bg-red-50"
+      : "border-gray-200 text-gray-400 hover:border-red-400 hover:text-red-500",
+  ].join(" ")}
+>
+  {favorites.includes(product.id) ? "♥" : "♡"}
+</button>
+
 </div>
               </div>
             </article>
