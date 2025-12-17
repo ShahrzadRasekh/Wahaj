@@ -39,24 +39,24 @@ const heroSlides = [
 const featuredProducts = [
   {
     id: 1,
-    name: 'PAMP 10 Gram',
+    name: 'Strength',
     price: '5,207.69',
-    badge: 'Best Seller',
-    image: '/products/pamp-10g.jpg',
+   // badge: 'Best Seller',
+    image: '/products/LionKing.jpg',
   },
   {
     id: 2,
-    name: '2023 1.24 g Niue Gold Coin',
+    name: 'My Love',
     price: '1,344.29',
-    badge: 'New Arrival',
-    image: '/products/niue-1-24g.jpg',
+    badge: 'Best Seller',
+    image: '/products/Bouquet.jpg',
   },
   {
     id: 3,
-    name: 'Valcambi Bars 20 Gram',
+    name: 'Sea Queen',
     price: '10,120.50',
-    badge: 'Best Seller',
-    image: '/products/valcambi-20g.jpg',
+    //badge: 'Best Seller',
+    image: '/products/Mermaid.jpg',
   },
   {
     id: 4,
