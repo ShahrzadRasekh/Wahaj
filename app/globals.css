@@ -67,3 +67,14 @@ a {
   animation: slideUpFadeIn 700ms ease-out forwards;
 }
 
+@keyframes favPop {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.25); }
+  100% { transform: scale(1); }
+}
+
+@keyframes favGlow {
+  0% { box-shadow: 0 0 0 rgba(239,68,68,0); }
+  40% { box-shadow: 0 0 0 6px rgba(239,68,68,0.15); }
+  100% { box-shadow: 0 0 0 rgba(239,68,68,0); }
+}

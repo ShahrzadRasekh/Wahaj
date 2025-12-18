@@ -2,6 +2,9 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from "react";
+import { featuredProducts } from "../lib/products";
+import { useFavorites } from "../lib/useFavorites";
+
 
 
 const heroSlides = [
@@ -36,72 +39,6 @@ const heroSlides = [
 /*  Example static product/category data  */
 /* -------------------------------------- */
 
-const featuredProducts: FeaturedProduct[] = [
-  {
-    id: 1,
-    name: 'Strength',
-    price: '5,207.69',
-    // badge: { label: "Best Seller", variant: "gold" },
-    image: '/products/LionKing.jpg',
-    description: 'Roaring with power and leadership, Strength represents the fearless ruler of the plains, guiding with wisdom and courage.',
-  },
-  {
-    id: 2,
-    name: 'My Love',
-    price: '1,344.29',
-    badge: { label: "Best Seller", variant: "gold" },
-    image: '/products/Bouquet.jpg',
-    description:'My Love immortalizes the fleeting beauty of flowers in gold, creating an eternal symbol of affection. Just as love endures, this bouquet remains forever fresh',
-  },
-  {
-    id: 3,
-    name: 'Sea Queen',
-    price: '10,120.50',
-    // badge: { label: "Best Seller", variant: "gold" },
-    image: '/products/Mermaid.jpg',
-    description:'Embodying the calm yet unpredictable beauty of the sea, Sea Queen exudes the strength and mystery of its ruler, the mermaid. ',
-  },
-  {
-    id: 4,
-    name: 'My Mother',
-    price: '1,062.05',
-    // badge: { label: "Best Seller", variant: "gold" },
-    image: '/products/MyMother.jpg',
-    description:'My Mother captures the essence of a mother’s embrace—the first source of love, trust, and protection a daughter feels. ',
-  },
-  {
-    id: 5,
-    name: 'My Heart',
-    price: '5,310.42',
-    // badge: { label: "Best Seller", variant: "gold" },
-    image: '/products/MyHeart.jpg',
-    description:'A tribute to the nurturing bond between mother and son, My Heart reflects the gentle wisdom and enduring care that protects and guides.',
-  },
-  {
-    id: 6,
-    name: 'Makkah',
-    price: '720.30',
-    // badge: { label: "Best Seller", variant: "gold" },
-    image: '/products/makkahbar.jpg',
-    description:'Makkah is “the fountain head and cradle of Islam”. It’s Islam’s holiest city, as it is the birthplace of Prophet Muhmmad (PBUH) and the faith itself.',
-  },
-  {
-    id: 7,
-    name: 'Moon Flower',
-    price: '1,180.75',
-    badge: { label: "New Arrival", variant: "gold" },
-    image: '/products/MoonFlower.jpg',
-    description:'Just like the moon, everything in life has its own cycle. The moon rises as the day ends for us and we begin our recovery from it',
-  },
-  {
-    id: 8,
-    name: 'Love Tree',
-    price: '24,950.00',
-    // badge: { label: "Best Seller", variant: "gold" },
-    image: '/products/Love-Tree.jpg',
-    description:'Trees are used to represent life, wisdom, power, growth, and prosperity. While many believe that flowers are the only symbol that represent love',
-  },
-];
 
 
 const promoSlides = [
@@ -235,6 +172,7 @@ export default function HomePage() {
 /* -------------------------------------- */
 
 function Header() {
+  const { favorites } = useFavorites();
   return (
     <header className="fixed inset-x-0 top-0 z-40 bg-black/35 backdrop-blur-md border-b border-white/10">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
@@ -303,6 +241,19 @@ function Header() {
             </button>*/}
             <button className="flex items-center gap-1 rounded-full border border-white/30 px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-slate-100 hover:border-yellow-300 hover:text-yellow-200">
               <span className="text-base">☰</span>
+              <Link
+  href="/favorites"
+  className="relative flex h-9 w-9 items-center justify-center rounded-full border border-white/20 text-slate-100 transition hover:border-red-400 hover:text-red-300"
+  aria-label="Open favourites"
+>
+  ♥
+  {favorites.length > 0 && (
+    <span className="absolute -right-1.5 -top-1.5 flex h-5 min-w-[20px] items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold text-white">
+      {favorites.length}
+    </span>
+  )}
+</Link>
+
               <span className="hidden sm:inline">More</span>
             </button>
           </div>
@@ -589,26 +540,15 @@ type FeaturedProduct = {
 /* -------------------------------------- */
 
 function FeaturedSection() {
-  const [favorites, setFavorites] = useState<number[]>([]);
+  // ✅ THIS IS THE CORRECT PLACE
+  const { isFavorite, toggleFavorite } = useFavorites();
+  const [animId, setAnimId] = useState<number | null>(null);
 
-useEffect(() => {
-  const stored = localStorage.getItem("favorites");
-  if (stored) {
-    setFavorites(JSON.parse(stored));
-  }
-}, []);
-
-useEffect(() => {
-  localStorage.setItem("favorites", JSON.stringify(favorites));
-}, [favorites]);
-
-const toggleFavorite = (id: number) => {
-  setFavorites((prev) =>
-    prev.includes(id)
-      ? prev.filter((favId) => favId !== id)
-      : [...prev, id]
-  );
-};
+  const onHeartClick = (id: number) => {
+    toggleFavorite(id);
+    setAnimId(id);
+    window.setTimeout(() => setAnimId(null), 260);
+  };
 
   return (
     <section className="bg-white py-16">
@@ -688,17 +628,20 @@ const toggleFavorite = (id: number) => {
   </p>
 
   <button
-  onClick={() => toggleFavorite(product.id)}
+  onClick={() => onHeartClick(product.id)}
   aria-label="Toggle favourite"
   className={[
     "mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border transition",
-    favorites.includes(product.id)
+    isFavorite(product.id)
       ? "border-red-500 text-red-500 bg-red-50"
       : "border-gray-200 text-gray-400 hover:border-red-400 hover:text-red-500",
+    animId === product.id ? "animate-[favPop_240ms_ease-out]" : "",
   ].join(" ")}
+  style={animId === product.id ? ({ animationName: "favPop, favGlow" } as any) : undefined}
 >
-  {favorites.includes(product.id) ? "♥" : "♡"}
+  {isFavorite(product.id) ? "♥" : "♡"}
 </button>
+
 
 </div>
               </div>
