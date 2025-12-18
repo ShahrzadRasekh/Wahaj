@@ -186,15 +186,30 @@ export default function HomePage() {
 
 function Header() {
   const { count, hydrated } = useFavorites();
+  const [scrolled, setScrolled] = useState(false);
 
   const go = (path: string) => {
     if (typeof window !== "undefined") window.location.assign(path);
   };
 
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
-    <header className="fixed inset-x-0 top-0 z-[9999] bg-black/35 backdrop-blur-md border-b border-white/10">
+    <header
+      className={[
+        "fixed inset-x-0 top-0 z-[9999] transition-all duration-300",
+        scrolled
+          ? "bg-white/95 backdrop-blur-md border-b border-black/10 shadow-[0_10px_30px_rgba(0,0,0,0.08)]"
+          : "bg-black/35 backdrop-blur-md border-b border-white/10",
+      ].join(" ")}
+    >
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-        {/* LEFT: LOGO (hard nav for StackBlitz reliability) */}
+        {/* LEFT: LOGO */}
         <button
           type="button"
           onClick={() => go("/")}
@@ -206,19 +221,30 @@ function Header() {
               WG
             </span>
           </div>
+
           <div className="leading-tight">
-            <div className="text-sm font-semibold tracking-[0.25em] uppercase text-slate-50">
+            <div
+              className={[
+                "text-sm font-semibold tracking-[0.25em] uppercase",
+                scrolled ? "text-slate-900" : "text-slate-50",
+              ].join(" ")}
+            >
               Wahaj
-              <span className="text-yellow-300"> Gold</span>
+              <span className="text-yellow-500"> Gold</span>
             </div>
-            <div className="text-[10px] uppercase tracking-[0.24em] text-slate-200">
+            <div
+              className={[
+                "text-[10px] uppercase tracking-[0.24em]",
+                scrolled ? "text-slate-600" : "text-slate-200",
+              ].join(" ")}
+            >
               Gold &amp; Diamonds LLC
             </div>
           </div>
         </button>
 
         {/* CENTER: NAV LINKS */}
-        <nav className="hidden items-center gap-8 text-xs font-medium uppercase tracking-[0.18em] text-slate-100 lg:flex">
+        <nav className="hidden items-center gap-8 text-xs font-medium uppercase tracking-[0.18em] lg:flex">
           {[
             { label: "Bullion", href: "/bullion" },
             { label: "About", href: "/about" },
@@ -227,35 +253,56 @@ function Header() {
             <a
               key={item.label}
               href={item.href}
-              className="text-[11px] text-slate-200 hover:text-yellow-300 transition"
+              className={[
+                "text-[11px] transition",
+                scrolled
+                  ? "text-slate-700 hover:text-yellow-600"
+                  : "text-slate-200 hover:text-yellow-300",
+              ].join(" ")}
             >
               {item.label}
             </a>
           ))}
         </nav>
 
-        {/* RIGHT: GOLD PRICES + FAVORITES ICON */}
+        {/* RIGHT: PRICES + FAVORITES */}
         <div className="flex items-center gap-4 text-[11px]">
-          <div className="hidden items-center gap-4 text-slate-100 md:flex">
+          <div className="hidden items-center gap-4 md:flex">
             <div className="flex flex-col leading-tight">
-              <span className="text-[10px] uppercase tracking-[0.16em] text-yellow-200">
+              <span
+                className={[
+                  "text-[10px] uppercase tracking-[0.16em]",
+                  scrolled ? "text-slate-500" : "text-yellow-200",
+                ].join(" ")}
+              >
                 GOLD Oz
               </span>
-              <span className="font-semibold text-yellow-300">4,207.26</span>
+              <span className="font-semibold text-yellow-500">4,207.26</span>
             </div>
+
             <div className="flex flex-col leading-tight">
-              <span className="text-[10px] uppercase tracking-[0.16em] text-yellow-200">
+              <span
+                className={[
+                  "text-[10px] uppercase tracking-[0.16em]",
+                  scrolled ? "text-slate-500" : "text-yellow-200",
+                ].join(" ")}
+              >
                 GOLD g
               </span>
-              <span className="font-semibold text-yellow-300">498.74</span>
+              <span className="font-semibold text-yellow-500">498.74</span>
             </div>
           </div>
 
-          {/* Favorites icon (hard nav for StackBlitz reliability) */}
+          {/* Favorites icon */}
           <button
             type="button"
             onClick={() => go("/favorites")}
-            className="relative z-[9999] pointer-events-auto flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/30 text-slate-100 transition hover:border-red-400 hover:text-red-300"
+            className={[
+              "relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full border transition",
+              scrolled
+                ? "border-black/10 text-slate-700 hover:border-red-300 hover:text-red-500 bg-white"
+                : "border-white/30 text-slate-100 hover:border-red-400 hover:text-red-300",
+            ].join(" ")}
             aria-label="Open favourites"
           >
             <span className="text-lg leading-none">♥</span>
