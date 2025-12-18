@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { featuredProducts } from "@/lib/products";
 import { useFavorites } from "@/lib/useFavorites";
 
@@ -10,22 +9,23 @@ export default function FavoritesPage() {
   const favProducts = featuredProducts.filter((p) => favorites.includes(p.id));
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white text-slate-900">
       <div className="mx-auto max-w-6xl px-4 py-10">
         <div className="flex items-end justify-between gap-4">
           <div>
             <h1 className="text-2xl font-semibold text-gray-900">Favourites</h1>
             <p className="mt-2 text-sm text-gray-500">
-              Your saved pieces — available anytime.
+              Your saved pieces available here anytime.
             </p>
           </div>
 
-          <Link
+          {/* Use real anchor (works even when Next Link is flaky in StackBlitz) */}
+          <a
             href="/"
             className="rounded-full border border-gray-200 px-5 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-gray-700 hover:bg-gray-50"
           >
             ← Back Home
-          </Link>
+          </a>
         </div>
 
         {favProducts.length === 0 ? (
@@ -37,12 +37,13 @@ export default function FavoritesPage() {
             <p className="mt-2 text-sm text-gray-500">
               Tap the heart on any product to save it here.
             </p>
-            <Link
+
+            <a
               href="/"
               className="mt-6 inline-flex items-center justify-center rounded-full bg-red-500 px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-white hover:bg-red-600"
             >
               Browse products
-            </Link>
+            </a>
           </div>
         ) : (
           <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -59,6 +60,7 @@ export default function FavoritesPage() {
                   />
 
                   <button
+                    type="button"
                     onClick={() => toggleFavorite(product.id)}
                     aria-label="Remove favourite"
                     className={[

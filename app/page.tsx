@@ -1,11 +1,15 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { useState, useEffect } from "react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+
 import { featuredProducts } from "../lib/products";
 import { useFavorites } from "../lib/useFavorites";
 
-
+/* -------------------------------------- */
+/*               HERO SLIDES              */
+/* -------------------------------------- */
 
 const heroSlides = [
   {
@@ -14,7 +18,7 @@ const heroSlides = [
     title: "WAHAJ GOLD",
     subtitle:
       "Secure, simple and transparent buying online. Discover certified gold bars & gift collections crafted for investors and collectors.",
-    image: "/hero/hero-1.jpg", // put this in public/hero/
+    image: "/hero/hero-1.jpg",
   },
   {
     id: 2,
@@ -34,12 +38,9 @@ const heroSlides = [
   },
 ];
 
-
 /* -------------------------------------- */
-/*  Example static product/category data  */
+/*               PROMO SLIDES             */
 /* -------------------------------------- */
-
-
 
 const promoSlides = [
   {
@@ -68,7 +69,9 @@ const promoSlides = [
   },
 ];
 
-
+/* -------------------------------------- */
+/*             WORTH PRODUCTS             */
+/* -------------------------------------- */
 
 const worthProducts = [
   {
@@ -101,10 +104,15 @@ const worthProducts = [
   },
 ];
 
+/* -------------------------------------- */
+/*                LATEST NEWS             */
+/* -------------------------------------- */
+
 const latestNews = [
   {
     id: 1,
-    title: "SAM Precious Metals Produces the World’s Largest Silver Bar, Weighing 1971 kgs to Represent the UAE’s Founding Year",
+    title:
+      "SAM Precious Metals Produces the World’s Largest Silver Bar, Weighing 1971 kgs to Represent the UAE’s Founding Year",
     date: "Thu, 04 Dec 2025 00:00:00 GMT",
     source: "Market Insights",
     image: "/news/largestsilverbar.jpg",
@@ -118,19 +126,25 @@ const latestNews = [
   },
   {
     id: 3,
-    title: "SAM Precious Metals: Leading the Industry with Transparency, Responsible Sourcing & Education Programs  ",
+    title:
+      "SAM Precious Metals: Leading the Industry with Transparency, Responsible Sourcing & Education Programs",
     date: "Wed, 03 Dec 2025 00:00:00 GMT",
     source: "Global Gold Review",
     image: "/news/Magazine-ad.jpg",
   },
   {
     id: 4,
-    title: "SAM Advances Global Academic Development Through Partnership With École de Commerce de Lyon",
+    title:
+      "SAM Advances Global Academic Development Through Partnership With École de Commerce de Lyon",
     date: "Tue, 02 Dec 2025 00:00:00 GMT",
     source: "Energy Metals Report",
     image: "/news/samacademydevelopment.jpg",
   },
 ];
+
+/* -------------------------------------- */
+/*                BRAND LOGOS             */
+/* -------------------------------------- */
 
 const brandLogos = [
   "/brands/pamp.png",
@@ -138,7 +152,7 @@ const brandLogos = [
   "/brands/sam.png",
   "/brands/valcambi.png",
   "/brands/perthmint.png",
-  ];
+];
 
 /* -------------------------------------- */
 /*               HOME PAGE                */
@@ -153,10 +167,9 @@ export default function HomePage() {
         <HeroSection />
         <USPSection />
         <CategorySection />
-        {/* We’ll refine below sections later, for now they keep the darker style */}
         <FeaturedSection />
         <PromoSlideshowSection />
-        <WorthSection /> 
+        <WorthSection />
         <LatestNewsSection />
         <ContactStrip />
         <BrandMarqueeSection />
@@ -172,12 +185,22 @@ export default function HomePage() {
 /* -------------------------------------- */
 
 function Header() {
-  const { favorites } = useFavorites();
+  const { count, hydrated } = useFavorites();
+
+  const go = (path: string) => {
+    if (typeof window !== "undefined") window.location.assign(path);
+  };
+
   return (
-    <header className="fixed inset-x-0 top-0 z-40 bg-black/35 backdrop-blur-md border-b border-white/10">
+    <header className="fixed inset-x-0 top-0 z-[9999] bg-black/35 backdrop-blur-md border-b border-white/10">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-        {/* LEFT: LOGO */}
-        <Link href="/" className="flex items-center gap-2">
+        {/* LEFT: LOGO (hard nav for StackBlitz reliability) */}
+        <button
+          type="button"
+          onClick={() => go("/")}
+          className="flex items-center gap-2 text-left"
+          aria-label="Go to home"
+        >
           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-yellow-300 via-amber-500 to-yellow-700 shadow-lg shadow-yellow-500/40">
             <span className="text-xs font-black tracking-[0.15em] text-black">
               WG
@@ -192,27 +215,27 @@ function Header() {
               Gold &amp; Diamonds LLC
             </div>
           </div>
-        </Link>
+        </button>
 
         {/* CENTER: NAV LINKS */}
-<nav className="hidden items-center gap-8 text-xs font-medium uppercase tracking-[0.18em] text-slate-100 lg:flex">
-  {[
-    { label: "Bullion", href: "/bullion" },
-    { label: "About", href: "/about" },
-    { label: "Contact", href: "/contact" },
-  ].map((item) => (
-    <Link
-      key={item.label}
-      href={item.href}
-      className="text-[11px] text-slate-200 hover:text-yellow-300 transition"
-    >
-      {item.label}
-    </Link>
-  ))}
-</nav>
+        <nav className="hidden items-center gap-8 text-xs font-medium uppercase tracking-[0.18em] text-slate-100 lg:flex">
+          {[
+            { label: "Bullion", href: "/bullion" },
+            { label: "About", href: "/about" },
+            { label: "Contact", href: "/contact" },
+          ].map((item) => (
+            <a
+              key={item.label}
+              href={item.href}
+              className="text-[11px] text-slate-200 hover:text-yellow-300 transition"
+            >
+              {item.label}
+            </a>
+          ))}
+        </nav>
 
-        {/* RIGHT: GOLD PRICES + ICONS */}
-        <div className="flex items-center gap-5 text-[11px]">
+        {/* RIGHT: GOLD PRICES + FAVORITES ICON */}
+        <div className="flex items-center gap-4 text-[11px]">
           <div className="hidden items-center gap-4 text-slate-100 md:flex">
             <div className="flex flex-col leading-tight">
               <span className="text-[10px] uppercase tracking-[0.16em] text-yellow-200">
@@ -228,40 +251,27 @@ function Header() {
             </div>
           </div>
 
-          {/* Very simple placeholder icons for now */}
-          <div className="flex items-center gap-3 text-slate-100">
-             {/*<button className="text-lg hover:text-yellow-300" aria-label="Cart">
-              🛒
-            </button>
-            <button
-              className="text-lg hover:text-yellow-300"
-              aria-label="Account"
-            >
-              👤
-            </button>*/}
-            <button className="flex items-center gap-1 rounded-full border border-white/30 px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-slate-100 hover:border-yellow-300 hover:text-yellow-200">
-              <span className="text-base">☰</span>
-              <Link
-  href="/favorites"
-  className="relative flex h-9 w-9 items-center justify-center rounded-full border border-white/20 text-slate-100 transition hover:border-red-400 hover:text-red-300"
-  aria-label="Open favourites"
->
-  ♥
-  {favorites.length > 0 && (
-    <span className="absolute -right-1.5 -top-1.5 flex h-5 min-w-[20px] items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold text-white">
-      {favorites.length}
-    </span>
-  )}
-</Link>
+          {/* Favorites icon (hard nav for StackBlitz reliability) */}
+          <button
+            type="button"
+            onClick={() => go("/favorites")}
+            className="relative z-[9999] pointer-events-auto flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/30 text-slate-100 transition hover:border-red-400 hover:text-red-300"
+            aria-label="Open favourites"
+          >
+            <span className="text-lg leading-none">♥</span>
 
-              <span className="hidden sm:inline">More</span>
-            </button>
-          </div>
+            {hydrated && count > 0 && (
+              <span className="absolute -right-1.5 -top-1.5 flex h-5 min-w-[20px] items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold text-white">
+                {count}
+              </span>
+            )}
+          </button>
         </div>
       </div>
     </header>
   );
 }
+
 
 /* -------------------------------------- */
 /*               HERO SECTION             */
@@ -270,7 +280,6 @@ function Header() {
 function HeroSection() {
   const [index, setIndex] = useState(0);
 
-  // Auto-play every 5 seconds (faster)
   useEffect(() => {
     const interval = setInterval(() => {
       setIndex((prev) => (prev + 1) % heroSlides.length);
@@ -278,13 +287,12 @@ function HeroSection() {
     return () => clearInterval(interval);
   }, []);
 
-  // Use content from first slide (or any fixed slide you like)
   const heroContent = heroSlides[0];
 
   return (
     <section className="relative min-h-[520px] md:min-h-[620px] lg:min-h-[720px]">
-      {/* BACKGROUND SLIDES */}
-      <div className="absolute inset-0 overflow-hidden">
+      {/* Background slides never capture clicks */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {heroSlides.map((slide, i) => (
           <div
             key={slide.id}
@@ -298,78 +306,74 @@ function HeroSection() {
             }}
           />
         ))}
-
-        {/* Dark overlay on top of images */}
-        <div className="absolute inset-0 bg-black/60" />
+        <div className="absolute inset-0 bg-black/60 pointer-events-none" />
       </div>
 
-      {/* CONTENT – centered vertically a bit lower */}
       <div className="relative mx-auto flex max-w-6xl min-h-[520px] flex-col justify-center px-4 pb-20 pt-12 md:min-h-[620px] md:pt-16">
-  <div className="
-    max-w-xl 
-    rounded-3xl 
-    bg-black/10 
-    backdrop-blur-[1px]
-    px-6 py-6 md:px-8 md:py-8 
-    text-white 
-    ml-[-30px] md:ml-[-60px]
-    shadow-none
-    text-center
-  ">
-    {heroContent.label && (
-      <p className="text-xs font-semibold uppercase tracking-[0.28em] text-gray-200">
-        {heroContent.label}
-      </p>
-    )}
+        <div
+          className="
+            max-w-xl rounded-3xl bg-black/10 backdrop-blur-[1px]
+            px-6 py-6 md:px-8 md:py-8 text-white
+            ml-[-30px] md:ml-[-60px]
+            shadow-none text-center
+          "
+        >
+          {heroContent.label && (
+            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-gray-200">
+              {heroContent.label}
+            </p>
+          )}
 
-    <h1 className="mt-4 text-4xl font-extrabold tracking-[0.12em] md:text-5xl lg:text-6xl">
-      {heroContent.title}
-    </h1>
+          <h1 className="mt-4 text-4xl font-extrabold tracking-[0.12em] md:text-5xl lg:text-6xl">
+            {heroContent.title}
+          </h1>
 
-    <p className="mt-4 text-sm text-gray-100 md:text-base">
-      {heroContent.subtitle}
-    </p>
+          <p className="mt-4 text-sm text-gray-100 md:text-base">
+            {heroContent.subtitle}
+          </p>
 
-    <div className="mt-7 flex flex-wrap gap-4">
-      <button className="rounded-full bg-[#d12b2b] px-7 py-3 text-xs font-semibold uppercase tracking-[0.22em] text-white shadow-md hover:bg-[#b81f1f]">
-        Bullion
-      </button>
-      <button className="rounded-full border border-white/20 bg-white/10 backdrop-blur px-7 py-3 text-xs font-semibold uppercase tracking-[0.22em] text-white shadow-sm hover:bg-white/20">
-        Gift Collections
-      </button>
-    </div>
-  </div>
-</div>
- </section>
+          <div className="mt-7 flex flex-wrap gap-4">
+            <button className="rounded-full bg-[#d12b2b] px-7 py-3 text-xs font-semibold uppercase tracking-[0.22em] text-white shadow-md hover:bg-[#b81f1f]">
+              Bullion
+            </button>
+            <button className="rounded-full border border-white/20 bg-white/10 backdrop-blur px-7 py-3 text-xs font-semibold uppercase tracking-[0.22em] text-white shadow-sm hover:bg-white/20">
+              Gift Collections
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
 
 /* -------------------------------------- */
 /*      SERVICES SECTION (4 CARDS)        */
-/*         Like RAK Gold screenshot       */
 /* -------------------------------------- */
 
 function USPSection() {
   const services = [
     {
-      title: 'FAST DELIVERY',
-      desc: 'Enjoy fast delivery on all orders. Receive your stunning Gold bars & jewellery quickly and securely.',
-      icon: '🚚',
+      title: "FAST DELIVERY",
+      desc:
+        "Enjoy fast delivery on all orders. Receive your stunning Gold bars & jewellery quickly and securely.",
+      icon: "🚚",
     },
     {
-      title: 'SECURE ORDERING',
-      desc: 'Shop with confidence. Our website ensures secure ordering with advanced encryption for your safety.',
-      icon: '🔒',
+      title: "SECURE ORDERING",
+      desc:
+        "Shop with confidence. Our website ensures secure ordering with advanced encryption for your safety.",
+      icon: "🔒",
     },
     {
-      title: 'CERTIFIED PRODUCTS',
-      desc: 'Our certified products guarantee authenticity and quality, providing you with genuine gold you can trust.',
-      icon: '🏅',
+      title: "CERTIFIED PRODUCTS",
+      desc:
+        "Our certified products guarantee authenticity and quality, providing you with genuine gold you can trust.",
+      icon: "🏅",
     },
     {
-      title: '100% SATISFACTION',
-      desc: 'We guarantee 100% satisfaction. Enjoy worry-free shopping with us.',
-      icon: '✔️',
+      title: "100% SATISFACTION",
+      desc: "We guarantee 100% satisfaction. Enjoy worry-free shopping with us.",
+      icon: "✔️",
     },
   ];
 
@@ -418,7 +422,6 @@ function CategorySection() {
   return (
     <section className="bg-white pb-20 pt-6">
       <div className="mx-auto max-w-6xl px-4">
-        {/* Section header */}
         <div>
           <h2 className="text-2xl font-semibold text-gray-900 tracking-tight">
             Categories
@@ -426,7 +429,6 @@ function CategorySection() {
           <div className="mt-2 h-[2px] w-10 bg-black" />
         </div>
 
-        {/* Cards */}
         <div className="mt-10 grid gap-8 md:grid-cols-2">
           {categories.map((cat) => (
             <Link
@@ -434,37 +436,27 @@ function CategorySection() {
               href={cat.href}
               className="group rounded-3xl border border-gray-100 bg-white px-8 py-10 shadow-[0_14px_35px_rgba(15,23,42,0.08)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_22px_55px_rgba(15,23,42,0.14)]"
             >
-              {/* Image frame */}
               <div className="mx-auto flex h-48 w-full max-w-sm items-center justify-center">
-                <div className="
-                  relative 
-                  rounded-2xl 
-                  border border-yellow-300/40
-                  bg-white
-                  p-2
-                  shadow-[0_10px_30px_rgba(234,179,8,0.15)]
-                  transition-all
-                  duration-500
-                  group-hover:shadow-[0_14px_45px_rgba(234,179,8,0.25)]
-                ">
+                <div
+                  className="
+                    relative rounded-2xl border border-yellow-300/40 bg-white p-2
+                    shadow-[0_10px_30px_rgba(234,179,8,0.15)]
+                    transition-all duration-500
+                    group-hover:shadow-[0_14px_45px_rgba(234,179,8,0.25)]
+                  "
+                >
                   <img
                     src={cat.image}
                     alt={cat.title}
                     className="
-                      h-40 
-                      w-64 
-                      object-cover 
-                      rounded-xl
-                      transition-transform 
-                      duration-500 
-                      group-hover:scale-[1.03]
+                      h-40 w-64 object-cover rounded-xl
+                      transition-transform duration-500 group-hover:scale-[1.03]
                     "
                     loading="lazy"
                   />
                 </div>
               </div>
 
-              {/* Text */}
               <div className="mt-8 text-center">
                 <h3 className="text-sm font-semibold uppercase tracking-[0.22em] text-gray-900">
                   {cat.title}
@@ -473,7 +465,6 @@ function CategorySection() {
                   {cat.subtitle}
                 </p>
 
-                {/* CTA */}
                 <div className="mt-6 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-yellow-700 transition group-hover:text-yellow-800">
                   Explore
                   <span className="transition-transform group-hover:translate-x-1">
@@ -488,6 +479,11 @@ function CategorySection() {
     </section>
   );
 }
+
+/* -------------------------------------- */
+/*                BADGE                   */
+/* -------------------------------------- */
+
 function LuxuryBadge({
   label,
   variant = "gold",
@@ -506,7 +502,7 @@ function LuxuryBadge({
     <span
       className={[
         "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5",
-"text-[9px] font-semibold uppercase tracking-[0.20em]",
+        "text-[9px] font-semibold uppercase tracking-[0.20em]",
         "backdrop-blur-sm",
         styles,
       ].join(" ")}
@@ -517,43 +513,16 @@ function LuxuryBadge({
   );
 }
 
-type BadgeVariant = "gold" | "ruby" | "black";
-
-type ProductBadge =
-  | string
-  | {
-      label: string;
-      variant?: BadgeVariant;
-    };
-
-type FeaturedProduct = {
-  id: number;
-  name: string;
-  price: string;
-  image: string;
-  description?: string;
-  badge?: ProductBadge;
-};
-
 /* -------------------------------------- */
 /*             FEATURED PRODUCTS          */
 /* -------------------------------------- */
 
 function FeaturedSection() {
-  // ✅ THIS IS THE CORRECT PLACE
   const { isFavorite, toggleFavorite } = useFavorites();
-  const [animId, setAnimId] = useState<number | null>(null);
-
-  const onHeartClick = (id: number) => {
-    toggleFavorite(id);
-    setAnimId(id);
-    window.setTimeout(() => setAnimId(null), 260);
-  };
 
   return (
     <section className="bg-white py-16">
       <div className="mx-auto max-w-6xl px-4">
-        {/* Title + arrows */}
         <div className="flex items-center justify-between gap-4">
           <h2 className="text-2xl font-semibold text-gray-900">
             Featured Collection
@@ -569,44 +538,37 @@ function FeaturedSection() {
           </div>
         </div>
 
-        {/* Product grid */}
         <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {featuredProducts.map((product) => (
             <article
               key={product.id}
               className="flex flex-col rounded-2xl bg-white shadow-[0_12px_25px_rgba(15,23,42,0.06)] border border-gray-100 overflow-hidden"
             >
-              {/* Top image area */}
               <div className="relative bg-[#f6f9fc] flex items-center justify-center px-6 pt-6 pb-2">
-                {product.image ? (
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="h-40 w-auto object-contain"
-                  />
-                ) : (
-                  <div className="h-40 w-full rounded-xl bg-gradient-to-br from-yellow-100 via-amber-300 to-yellow-700" />
-                )}
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="h-40 w-auto object-contain"
+                />
 
-{product.badge && (
-  <div className="absolute right-4 top-4 z-10">
-    <LuxuryBadge
-      label={
-        typeof product.badge === "string"
-          ? product.badge
-          : product.badge.label
-      }
-      variant={
-        typeof product.badge === "string"
-          ? "gold"
-          : (product.badge.variant ?? "gold")
-      }
-    />
-  </div>
-)}
+                {product.badge && (
+                  <div className="absolute right-4 top-4 z-10">
+                    <LuxuryBadge
+                      label={
+                        typeof product.badge === "string"
+                          ? product.badge
+                          : product.badge.label
+                      }
+                      variant={
+                        typeof product.badge === "string"
+                          ? "gold"
+                          : (product.badge.variant ?? "gold")
+                      }
+                    />
+                  </div>
+                )}
               </div>
 
-              {/* Product name + price */}
               <div className="flex flex-1 flex-col px-5 pb-4 pt-3">
                 <h3 className="text-sm font-semibold text-gray-900 leading-snug line-clamp-2">
                   {product.name}
@@ -615,35 +577,36 @@ function FeaturedSection() {
                 <div className="mt-2 text-xs text-gray-500">
                   <span className="text-[11px] uppercase tracking-[0.18em]">
                     AED
-                  </span>{' '}
+                  </span>{" "}
                   <span className="text-base font-semibold text-gray-900">
                     {product.price}
                   </span>
                 </div>
 
-                 {/* description + favourite heart */}
-<div className="mt-3 flex items-start justify-between gap-3">
-  <p className="text-[12px] leading-snug text-gray-500 line-clamp-2">
-    {product.description}
-  </p>
+                <div className="mt-3 flex items-start justify-between gap-3">
+                  <p className="text-[12px] leading-snug text-gray-500 line-clamp-2">
+                    {product.description}
+                  </p>
 
-  <button
-  onClick={() => onHeartClick(product.id)}
-  aria-label="Toggle favourite"
-  className={[
-    "mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border transition",
-    isFavorite(product.id)
-      ? "border-red-500 text-red-500 bg-red-50"
-      : "border-gray-200 text-gray-400 hover:border-red-400 hover:text-red-500",
-    animId === product.id ? "animate-[favPop_240ms_ease-out]" : "",
-  ].join(" ")}
-  style={animId === product.id ? ({ animationName: "favPop, favGlow" } as any) : undefined}
->
-  {isFavorite(product.id) ? "♥" : "♡"}
-</button>
-
-
-</div>
+                  <button
+                    type="button"
+                    onClick={() => toggleFavorite(product.id)}
+                    aria-label="Toggle favourite"
+                    className={[
+                      "mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border transition",
+                      isFavorite(product.id)
+                        ? "border-red-500 text-red-500 bg-red-50 animate-[favPop_240ms_ease-out]"
+                        : "border-gray-200 text-gray-400 hover:border-red-400 hover:text-red-500",
+                    ].join(" ")}
+                    style={
+                      isFavorite(product.id)
+                        ? ({ animationName: "favPop, favGlow" } as any)
+                        : undefined
+                    }
+                  >
+                    {isFavorite(product.id) ? "♥" : "♡"}
+                  </button>
+                </div>
               </div>
             </article>
           ))}
@@ -655,14 +618,11 @@ function FeaturedSection() {
 
 /* -------------------------------------- */
 /*          PROMO SLIDESHOW SECTION       */
-/*   Full-width banner carousel under     */
-/*          Featured Collection           */
 /* -------------------------------------- */
 
 function PromoSlideshowSection() {
   const [current, setCurrent] = useState(0);
 
-  // Auto-play every 7 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrent((prev) => (prev + 1) % promoSlides.length);
@@ -680,7 +640,6 @@ function PromoSlideshowSection() {
     <section className="bg-white pb-16">
       <div className="mx-auto max-w-6xl px-4">
         <div className="relative overflow-hidden rounded-3xl bg-gray-900 shadow-[0_18px_40px_rgba(15,23,42,0.25)]">
-          {/* Background image */}
           <div
             className="absolute inset-0 bg-cover bg-center transition-opacity duration-500"
             style={{
@@ -689,11 +648,8 @@ function PromoSlideshowSection() {
                 : "linear-gradient(135deg,#0f172a,#1f2937)",
             }}
           />
-
-          {/* Dark overlay */}
           <div className="absolute inset-0 bg-black/60" />
 
-          {/* Content */}
           <div className="relative flex flex-col gap-6 px-6 py-10 md:flex-row md:items-center md:px-10 md:py-12">
             <div className="md:w-2/3">
               <h2 className="text-2xl font-semibold text-white md:text-3xl">
@@ -709,7 +665,6 @@ function PromoSlideshowSection() {
               </button>
             </div>
 
-            {/* Small side label / counter */}
             <div className="md:ml-auto md:w-1/3 flex md:justify-end">
               <div className="rounded-2xl bg-black/40 px-4 py-3 text-xs text-slate-100 backdrop-blur">
                 <div className="font-semibold uppercase tracking-[0.18em] text-yellow-200">
@@ -722,9 +677,7 @@ function PromoSlideshowSection() {
             </div>
           </div>
 
-          {/* Controls */}
           <div className="absolute inset-x-0 bottom-4 flex items-center justify-between px-6 md:px-10">
-            {/* Dots */}
             <div className="flex gap-2">
               {promoSlides.map((s, index) => (
                 <button
@@ -740,7 +693,6 @@ function PromoSlideshowSection() {
               ))}
             </div>
 
-            {/* Arrows */}
             <div className="flex gap-2">
               <button
                 onClick={() => goTo(current - 1)}
@@ -772,7 +724,6 @@ function WorthSection() {
   return (
     <section className="bg-white py-16 border-t border-gray-100">
       <div className="mx-auto max-w-6xl px-4">
-        {/* Title + arrows */}
         <div className="flex items-center justify-between gap-4">
           <h2 className="text-2xl font-semibold text-gray-900">
             Worth Your While
@@ -788,27 +739,20 @@ function WorthSection() {
           </div>
         </div>
 
-        {/* Product row (4 cards) */}
         <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {worthProducts.map((product) => (
             <article
               key={product.id}
               className="flex flex-col rounded-2xl bg-[#f6f9fc] shadow-[0_12px_25px_rgba(15,23,42,0.06)] border border-gray-100 overflow-hidden"
             >
-              {/* Image */}
               <div className="flex items-center justify-center bg-[#f6f9fc] px-6 pt-6 pb-2">
-                {product.image ? (
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="h-40 w-auto object-contain"
-                  />
-                ) : (
-                  <div className="h-40 w-full rounded-xl bg-gradient-to-br from-yellow-100 via-amber-300 to-yellow-700" />
-                )}
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="h-40 w-auto object-contain"
+                />
               </div>
 
-              {/* Text */}
               <div className="flex flex-1 flex-col px-5 pb-5 pt-4">
                 <h3 className="text-sm font-semibold text-gray-900 leading-snug line-clamp-2">
                   {product.name}
@@ -837,14 +781,12 @@ function WorthSection() {
 
 /* -------------------------------------- */
 /*            LATEST NEWS SECTION         */
-/*     2 big cards + arrows, responsive   */
 /* -------------------------------------- */
 
 function LatestNewsSection() {
   const [index, setIndex] = useState(0);
 
   const visible = latestNews.slice(index, index + 2);
-  // if near the end and less than 2 left, wrap around
   if (visible.length < 2) {
     visible.push(...latestNews.slice(0, 2 - visible.length));
   }
@@ -852,20 +794,20 @@ function LatestNewsSection() {
   const next = () => setIndex((prev) => (prev + 1) % latestNews.length);
   const prev = () =>
     setIndex((prev) =>
-      prev - 1 < 0 ? (latestNews.length + prev - 1) % latestNews.length : prev - 1
+      prev - 1 < 0
+        ? (latestNews.length + prev - 1) % latestNews.length
+        : prev - 1
     );
 
   return (
     <section className="bg-white pb-16 pt-6">
       <div className="mx-auto flex max-w-6xl flex-col gap-8 px-4 md:flex-row md:items-start">
-        {/* LEFT: NEWS CARDS */}
         <div className="grid flex-1 gap-6 sm:grid-cols-2">
           {visible.map((item) => (
             <article
               key={item.id}
               className="flex flex-col overflow-hidden rounded-3xl bg-white shadow-[0_14px_30px_rgba(15,23,42,0.08)] border border-gray-100"
             >
-              {/* Image */}
               <div className="relative h-56 bg-gray-200">
                 {item.image ? (
                   <img
@@ -880,7 +822,6 @@ function LatestNewsSection() {
                 </span>
               </div>
 
-              {/* Text */}
               <div className="flex flex-1 flex-col px-4 pb-4 pt-3">
                 <p className="text-[11px] font-semibold text-gray-600">
                   {item.date}
@@ -900,12 +841,9 @@ function LatestNewsSection() {
           ))}
         </div>
 
-        {/* RIGHT: TITLE + ARROWS */}
         <div className="flex w-full flex-col items-start justify-between md:w-64 md:items-end">
           <div className="md:text-right">
-            <h2 className="text-2xl font-semibold text-gray-900">
-              Latest News
-            </h2>
+            <h2 className="text-2xl font-semibold text-gray-900">Latest News</h2>
             <p className="mt-2 text-sm text-gray-500 max-w-xs">
               Curated market headlines to keep your decisions informed.
             </p>
@@ -935,34 +873,29 @@ function LatestNewsSection() {
 
 /* -------------------------------------- */
 /*               BRAND MARQUEE            */
-/*   Smooth infinite scrolling logos      */
 /* -------------------------------------- */
 
 function BrandMarqueeSection() {
   return (
     <section className="bg-white py-10">
       <div className="relative overflow-hidden">
-        {/* Left + Right gradient fade */}
         <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-white to-transparent" />
         <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-white to-transparent" />
-        {/* Infinite scroll container */}
+
         <div className="flex w-max animate-marquee gap-12 px-4">
           {brandLogos.concat(brandLogos).map((logo, i) => (
             <img
-            key={i}
-            src={logo}
-            className="h-12 w-auto opacity-50 transition duration-300 hover:opacity-100 hover:brightness-125 hover:contrast-125 hover:saturate-[1.8]"
-            alt="brand logo"
-          />
-                       
-            ))}
+              key={i}
+              src={logo}
+              className="h-12 w-auto opacity-50 transition duration-300 hover:opacity-100 hover:brightness-125 hover:contrast-125 hover:saturate-[1.8]"
+              alt="brand logo"
+            />
+          ))}
         </div>
       </div>
-      </section>
+    </section>
   );
 }
-
-
 
 /* -------------------------------------- */
 /*           CONTACT STRIP CTA            */
@@ -1046,6 +979,7 @@ function Footer() {
             </ul>
           </div>
         </div>
+
         <p className="mt-8 text-[10px] text-slate-500">
           © {new Date().getFullYear()} Wahaj Gold. All rights reserved.
         </p>
