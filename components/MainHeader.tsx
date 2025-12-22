@@ -10,9 +10,9 @@ export default function MainHeader() {
   const pathname = usePathname();
   const router = useRouter();
   const isHome = pathname === "/";
-
   const { count, hydrated } = useFavorites();
 
+  // On home, switch to "light mode" after you scroll past the hero
   const [pastHero, setPastHero] = useState(false);
 
   useEffect(() => {
@@ -22,10 +22,18 @@ export default function MainHeader() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Light mode:
+  // - Home after scroll: dark text
+  // - Inner pages always: dark text
+  // Dark mode:
+  // - Home at top: light text (over hero)
   const lightMode = !isHome || pastHero;
 
+  // Header surface:
+  // - Home BEFORE scroll: transparent
+  // - Home AFTER scroll + inner pages: glassy
   const headerSurface = useMemo(() => {
-    if (!lightMode) {
+    if (isHome && !pastHero) {
       return [
         "bg-transparent",
         "border-white/15",
@@ -38,7 +46,7 @@ export default function MainHeader() {
       "border-black/10",
       "shadow-[0_8px_24px_rgba(15,23,42,0.08)]",
     ].join(" ");
-  }, [lightMode]);
+  }, [isHome, pastHero]);
 
   const linkClass = lightMode
     ? "text-[11px] text-slate-700 hover:text-yellow-700 transition"
@@ -64,14 +72,26 @@ export default function MainHeader() {
         {/* LEFT: LOGO */}
         <Link href="/" className="flex items-center gap-2">
           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-yellow-300 via-amber-500 to-yellow-700 shadow-lg shadow-yellow-500/40">
-            <span className="text-xs font-black tracking-[0.15em] text-black">WG</span>
+            <span className="text-xs font-black tracking-[0.15em] text-black">
+              WG
+            </span>
           </div>
 
           <div className="leading-tight">
-            <div className={["text-sm font-semibold tracking-[0.25em] uppercase", brandTop].join(" ")}>
+            <div
+              className={[
+                "text-sm font-semibold tracking-[0.25em] uppercase",
+                brandTop,
+              ].join(" ")}
+            >
               Wahaj <span className="text-yellow-500">Gold</span>
             </div>
-            <div className={["text-[10px] uppercase tracking-[0.24em]", brandBottom].join(" ")}>
+            <div
+              className={[
+                "text-[10px] uppercase tracking-[0.24em]",
+                brandBottom,
+              ].join(" ")}
+            >
               Gold &amp; Diamonds LLC
             </div>
           </div>
@@ -90,32 +110,30 @@ export default function MainHeader() {
           ))}
         </nav>
 
-        {/* RIGHT: PRICES + FAVORITES */}
-<div className="flex items-center gap-4 text-[11px]">
-  {/* ✅ LIVE PRICES — HOMEPAGE ONLY */}
-  {isHome && <LivePriceHeader />}
+        {/* RIGHT: LIVE PRICES (HOME ONLY) + FAVORITES */}
+        <div className="flex items-center gap-4 text-[11px]">
+          {isHome && <LivePriceHeader lightMode={lightMode} />}
 
-  {/* Favorites icon */}
-  <button
-    type="button"
-    onClick={() => router.push("/favorites")}
-    className={[
-      "relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full border transition",
-      favBorder,
-      favText,
-      favHover,
-    ].join(" ")}
-    aria-label="Open favourites"
-  >
-    <span className="text-lg leading-none">♥</span>
+          <button
+            type="button"
+            onClick={() => router.push("/favorites")}
+            className={[
+              "relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full border transition",
+              favBorder,
+              favText,
+              favHover,
+            ].join(" ")}
+            aria-label="Open favourites"
+          >
+            <span className="text-lg leading-none">♥</span>
 
-    {hydrated && count > 0 && (
-      <span className="absolute -right-1.5 -top-1.5 flex h-5 min-w-[20px] items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold text-white">
-        {count}
-      </span>
-    )}
-  </button>
-</div>
+            {hydrated && count > 0 && (
+              <span className="absolute -right-1.5 -top-1.5 flex h-5 min-w-[20px] items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold text-white">
+                {count}
+              </span>
+            )}
+          </button>
+        </div>
       </div>
     </header>
   );
