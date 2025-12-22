@@ -3,63 +3,46 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 const KEY = "favorites";
+const EVT = "favorites_updated";
 
 function safeRead(): number[] {
   if (typeof window === "undefined") return [];
   try {
     const raw = localStorage.getItem(KEY);
     const parsed = raw ? (JSON.parse(raw) as unknown) : [];
-    return Array.isArray(parsed)
-      ? (parsed.filter((x) => typeof x === "number") as number[])
-      : [];
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter((x) => typeof x === "number");
   } catch {
     return [];
   }
 }
 
-function safeWrite(value: number[]) {
-  try {
-    localStorage.setItem(KEY, JSON.stringify(value));
-  } catch {
-    // ignore (storage blocked/private mode)
-  }
+function safeWrite(next: number[]) {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(KEY, JSON.stringify(next));
+  window.dispatchEvent(new Event(EVT));
 }
 
 export function useFavorites() {
-  // IMPORTANT: start empty so server HTML === first client HTML (prevents hydration errors)
   const [favorites, setFavorites] = useState<number[]>([]);
   const [hydrated, setHydrated] = useState(false);
 
-  // After hydration, load from localStorage (client only)
   useEffect(() => {
     setFavorites(safeRead());
     setHydrated(true);
-  }, []);
-
-  // Persist changes AFTER we have hydrated (prevents overwriting storage with [])
-  useEffect(() => {
-    if (!hydrated) return;
-    safeWrite(favorites);
-    window.dispatchEvent(new Event("favorites_updated"));
-  }, [favorites, hydrated]);
-
-  // Sync from other tabs (storage) and same tab (custom event)
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const sync = () => setFavorites(safeRead());
 
     const onStorage = (e: StorageEvent) => {
-      if (e.key === KEY) sync();
+      if (e.key === KEY) setFavorites(safeRead());
     };
-    const onCustom = () => sync();
+
+    const onCustom = () => setFavorites(safeRead());
 
     window.addEventListener("storage", onStorage);
-    window.addEventListener("favorites_updated", onCustom);
+    window.addEventListener(EVT, onCustom);
 
     return () => {
       window.removeEventListener("storage", onStorage);
-      window.removeEventListener("favorites_updated", onCustom);
+      window.removeEventListener(EVT, onCustom);
     };
   }, []);
 
@@ -69,12 +52,14 @@ export function useFavorites() {
   );
 
   const toggleFavorite = useCallback((id: number) => {
-    setFavorites((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
-    );
+    setFavorites((prev) => {
+      const next = prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id];
+      safeWrite(next);
+      return next;
+    });
   }, []);
 
   const count = useMemo(() => favorites.length, [favorites]);
 
-  return { favorites, count, hydrated, toggleFavorite, isFavorite };
+  return { favorites, toggleFavorite, isFavorite, count, hydrated };
 }
