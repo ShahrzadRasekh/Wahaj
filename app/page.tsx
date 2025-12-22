@@ -160,6 +160,7 @@ const brandLogos = [
 
 export default function HomePage() {
   return (
+    <div className="-mt-[72px]">
     <div className="min-h-screen flex flex-col bg-white">
       <Header />
 
@@ -173,9 +174,11 @@ export default function HomePage() {
         <LatestNewsSection />
         <ContactStrip />
         <BrandMarqueeSection />
+        
       </main>
 
       <Footer />
+    </div>
     </div>
   );
 }
@@ -356,7 +359,8 @@ function HeroSection() {
         <div className="absolute inset-0 bg-black/60 pointer-events-none" />
       </div>
 
-      <div className="relative mx-auto flex max-w-6xl min-h-[520px] flex-col justify-center px-4 pb-20 pt-12 md:min-h-[620px] md:pt-16">
+      <div className="relative mx-auto flex max-w-6xl min-h-[520px] flex-col justify-center px-4 pb-20 pt-[96px] md:min-h-[620px] md:pt-[110px]">
+
         <div
           className="
             max-w-xl rounded-3xl bg-black/10 backdrop-blur-[1px]
