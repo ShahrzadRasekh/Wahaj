@@ -57,7 +57,7 @@ export default function ContactPage() {
             {/* SECONDARY BANNER 2 (Image – optional) */}
             <div className="relative hidden h-52 overflow-hidden rounded-[32px] shadow-[0_12px_30px_rgba(15,23,42,0.16)] md:block">
               <img
-                src="/contact/banner-3.jpg"
+                src="/contact/banner-3 (2).jpg"
                 alt="Visit or contact Wahaj Gold"
                 className="h-full w-full object-cover"
               />
