@@ -110,31 +110,32 @@ export default function MainHeader() {
           ))}
         </nav>
 
-        {/* RIGHT: LIVE PRICES (HOME ONLY) + FAVORITES */}
-        <div className="flex items-center gap-4 text-[11px]">
-          {isHome && <LivePriceHeader lightMode={lightMode} />}
+        {/* RIGHT: PRICES (HOME ONLY) + FAVORITES */}
+<div className="flex items-center gap-4 text-[11px]">
+{isHome && <LivePriceHeader lightMode={lightMode} fetchEveryMs={10_000} tickEveryMs={1_000} />}
 
-          <button
-            type="button"
-            onClick={() => router.push("/favorites")}
-            className={[
-              "relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full border transition",
-              favBorder,
-              favText,
-              favHover,
-            ].join(" ")}
-            aria-label="Open favourites"
-          >
-            <span className="text-lg leading-none">♥</span>
+  {/* Favorites icon */}
+  <button
+    type="button"
+    onClick={() => router.push("/favorites")}
+    className={[
+      "relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full border transition",
+      favBorder,
+      favText,
+      favHover,
+    ].join(" ")}
+    aria-label="Open favourites"
+  >
+    <span className="text-lg leading-none">♥</span>
 
-            {hydrated && count > 0 && (
-              <span className="absolute -right-1.5 -top-1.5 flex h-5 min-w-[20px] items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold text-white">
-                {count}
-              </span>
-            )}
-          </button>
-        </div>
-      </div>
+    {hydrated && count > 0 && (
+      <span className="absolute -right-1.5 -top-1.5 flex h-5 min-w-[20px] items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold text-white">
+        {count}
+      </span>
+    )}
+  </button>
+</div>
+     </div>
     </header>
   );
 }
