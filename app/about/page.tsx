@@ -21,45 +21,62 @@ export default function AboutPage() {
         </nav>
 
         <section className="grid gap-10 md:grid-cols-[280px,1fr]">
-          {/* LEFT COLUMN – PROMO BANNERS (simple boxes you can later replace with real images) */}
-          <div className="space-y-6">
-            {/* MAIN BANNER */}
-            <div className="flex h-[360px] items-center justify-center rounded-3xl bg-[#e11d48] px-6 text-center text-sm font-semibold uppercase tracking-[0.18em] text-white shadow-[0_18px_40px_rgba(220,38,38,0.45)]">
-              <div>
-                <p className="text-[11px]">Shop Wahaj Gold Online</p>
-                <p className="mt-3 text-xs font-normal tracking-normal">
-                  Replace this block with your own vertical banner image later
-                  (for example: /about/banner-main.jpg).
+          {/* LEFT COLUMN – MEDIA BANNERS */}
+          <aside className="space-y-6">
+            {/* MAIN BANNER (Image) */}
+            <div className="relative h-[360px] overflow-hidden rounded-3xl shadow-[0_18px_40px_rgba(15,23,42,0.18)]">
+              <img
+                src="/about/banner-main.jpg"
+                alt="Wahaj Gold banner"
+                className="h-full w-full object-cover"
+              />
+              <div className="absolute inset-0 bg-black/20" />
+              <div className="absolute bottom-6 left-6 right-6">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white">
+                  Shop Wahaj Gold Online
+                </p>
+                <p className="mt-2 text-xs text-white/90">
+                  Premium bullion and curated collections.
                 </p>
               </div>
             </div>
 
-            {/* SECONDARY BANNER 1 */}
-            <div className="flex h-[200px] items-center justify-center rounded-3xl bg-[#111827] px-6 text-center text-xs text-slate-100 shadow-[0_12px_30px_rgba(15,23,42,0.6)]">
-              <div>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-300">
+            {/* SECONDARY BANNER 1 (Image) */}
+            <div className="relative h-[200px] overflow-hidden rounded-3xl shadow-[0_12px_30px_rgba(15,23,42,0.16)]">
+              <img
+                src="/about/banner-2.jpg"
+                alt="Gold made simple"
+                className="h-full w-full object-cover"
+              />
+              <div className="absolute inset-0 bg-black/25" />
+              <div className="absolute bottom-5 left-5 right-5">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white">
                   Gold Made Simple
                 </p>
-                <p className="mt-3 leading-relaxed text-slate-200">
-                  Show a simple visual about buying certified bars with a few
-                  taps.
+                <p className="mt-1 text-xs text-white/90">
+                  Certified bars delivered securely.
                 </p>
               </div>
             </div>
 
-            {/* SECONDARY BANNER 2 – optional extra */}
-            <div className="hidden h-[200px] items-center justify-center rounded-3xl bg-gray-900/90 px-6 text-center text-xs text-slate-100 shadow-[0_12px_30px_rgba(15,23,42,0.6)] md:flex">
-              <div>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-300">
+            {/* SECONDARY BANNER 2 (Image – optional) */}
+            <div className="relative hidden h-[200px] overflow-hidden rounded-3xl shadow-[0_12px_30px_rgba(15,23,42,0.16)] md:block">
+              <img
+                src="/about/banner-3.jpg"
+                alt="Certified brands"
+                className="h-full w-full object-cover"
+              />
+              <div className="absolute inset-0 bg-black/25" />
+              <div className="absolute bottom-5 left-5 right-5">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white">
                   Certified Brands
                 </p>
-                <p className="mt-3 leading-relaxed text-slate-200">
-                  You can later replace this with logos of PAMP, Valcambi,
-                  SAM, etc.
+                <p className="mt-1 text-xs text-white/90">
+                  PAMP, Valcambi, and more.
                 </p>
               </div>
             </div>
-          </div>
+          </aside>
 
           {/* RIGHT COLUMN – TEXT CONTENT */}
           <div>
