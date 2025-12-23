@@ -1,58 +1,80 @@
 // app/contact/page.tsx
-import React from "react";
-// If you don't use path aliases, change this to "../../components/ContactForm"
+import Link from "next/link";
 import ContactForm from "@/components/ContactForm";
 
 export default function ContactPage() {
   return (
-    <main className="min-h-screen bg-gray-100 text-slate-900">
-      <div className="mx-auto max-w-6xl px-4 py-12">
+    <main className="min-h-screen bg-[#f5f5f7] text-slate-900">
+      <div className="mx-auto max-w-6xl px-4 pb-20 pt-20">
         {/* Breadcrumb */}
-        <div className="mb-4 text-xs text-slate-500">
-          <span className="cursor-pointer hover:text-slate-700">Home</span>
+        <nav className="mb-6 text-xs text-slate-500">
+          <Link href="/" className="hover:text-slate-700">
+            Home
+          </Link>
           <span className="mx-1">›</span>
           <span className="font-medium text-slate-700">Contact</span>
-        </div>
+        </nav>
 
         <div className="grid gap-10 lg:grid-cols-[280px,minmax(0,1fr)]">
-          {/* LEFT COLUMN – vertical cards / banners */}
+          {/* LEFT COLUMN – MEDIA BANNERS */}
           <aside className="space-y-6">
-            {/* Main pink banner */}
-            <div className="flex h-80 items-center justify-center rounded-[32px] bg-[#f51f4d] px-8 text-center text-xs font-semibold uppercase tracking-[0.22em] text-white shadow-xl shadow-[#f51f4d]/40">
-              <div className="space-y-4">
-                <p className="text-[10px] tracking-[0.28em]">
+            {/* MAIN BANNER (Image) */}
+            <div className="relative h-80 overflow-hidden rounded-[32px] shadow-[0_18px_40px_rgba(15,23,42,0.18)]">
+              <img
+                src="/contact/banner-main%20(2).jpg"
+                alt="Discover Wahaj Gold Collections"
+                className="h-full w-full object-cover"
+              />
+              <div className="absolute inset-0 bg-black/25" />
+              <div className="absolute bottom-6 left-6 right-6">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-white">
                   Discover Wahaj Gold Collections
                 </p>
-                <p className="text-[11px] leading-relaxed normal-case tracking-normal">
-                  Replace this block later with your own vertical contact banner
-                  image (for example: <br />
-                  <span className="font-mono text-[10px]">
-                    /contact/banner-main.jpg
-                  </span>
-                  ).
+                <p className="mt-2 text-xs text-white/90">
+                  Premium bullion, curated gifts, and trusted service.
                 </p>
               </div>
             </div>
 
-            {/* Dark navy promo card */}
-            <div className="flex h-52 items-center justify-center rounded-[32px] bg-[#050b18] px-8 text-center text-[11px] tracking-[0.18em] text-slate-100 shadow-2xl shadow-black/40">
-              <div>
-                <div className="mb-3 text-[10px] font-semibold uppercase tracking-[0.3em] text-slate-300">
+            {/* SECONDARY BANNER 1 (Image) */}
+            <div className="relative h-52 overflow-hidden rounded-[32px] shadow-[0_12px_30px_rgba(15,23,42,0.16)]">
+              <img
+                src="/contact/banner-2.jpg"
+                alt="Buy gold with confidence"
+                className="h-full w-full object-cover"
+              />
+              <div className="absolute inset-0 bg-black/35" />
+              <div className="absolute bottom-5 left-5 right-5">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-white">
                   Buy Gold With Confidence
-                </div>
-                <p className="text-[11px] leading-relaxed tracking-normal text-slate-300 normal-case">
-                  Use this space later for a simple promo message or highlight.
+                </p>
+                <p className="mt-2 text-[11px] leading-relaxed text-white/90">
+                  Secure ordering and reliable support when you need it.
                 </p>
               </div>
             </div>
 
-            {/* Plain dark card placeholder */}
-            <div className="h-52 rounded-[32px] bg-[#16181c] shadow-2xl shadow-black/40" />
+            {/* SECONDARY BANNER 2 (Image – optional) */}
+            <div className="relative hidden h-52 overflow-hidden rounded-[32px] shadow-[0_12px_30px_rgba(15,23,42,0.16)] md:block">
+              <img
+                src="/contact/banner-3.jpg"
+                alt="Visit or contact Wahaj Gold"
+                className="h-full w-full object-cover"
+              />
+              <div className="absolute inset-0 bg-black/35" />
+              <div className="absolute bottom-5 left-5 right-5">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-white">
+                  Here To Help
+                </p>
+                <p className="mt-2 text-[11px] leading-relaxed text-white/90">
+                  Contact us for availability, pricing, and delivery details.
+                </p>
+              </div>
+            </div>
           </aside>
 
-          {/* RIGHT COLUMN – content + form */}
+          {/* RIGHT COLUMN – CONTENT + FORM */}
           <section className="space-y-10">
-            {/* Title */}
             <div>
               <h1 className="text-4xl font-bold tracking-tight text-slate-900">
                 Contact
@@ -61,7 +83,6 @@ export default function ContactPage() {
 
             {/* Address + contact details */}
             <div className="grid gap-10 md:grid-cols-2">
-              {/* Address */}
               <div className="space-y-2">
                 <h2 className="text-base font-semibold text-slate-900">
                   Address
@@ -77,7 +98,6 @@ export default function ContactPage() {
                 </div>
               </div>
 
-              {/* Contact details */}
               <div className="space-y-2">
                 <h2 className="text-base font-semibold text-slate-900">
                   Contact Details
@@ -117,12 +137,11 @@ export default function ContactPage() {
               </div>
             </div>
 
-            {/* Get In Touch form (client-side, uses /api/contact) */}
+            {/* Get In Touch */}
             <div className="space-y-6">
               <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
                 Get In Touch
               </h2>
-
               <ContactForm />
             </div>
           </section>
