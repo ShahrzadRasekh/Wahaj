@@ -9,7 +9,26 @@ type NavItem = { label: string; href: string };
 type LivePrices = { goldOz: string; goldG: string };
 
 export default function MainHeader() {
-  const pathname = usePathname() || "/";
+  const pathnameHook = usePathname() || "/";
+
+  // Source-of-truth pathname (fixes redeploy/hydration inconsistencies)
+  const [mounted, setMounted] = useState(false);
+  const [realPath, setRealPath] = useState<string>(pathnameHook);
+
+  useEffect(() => {
+    setMounted(true);
+    setRealPath(window.location.pathname || "/");
+  }, []);
+
+  // Update realPath on client navigation too
+  useEffect(() => {
+    if (!mounted) return;
+    setRealPath(window.location.pathname || pathnameHook || "/");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathnameHook, mounted]);
+
+  const pathname = mounted ? realPath : pathnameHook;
+
   const isArabic = pathname === "/ar" || pathname.startsWith("/ar/");
   const isHome = pathname === "/" || pathname === "/ar";
 
@@ -35,8 +54,13 @@ export default function MainHeader() {
 
   const navItems = isArabic ? navItemsAr : navItemsEn;
 
-  const { count, hydrated } = useFavorites();
+  // Force correct HTML direction + language (prevents RTL “dropping” after deploy)
+  useEffect(() => {
+    document.documentElement.setAttribute("dir", isArabic ? "rtl" : "ltr");
+    document.documentElement.setAttribute("lang", isArabic ? "ar" : "en");
+  }, [isArabic]);
 
+  const { count, hydrated } = useFavorites();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -62,13 +86,12 @@ export default function MainHeader() {
         if (!res.ok) return;
         const data = (await res.json()) as Partial<LivePrices>;
         if (!alive) return;
-
         setPrices({
           goldOz: data.goldOz ?? "--",
           goldG: data.goldG ?? "--",
         });
       } catch {
-        // keep placeholders
+        // keep "--"
       }
     }
 
@@ -86,7 +109,6 @@ export default function MainHeader() {
     return pathname.startsWith(href);
   };
 
-  // Keep same path while switching /ar prefix
   const switchTo = (toArabic: boolean) => {
     const current = pathname || "/";
     if (toArabic) {
@@ -102,7 +124,7 @@ export default function MainHeader() {
 
   const switchHref = isArabic ? switchTo(false) : switchTo(true);
 
-  // IMPORTANT: heroMode must work for BOTH "/" and "/ar"
+  // Transparent only on home (EN + AR), before scroll
   const heroMode = isHome && !scrolled;
 
   const headerClass = heroMode
@@ -117,7 +139,6 @@ export default function MainHeader() {
     : "text-slate-700 hover:text-yellow-600";
 
   const navActive = heroMode ? "text-yellow-300" : "text-yellow-600";
-
   const priceLabel = heroMode ? "text-yellow-200" : "text-slate-500";
 
   const favBtn = heroMode
@@ -129,8 +150,10 @@ export default function MainHeader() {
     : "border-slate-300 text-slate-700 hover:text-yellow-600 hover:border-slate-400";
 
   return (
-    <header className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${headerClass}`}>
-      {/* KEY: reverse the whole header row in Arabic */}
+    <header
+      dir={isArabic ? "rtl" : "ltr"}
+      className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${headerClass}`}
+    >
       <div
         className={[
           "mx-auto flex max-w-6xl items-center justify-between px-4 py-3",
@@ -175,13 +198,8 @@ export default function MainHeader() {
           ))}
         </nav>
 
-        {/* RIGHT SIDE (tools) */}
-        <div
-          className={[
-            "flex items-center gap-3 text-[11px]",
-            isArabic ? "flex-row-reverse" : "flex-row",
-          ].join(" ")}
-        >
+        {/* RIGHT TOOLS */}
+        <div className={["flex items-center gap-3 text-[11px]", isArabic ? "flex-row-reverse" : "flex-row"].join(" ")}>
           {/* Prices (desktop) */}
           <div className="hidden items-center gap-4 md:flex">
             <div className="flex flex-col leading-tight">
@@ -271,8 +289,8 @@ export default function MainHeader() {
                         ? "text-yellow-300 bg-white/10"
                         : "text-yellow-600 bg-slate-100"
                       : heroMode
-                        ? "text-white/85 hover:text-yellow-300 hover:bg-white/10"
-                        : "text-slate-700 hover:text-yellow-600 hover:bg-slate-100",
+                      ? "text-white/85 hover:text-yellow-300 hover:bg-white/10"
+                      : "text-slate-700 hover:text-yellow-600 hover:bg-slate-100",
                   ].join(" ")}
                 >
                   {item.label}
