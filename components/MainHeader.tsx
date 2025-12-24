@@ -40,7 +40,6 @@ export default function MainHeader() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  // Live prices start as placeholders
   const [prices, setPrices] = useState<LivePrices>({ goldOz: "--", goldG: "--" });
 
   useEffect(() => {
@@ -54,7 +53,6 @@ export default function MainHeader() {
     setMobileOpen(false);
   }, [pathname]);
 
-  // OPTIONAL live price fetch. If route doesn't exist yet, it stays "--".
   useEffect(() => {
     let alive = true;
 
@@ -64,12 +62,13 @@ export default function MainHeader() {
         if (!res.ok) return;
         const data = (await res.json()) as Partial<LivePrices>;
         if (!alive) return;
+
         setPrices({
           goldOz: data.goldOz ?? "--",
           goldG: data.goldG ?? "--",
         });
       } catch {
-        // keep "--"
+        // keep placeholders
       }
     }
 
@@ -103,8 +102,8 @@ export default function MainHeader() {
 
   const switchHref = isArabic ? switchTo(false) : switchTo(true);
 
-  // Visual mode
-  const heroMode = pathname === "/" && !scrolled;
+  // IMPORTANT: heroMode must work for BOTH "/" and "/ar"
+  const heroMode = isHome && !scrolled;
 
   const headerClass = heroMode
     ? "bg-black/35 backdrop-blur-md border-b border-white/10"
@@ -131,9 +130,19 @@ export default function MainHeader() {
 
   return (
     <header className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${headerClass}`}>
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-        {/* LEFT: LOGO */}
-        <Link href={isArabic ? "/ar" : "/"} className="flex items-center gap-2 text-left" aria-label="Go to home">
+      {/* KEY: reverse the whole header row in Arabic */}
+      <div
+        className={[
+          "mx-auto flex max-w-6xl items-center justify-between px-4 py-3",
+          isArabic ? "flex-row-reverse" : "flex-row",
+        ].join(" ")}
+      >
+        {/* LOGO */}
+        <Link
+          href={isArabic ? "/ar" : "/"}
+          className="flex items-center gap-2 text-left"
+          aria-label="Go to home"
+        >
           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-yellow-300 via-amber-500 to-yellow-700 shadow-lg shadow-yellow-500/40">
             <span className="text-xs font-black tracking-[0.15em] text-black">WG</span>
           </div>
@@ -148,8 +157,13 @@ export default function MainHeader() {
           </div>
         </Link>
 
-        {/* CENTER: NAV LINKS (Desktop) */}
-        <nav className="hidden items-center gap-8 text-xs font-medium uppercase tracking-[0.18em] lg:flex">
+        {/* NAV (Desktop) */}
+        <nav
+          className={[
+            "hidden items-center gap-8 text-xs font-medium uppercase tracking-[0.18em] lg:flex",
+            isArabic ? "flex-row-reverse" : "flex-row",
+          ].join(" ")}
+        >
           {navItems.map((item) => (
             <Link
               key={item.label}
@@ -161,8 +175,13 @@ export default function MainHeader() {
           ))}
         </nav>
 
-        {/* RIGHT */}
-        <div className="flex items-center gap-3 text-[11px]">
+        {/* RIGHT SIDE (tools) */}
+        <div
+          className={[
+            "flex items-center gap-3 text-[11px]",
+            isArabic ? "flex-row-reverse" : "flex-row",
+          ].join(" ")}
+        >
           {/* Prices (desktop) */}
           <div className="hidden items-center gap-4 md:flex">
             <div className="flex flex-col leading-tight">
@@ -192,7 +211,7 @@ export default function MainHeader() {
             )}
           </Link>
 
-          {/* Language switch (hard navigation to avoid blank screen) */}
+          {/* Language switch */}
           <button
             type="button"
             onClick={() => window.location.assign(switchHref)}
@@ -233,7 +252,13 @@ export default function MainHeader() {
         ].join(" ")}
       >
         <div className="mx-auto max-w-6xl px-4 pb-4">
-          <div className={heroMode ? "rounded-xl border border-white/15 bg-slate-950/55 backdrop-blur p-3" : "rounded-xl border border-slate-200 bg-white/95 backdrop-blur p-3"}>
+          <div
+            className={
+              heroMode
+                ? "rounded-xl border border-white/15 bg-slate-950/55 backdrop-blur p-3"
+                : "rounded-xl border border-slate-200 bg-white/95 backdrop-blur p-3"
+            }
+          >
             <nav className="flex flex-col">
               {navItems.map((item) => (
                 <Link
