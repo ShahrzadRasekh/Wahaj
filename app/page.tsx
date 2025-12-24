@@ -162,8 +162,7 @@ export default function HomePage() {
   return (
     <div className="-mt-[72px]">
     <div className="min-h-screen flex flex-col bg-white">
-      <Header />
-
+     
       <main className="flex-1">
         <HeroSection />
         <USPSection />
