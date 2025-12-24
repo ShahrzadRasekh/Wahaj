@@ -1,20 +1,19 @@
-import "./globals.css";
 import type { Metadata } from "next";
+import "./globals.css";
 import MainHeader from "@/components/MainHeader";
 
 export const metadata: Metadata = {
-  title: "Wahaj Gold | Premium Gold Bars & Bullion in Dubai",
-  description:
-    "Buy certified gold bars, coins and silver with live pricing, insured UAE delivery, and secure online ordering.",
-  icons: { icon: "/favicon.ico" },
+  title: "Wahaj Gold",
+  description: "Wahaj Gold website",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className="bg-[#f5f5f7] text-slate-900 antialiased">
+      <body>
         <MainHeader />
-        <main className="pt-[72px]">{children}</main>
+        {/* Padding so content doesn't go under fixed header */}
+        <main className="pt-16">{children}</main>
       </body>
     </html>
   );
