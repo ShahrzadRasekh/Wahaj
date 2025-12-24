@@ -1029,6 +1029,16 @@ function Footer() {
             </ul>
           </div>
         </div>
+{/* Compliance & pricing disclaimer */}
+<div className="mt-6 border-t border-white/10 pt-4 text-[10px] leading-relaxed text-slate-400">
+  <p className="max-w-3xl">
+    <strong className="font-medium text-slate-300">Indicative spot price.</strong>{" "}
+    Prices are based on international gold spot rates and live FX. Final prices
+    may vary due to premiums, fabrication, taxes, and market movement.
+  </p>
+
+ </div>
+
 
         <p className="mt-8 text-[10px] text-slate-500">
           © {new Date().getFullYear()} Wahaj Gold. All rights reserved.
