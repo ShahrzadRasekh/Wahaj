@@ -104,7 +104,7 @@ export default function MainHeader() {
   const switchHref = isArabic ? switchTo(false) : switchTo(true);
 
   // Visual mode
-  const heroMode = isHome && !scrolled;
+  const heroMode = pathname === "/" && !scrolled;
 
   const headerClass = heroMode
     ? "bg-black/35 backdrop-blur-md border-b border-white/10"
