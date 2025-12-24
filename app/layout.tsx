@@ -12,7 +12,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body>
         <MainHeader />
-        {/* Padding so content doesn't go under fixed header */}
         <main className="pt-16">{children}</main>
       </body>
     </html>
