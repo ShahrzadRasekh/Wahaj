@@ -39,8 +39,10 @@ export default function MainHeader() {
 
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+
   const [prices, setPrices] = useState<LivePrices>({ goldOz: "--", goldG: "--" });
 
+  // Scroll state
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
     onScroll();
@@ -48,8 +50,12 @@ export default function MainHeader() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useEffect(() => setMobileOpen(false), [pathname]);
+  // Close mobile when route changes
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
 
+  // Live prices
   useEffect(() => {
     let alive = true;
 
@@ -82,6 +88,7 @@ export default function MainHeader() {
     return pathname.startsWith(href);
   };
 
+  // Keep same path while switching /ar prefix
   const switchTo = (toArabic: boolean) => {
     const current = pathname || "/";
     if (toArabic) {
@@ -97,7 +104,7 @@ export default function MainHeader() {
 
   const switchHref = isArabic ? switchTo(false) : switchTo(true);
 
-  // Transparent hero header on BOTH homepages
+  // Transparent header on BOTH homepages
   const heroMode = isHome && !scrolled;
 
   const headerClass = heroMode
@@ -123,23 +130,24 @@ export default function MainHeader() {
     ? "border-white/25 text-white/85 hover:text-yellow-300 hover:border-white/35"
     : "border-slate-300 text-slate-700 hover:text-yellow-600 hover:border-slate-400";
 
-  // Critical: DO NOT rely on Tailwind for reversing (avoids purge issues)
-  const rowDirection = isArabic ? ("row-reverse" as const) : ("row" as const);
-
   return (
     <header
       dir={isArabic ? "rtl" : "ltr"}
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${headerClass}`}
     >
-      <div
-        className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3"
-        style={{ flexDirection: rowDirection }}
-      >
-        {/* LOGO (will move to right in Arabic automatically due to row-reverse) */}
+      {/* IMPORTANT:
+         - DO NOT flex-row-reverse the main row.
+         - In RTL, the FIRST flex item naturally sits on the RIGHT. */}
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
+        {/* LOGO (in RTL, this block naturally becomes right side) */}
         <Link
           href={isArabic ? "/ar" : "/"}
-          className="flex items-center gap-2"
-          style={{ textAlign: isArabic ? "right" : "left" }}
+          className={[
+            "flex items-center gap-2",
+            isArabic ? "text-right" : "text-left",
+            // optional: make the logo internals feel more natural in RTL (icon on the right of text)
+            isArabic ? "flex-row-reverse" : "flex-row",
+          ].join(" ")}
           aria-label="Go to home"
         >
           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-yellow-300 via-amber-500 to-yellow-700 shadow-lg shadow-yellow-500/40">
@@ -156,8 +164,13 @@ export default function MainHeader() {
           </div>
         </Link>
 
-        {/* NAV */}
-        <nav className="hidden items-center gap-8 text-xs font-medium uppercase tracking-[0.18em] lg:flex">
+        {/* NAV (Desktop) */}
+        <nav
+          className={[
+            "hidden items-center gap-8 text-xs font-medium uppercase tracking-[0.18em] lg:flex",
+            isArabic ? "text-right" : "text-left",
+          ].join(" ")}
+        >
           {navItems.map((item) => (
             <Link
               key={item.label}
@@ -169,10 +182,10 @@ export default function MainHeader() {
           ))}
         </nav>
 
-        {/* ACTIONS (will move to left in Arabic due to row-reverse) */}
-        <div className="flex items-center gap-3 text-[11px]" style={{ flexDirection: rowDirection }}>
-          {/* Prices */}
-          <div className="hidden items-center gap-4 md:flex" style={{ flexDirection: rowDirection }}>
+        {/* ACTIONS (in RTL, this block naturally becomes left side) */}
+        <div className="flex items-center gap-3 text-[11px]">
+          {/* Prices (desktop) */}
+          <div className="hidden items-center gap-4 md:flex">
             <div className="flex flex-col leading-tight">
               <span className={`text-[10px] uppercase tracking-[0.16em] ${priceLabel}`}>GOLD Oz</span>
               <span className="font-semibold text-yellow-500 tabular-nums">{prices.goldOz}</span>
@@ -200,7 +213,7 @@ export default function MainHeader() {
             )}
           </Link>
 
-          {/* Language */}
+          {/* Language switch */}
           <button
             type="button"
             onClick={() => window.location.assign(switchHref)}
@@ -232,7 +245,7 @@ export default function MainHeader() {
         </div>
       </div>
 
-      {/* MOBILE PANEL */}
+      {/* Mobile panel */}
       <div
         id="mobile-nav"
         className={[
@@ -247,9 +260,8 @@ export default function MainHeader() {
                 ? "rounded-xl border border-white/15 bg-slate-950/55 backdrop-blur p-3"
                 : "rounded-xl border border-slate-200 bg-white/95 backdrop-blur p-3"
             }
-            dir={isArabic ? "rtl" : "ltr"}
           >
-            <nav className="flex flex-col">
+            <nav className={["flex flex-col", isArabic ? "text-right" : "text-left"].join(" ")}>
               {navItems.map((item) => (
                 <Link
                   key={item.label}
@@ -270,7 +282,7 @@ export default function MainHeader() {
               ))}
             </nav>
 
-            <div className="mt-3 flex items-center justify-between gap-3" style={{ flexDirection: rowDirection }}>
+            <div className="mt-3 flex items-center justify-between gap-3">
               <div className="flex flex-1 items-center justify-between rounded-lg border border-black/5 bg-black/5 px-3 py-2 text-[11px]">
                 <div className="flex flex-col leading-tight">
                   <span className="text-[10px] uppercase tracking-[0.16em] text-slate-500">GOLD Oz</span>

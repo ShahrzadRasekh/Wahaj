@@ -6,6 +6,7 @@ const config: Config = {
     './components/**/*.{js,ts,jsx,tsx,mdx}',
     './app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
+  safelist: ["flex-row-reverse"],
   theme: {
     extend: {
       backgroundImage: {
@@ -16,7 +17,7 @@ const config: Config = {
     },
   },
   plugins: [],
-  safelist: ["order-1", "order-2", "order-3", "flex-row-reverse"],
+  //safelist: ["order-1", "order-2", "order-3", "flex-row-reverse"],
 };
 export default config;
 
