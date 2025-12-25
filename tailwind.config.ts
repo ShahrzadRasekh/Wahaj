@@ -16,5 +16,7 @@ const config: Config = {
     },
   },
   plugins: [],
+  safelist: ["order-1", "order-2", "order-3", "flex-row-reverse"],
 };
 export default config;
+
