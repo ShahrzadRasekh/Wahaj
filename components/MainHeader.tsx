@@ -36,6 +36,7 @@ export default function MainHeader() {
   const navItems = isArabic ? navItemsAr : navItemsEn;
 
   const { count, hydrated } = useFavorites();
+
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [prices, setPrices] = useState<LivePrices>({ goldOz: "--", goldG: "--" });
@@ -96,6 +97,7 @@ export default function MainHeader() {
 
   const switchHref = isArabic ? switchTo(false) : switchTo(true);
 
+  // Transparent hero header on BOTH homepages
   const heroMode = isHome && !scrolled;
 
   const headerClass = heroMode
@@ -110,6 +112,7 @@ export default function MainHeader() {
     : "text-slate-700 hover:text-yellow-600";
 
   const navActive = heroMode ? "text-yellow-300" : "text-yellow-600";
+
   const priceLabel = heroMode ? "text-yellow-200" : "text-slate-500";
 
   const favBtn = heroMode
@@ -120,19 +123,23 @@ export default function MainHeader() {
     ? "border-white/25 text-white/85 hover:text-yellow-300 hover:border-white/35"
     : "border-slate-300 text-slate-700 hover:text-yellow-600 hover:border-slate-400";
 
+  // Critical: DO NOT rely on Tailwind for reversing (avoids purge issues)
+  const rowDirection = isArabic ? ("row-reverse" as const) : ("row" as const);
+
   return (
     <header
       dir={isArabic ? "rtl" : "ltr"}
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${headerClass}`}
     >
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-        {/* LOGO (EN left / AR right) */}
+      <div
+        className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3"
+        style={{ flexDirection: rowDirection }}
+      >
+        {/* LOGO (will move to right in Arabic automatically due to row-reverse) */}
         <Link
           href={isArabic ? "/ar" : "/"}
-          className={[
-            "flex items-center gap-2",
-            isArabic ? "order-3 text-right" : "order-1 text-left",
-          ].join(" ")}
+          className="flex items-center gap-2"
+          style={{ textAlign: isArabic ? "right" : "left" }}
           aria-label="Go to home"
         >
           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-yellow-300 via-amber-500 to-yellow-700 shadow-lg shadow-yellow-500/40">
@@ -149,8 +156,8 @@ export default function MainHeader() {
           </div>
         </Link>
 
-        {/* NAV (always middle) */}
-        <nav className="order-2 hidden items-center gap-8 text-xs font-medium uppercase tracking-[0.18em] lg:flex">
+        {/* NAV */}
+        <nav className="hidden items-center gap-8 text-xs font-medium uppercase tracking-[0.18em] lg:flex">
           {navItems.map((item) => (
             <Link
               key={item.label}
@@ -162,10 +169,10 @@ export default function MainHeader() {
           ))}
         </nav>
 
-        {/* ACTIONS (EN right / AR left) */}
-        <div className={["flex items-center gap-3 text-[11px]", isArabic ? "order-1" : "order-3"].join(" ")}>
-          {/* Prices (desktop) */}
-          <div className={["hidden items-center gap-4 md:flex", isArabic ? "flex-row-reverse" : "flex-row"].join(" ")}>
+        {/* ACTIONS (will move to left in Arabic due to row-reverse) */}
+        <div className="flex items-center gap-3 text-[11px]" style={{ flexDirection: rowDirection }}>
+          {/* Prices */}
+          <div className="hidden items-center gap-4 md:flex" style={{ flexDirection: rowDirection }}>
             <div className="flex flex-col leading-tight">
               <span className={`text-[10px] uppercase tracking-[0.16em] ${priceLabel}`}>GOLD Oz</span>
               <span className="font-semibold text-yellow-500 tabular-nums">{prices.goldOz}</span>
@@ -193,7 +200,7 @@ export default function MainHeader() {
             )}
           </Link>
 
-          {/* Language switch */}
+          {/* Language */}
           <button
             type="button"
             onClick={() => window.location.assign(switchHref)}
@@ -225,7 +232,67 @@ export default function MainHeader() {
         </div>
       </div>
 
-      {/* Mobile panel (keep your existing one if you want; not required for this fix) */}
+      {/* MOBILE PANEL */}
+      <div
+        id="mobile-nav"
+        className={[
+          "lg:hidden overflow-hidden transition-[max-height,opacity] duration-200",
+          mobileOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0",
+        ].join(" ")}
+      >
+        <div className="mx-auto max-w-6xl px-4 pb-4">
+          <div
+            className={
+              heroMode
+                ? "rounded-xl border border-white/15 bg-slate-950/55 backdrop-blur p-3"
+                : "rounded-xl border border-slate-200 bg-white/95 backdrop-blur p-3"
+            }
+            dir={isArabic ? "rtl" : "ltr"}
+          >
+            <nav className="flex flex-col">
+              {navItems.map((item) => (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  className={[
+                    "rounded-lg px-3 py-3 text-[12px] font-medium uppercase tracking-[0.18em] transition",
+                    isActive(item.href)
+                      ? heroMode
+                        ? "text-yellow-300 bg-white/10"
+                        : "text-yellow-600 bg-slate-100"
+                      : heroMode
+                      ? "text-white/85 hover:text-yellow-300 hover:bg-white/10"
+                      : "text-slate-700 hover:text-yellow-600 hover:bg-slate-100",
+                  ].join(" ")}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
+
+            <div className="mt-3 flex items-center justify-between gap-3" style={{ flexDirection: rowDirection }}>
+              <div className="flex flex-1 items-center justify-between rounded-lg border border-black/5 bg-black/5 px-3 py-2 text-[11px]">
+                <div className="flex flex-col leading-tight">
+                  <span className="text-[10px] uppercase tracking-[0.16em] text-slate-500">GOLD Oz</span>
+                  <span className="font-semibold text-yellow-600 tabular-nums">{prices.goldOz}</span>
+                </div>
+                <div className="flex flex-col leading-tight">
+                  <span className="text-[10px] uppercase tracking-[0.16em] text-slate-500">GOLD g</span>
+                  <span className="font-semibold text-yellow-600 tabular-nums">{prices.goldG}</span>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => window.location.assign(switchHref)}
+                className="inline-flex h-9 items-center justify-center rounded-full border border-slate-300 bg-white px-3 text-[11px] font-medium uppercase tracking-[0.18em] text-slate-700 hover:text-yellow-600 hover:border-slate-400 transition"
+              >
+                {isArabic ? "EN" : "AR"}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </header>
   );
 }
