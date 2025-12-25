@@ -201,7 +201,7 @@ export default function MainHeader() {
         {/* RIGHT TOOLS */}
         <div className={["flex items-center gap-3 text-[11px]", isArabic ? "flex-row-reverse" : "flex-row"].join(" ")}>
           {/* Prices (desktop) */}
-          <div className="hidden items-center gap-4 md:flex">
+          <div className={["hidden items-center gap-4 md:flex", isArabic ? "flex-row-reverse" : ""].join(" ")}>
             <div className="flex flex-col leading-tight">
               <span className={`text-[10px] uppercase tracking-[0.16em] ${priceLabel}`}>GOLD Oz</span>
               <span className="font-semibold text-yellow-500 tabular-nums">{prices.goldOz}</span>
@@ -269,7 +269,12 @@ export default function MainHeader() {
           mobileOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0",
         ].join(" ")}
       >
-        <div className="mx-auto max-w-6xl px-4 pb-4">
+        <div
+  className={[
+    "mx-auto flex max-w-6xl items-center justify-between px-4 py-3",
+    isArabic ? "flex-row-reverse" : "flex-row",
+  ].join(" ")}
+>
           <div
             className={
               heroMode

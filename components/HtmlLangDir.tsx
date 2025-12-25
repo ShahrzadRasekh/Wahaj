@@ -9,8 +9,8 @@ export default function HtmlLangDir() {
 
   useEffect(() => {
     const html = document.documentElement;
-    html.setAttribute("lang", isArabic ? "ar" : "en");
-    html.setAttribute("dir", isArabic ? "rtl" : "ltr");
+    html.lang = isArabic ? "ar" : "en";
+    html.dir = isArabic ? "rtl" : "ltr";
   }, [isArabic]);
 
   return null;
