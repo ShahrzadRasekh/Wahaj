@@ -141,15 +141,16 @@ export default function MainHeader() {
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
         {/* LOGO (in RTL, this block naturally becomes right side) */}
         <Link
-          href={isArabic ? "/ar" : "/"}
-          className={[
-            "flex items-center gap-2",
-            isArabic ? "text-right" : "text-left",
-            // optional: make the logo internals feel more natural in RTL (icon on the right of text)
-            isArabic ? "flex-row-reverse" : "flex-row",
-          ].join(" ")}
-          aria-label="Go to home"
-        >
+  href={isArabic ? "/ar" : "/"}
+  className={[
+    "flex items-center gap-2",
+    isArabic ? "text-right" : "text-left",
+    // IMPORTANT: logo AFTER text in Arabic
+    isArabic ? "flex-row" : "flex-row",
+  ].join(" ")}
+  aria-label="Go to home"
+>
+
           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-yellow-300 via-amber-500 to-yellow-700 shadow-lg shadow-yellow-500/40">
             <span className="text-xs font-black tracking-[0.15em] text-black">WG</span>
           </div>
