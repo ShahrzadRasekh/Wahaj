@@ -9,26 +9,7 @@ type NavItem = { label: string; href: string };
 type LivePrices = { goldOz: string; goldG: string };
 
 export default function MainHeader() {
-  const pathnameHook = usePathname() || "/";
-
-  // Source-of-truth pathname (fixes redeploy/hydration inconsistencies)
-  const [mounted, setMounted] = useState(false);
-  const [realPath, setRealPath] = useState<string>(pathnameHook);
-
-  useEffect(() => {
-    setMounted(true);
-    setRealPath(window.location.pathname || "/");
-  }, []);
-
-  // Update realPath on client navigation too
-  useEffect(() => {
-    if (!mounted) return;
-    setRealPath(window.location.pathname || pathnameHook || "/");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathnameHook, mounted]);
-
-  const pathname = mounted ? realPath : pathnameHook;
-
+  const pathname = usePathname() || "/";
   const isArabic = pathname === "/ar" || pathname.startsWith("/ar/");
   const isHome = pathname === "/" || pathname === "/ar";
 
@@ -54,13 +35,8 @@ export default function MainHeader() {
 
   const navItems = isArabic ? navItemsAr : navItemsEn;
 
-  // Force correct HTML direction + language (prevents RTL “dropping” after deploy)
-  useEffect(() => {
-    document.documentElement.setAttribute("dir", isArabic ? "rtl" : "ltr");
-    document.documentElement.setAttribute("lang", isArabic ? "ar" : "en");
-  }, [isArabic]);
-
   const { count, hydrated } = useFavorites();
+
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -124,7 +100,7 @@ export default function MainHeader() {
 
   const switchHref = isArabic ? switchTo(false) : switchTo(true);
 
-  // Transparent only on home (EN + AR), before scroll
+  // IMPORTANT: hero mode for BOTH homepages
   const heroMode = isHome && !scrolled;
 
   const headerClass = heroMode
@@ -139,6 +115,7 @@ export default function MainHeader() {
     : "text-slate-700 hover:text-yellow-600";
 
   const navActive = heroMode ? "text-yellow-300" : "text-yellow-600";
+
   const priceLabel = heroMode ? "text-yellow-200" : "text-slate-500";
 
   const favBtn = heroMode
@@ -154,6 +131,7 @@ export default function MainHeader() {
       dir={isArabic ? "rtl" : "ltr"}
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${headerClass}`}
     >
+      {/* MAIN ROW: MUST MIRROR IN AR */}
       <div
         className={[
           "mx-auto flex max-w-6xl items-center justify-between px-4 py-3",
@@ -163,7 +141,10 @@ export default function MainHeader() {
         {/* LOGO */}
         <Link
           href={isArabic ? "/ar" : "/"}
-          className="flex items-center gap-2 text-left"
+          className={[
+            "flex items-center gap-2 text-left",
+            isArabic ? "text-right" : "text-left",
+          ].join(" ")}
           aria-label="Go to home"
         >
           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-yellow-300 via-amber-500 to-yellow-700 shadow-lg shadow-yellow-500/40">
@@ -181,12 +162,7 @@ export default function MainHeader() {
         </Link>
 
         {/* NAV (Desktop) */}
-        <nav
-          className={[
-            "hidden items-center gap-8 text-xs font-medium uppercase tracking-[0.18em] lg:flex",
-            isArabic ? "flex-row-reverse" : "flex-row",
-          ].join(" ")}
-        >
+        <nav className="hidden items-center gap-8 text-xs font-medium uppercase tracking-[0.18em] lg:flex">
           {navItems.map((item) => (
             <Link
               key={item.label}
@@ -198,14 +174,21 @@ export default function MainHeader() {
           ))}
         </nav>
 
-        {/* RIGHT TOOLS */}
-        <div className={["flex items-center gap-3 text-[11px]", isArabic ? "flex-row-reverse" : "flex-row"].join(" ")}>
+        {/* RIGHT GROUP (in English) / LEFT GROUP (in Arabic) */}
+        <div className="flex items-center gap-3 text-[11px]">
           {/* Prices (desktop) */}
-          <div className={["hidden items-center gap-4 md:flex", isArabic ? "flex-row-reverse" : ""].join(" ")}>
+          <div
+            className={[
+              "hidden items-center gap-4 md:flex",
+              // make the order feel natural in RTL
+              isArabic ? "flex-row-reverse" : "flex-row",
+            ].join(" ")}
+          >
             <div className="flex flex-col leading-tight">
               <span className={`text-[10px] uppercase tracking-[0.16em] ${priceLabel}`}>GOLD Oz</span>
               <span className="font-semibold text-yellow-500 tabular-nums">{prices.goldOz}</span>
             </div>
+
             <div className="flex flex-col leading-tight">
               <span className={`text-[10px] uppercase tracking-[0.16em] ${priceLabel}`}>GOLD g</span>
               <span className="font-semibold text-yellow-500 tabular-nums">{prices.goldG}</span>
@@ -269,12 +252,7 @@ export default function MainHeader() {
           mobileOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0",
         ].join(" ")}
       >
-        <div
-  className={[
-    "mx-auto flex max-w-6xl items-center justify-between px-4 py-3",
-    isArabic ? "flex-row-reverse" : "flex-row",
-  ].join(" ")}
->
+        <div className="mx-auto max-w-6xl px-4 pb-4">
           <div
             className={
               heroMode
@@ -303,7 +281,12 @@ export default function MainHeader() {
               ))}
             </nav>
 
-            <div className="mt-3 flex items-center justify-between gap-3">
+            <div
+              className={[
+                "mt-3 flex items-center justify-between gap-3",
+                isArabic ? "flex-row-reverse" : "flex-row",
+              ].join(" ")}
+            >
               <div className="flex flex-1 items-center justify-between rounded-lg border border-black/5 bg-black/5 px-3 py-2 text-[11px]">
                 <div className="flex flex-col leading-tight">
                   <span className="text-[10px] uppercase tracking-[0.16em] text-slate-500">GOLD Oz</span>
