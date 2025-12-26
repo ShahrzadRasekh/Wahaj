@@ -1,65 +1,90 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
-const KEY = "favorites";
-const EVT = "favorites_updated";
+const STORAGE_KEY = "favorites";
+const EVENT_NAME = "favorites:changed";
 
-function safeRead(): number[] {
-  if (typeof window === "undefined") return [];
+function safeParseIds(raw: string | null): number[] {
+  if (!raw) return [];
   try {
-    const raw = localStorage.getItem(KEY);
-    const parsed = raw ? (JSON.parse(raw) as unknown) : [];
+    const parsed = JSON.parse(raw);
     if (!Array.isArray(parsed)) return [];
-    return parsed.filter((x) => typeof x === "number");
+    return parsed
+      .map((v) => Number(v))
+      .filter((n) => Number.isFinite(n));
   } catch {
     return [];
   }
 }
 
-function safeWrite(next: number[]) {
-  if (typeof window === "undefined") return;
-  localStorage.setItem(KEY, JSON.stringify(next));
-  window.dispatchEvent(new Event(EVT));
+function readIds(): number[] {
+  if (typeof window === "undefined") return [];
+  return safeParseIds(localStorage.getItem(STORAGE_KEY));
+}
+
+function writeIds(ids: number[]) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(ids));
+  window.dispatchEvent(new Event(EVENT_NAME));
 }
 
 export function useFavorites() {
-  const [favorites, setFavorites] = useState<number[]>([]);
   const [hydrated, setHydrated] = useState(false);
+  const [ids, setIds] = useState<number[]>([]);
 
   useEffect(() => {
-    setFavorites(safeRead());
+    // initial hydrate
+    setIds(readIds());
     setHydrated(true);
 
+    // same-tab updates
+    const onCustom = () => setIds(readIds());
+
+    // cross-tab updates
     const onStorage = (e: StorageEvent) => {
-      if (e.key === KEY) setFavorites(safeRead());
+      if (e.key === STORAGE_KEY) setIds(readIds());
     };
 
-    const onCustom = () => setFavorites(safeRead());
-
+    window.addEventListener(EVENT_NAME, onCustom);
     window.addEventListener("storage", onStorage);
-    window.addEventListener(EVT, onCustom);
 
     return () => {
+      window.removeEventListener(EVENT_NAME, onCustom);
       window.removeEventListener("storage", onStorage);
-      window.removeEventListener(EVT, onCustom);
     };
   }, []);
 
-  const isFavorite = useCallback(
-    (id: number) => favorites.includes(id),
-    [favorites]
-  );
-
-  const toggleFavorite = useCallback((id: number) => {
-    setFavorites((prev) => {
-      const next = prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id];
-      safeWrite(next);
+  const toggle = (id: number) => {
+    setIds((prev) => {
+      const next = prev.includes(id)
+        ? prev.filter((x) => x !== id)
+        : [...prev, id];
+      writeIds(next);
       return next;
     });
-  }, []);
+  };
 
-  const count = useMemo(() => favorites.length, [favorites]);
+  const remove = (id: number) => {
+    setIds((prev) => {
+      const next = prev.filter((x) => x !== id);
+      writeIds(next);
+      return next;
+    });
+  };
 
-  return { favorites, toggleFavorite, isFavorite, count, hydrated };
+  const clear = () => {
+    setIds(() => {
+      writeIds([]);
+      return [];
+    });
+  };
+
+  return {
+    ids,
+    count: ids.length,
+    hydrated,
+    toggle,
+    remove,
+    clear,
+  };
 }

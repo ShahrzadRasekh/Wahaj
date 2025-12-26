@@ -2,7 +2,13 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from "react";
+import { useFavorites } from "@/lib/useFavorites";
 
+export type Locale = "en" | "ar";
+
+type HomePageProps = {
+  locale: Locale;
+};
 
 const heroSlides = [
   {
@@ -207,7 +213,7 @@ const brandLogos = [
 /*               HOME PAGE                */
 /* -------------------------------------- */
 
-export default function HomePage() {
+export default function HomePage({ locale }: HomePageProps) {
   return (
     <div className="-mt-16 min-h-screen flex flex-col bg-white">
       <main className="flex-1">
@@ -506,26 +512,7 @@ type FeaturedProduct = {
 /* -------------------------------------- */
 
 function FeaturedSection() {
-  const [favorites, setFavorites] = useState<number[]>([]);
-
-useEffect(() => {
-  const stored = localStorage.getItem("favorites");
-  if (stored) {
-    setFavorites(JSON.parse(stored));
-  }
-}, []);
-
-useEffect(() => {
-  localStorage.setItem("favorites", JSON.stringify(favorites));
-}, [favorites]);
-
-const toggleFavorite = (id: number) => {
-  setFavorites((prev) =>
-    prev.includes(id)
-      ? prev.filter((favId) => favId !== id)
-      : [...prev, id]
-  );
-};
+  const { ids: favorites, toggle } = useFavorites();
 
   return (
     <section className="bg-white py-16">
@@ -548,79 +535,82 @@ const toggleFavorite = (id: number) => {
 
         {/* Product grid */}
         <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {featuredProducts.map((product) => (
-            <article
-              key={product.id}
-              className="flex flex-col rounded-2xl bg-white shadow-[0_12px_25px_rgba(15,23,42,0.06)] border border-gray-100 overflow-hidden"
-            >
-              {/* Top image area */}
-              <div className="relative bg-[#f6f9fc] flex items-center justify-center px-6 pt-6 pb-2">
-                {product.image ? (
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="h-40 w-auto object-contain"
-                  />
-                ) : (
-                  <div className="h-40 w-full rounded-xl bg-gradient-to-br from-yellow-100 via-amber-300 to-yellow-700" />
-                )}
+          {featuredProducts.map((product) => {
+            const active = favorites.includes(product.id);
 
-{product.badge && (
-  <div className="absolute right-4 top-4 z-10">
-    <LuxuryBadge
-      label={
-        typeof product.badge === "string"
-          ? product.badge
-          : product.badge.label
-      }
-      variant={
-        typeof product.badge === "string"
-          ? "gold"
-          : (product.badge.variant ?? "gold")
-      }
-    />
-  </div>
-)}
-              </div>
+            return (
+              <article
+                key={product.id}
+                className="flex flex-col rounded-2xl bg-white shadow-[0_12px_25px_rgba(15,23,42,0.06)] border border-gray-100 overflow-hidden"
+              >
+                {/* Top image area */}
+                <div className="relative bg-[#f6f9fc] flex items-center justify-center px-6 pt-6 pb-2">
+                  {product.image ? (
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="h-40 w-auto object-contain"
+                    />
+                  ) : (
+                    <div className="h-40 w-full rounded-xl bg-gradient-to-br from-yellow-100 via-amber-300 to-yellow-700" />
+                  )}
 
-              {/* Product name + price */}
-              <div className="flex flex-1 flex-col px-5 pb-4 pt-3">
-                <h3 className="text-sm font-semibold text-gray-900 leading-snug line-clamp-2">
-                  {product.name}
-                </h3>
-
-                <div className="mt-2 text-xs text-gray-500">
-                  <span className="text-[11px] uppercase tracking-[0.18em]">
-                    AED
-                  </span>{' '}
-                  <span className="text-base font-semibold text-gray-900">
-                    {product.price}
-                  </span>
+                  {product.badge && (
+                    <div className="absolute right-4 top-4 z-10">
+                      <LuxuryBadge
+                        label={
+                          typeof product.badge === "string"
+                            ? product.badge
+                            : product.badge.label
+                        }
+                        variant={
+                          typeof product.badge === "string"
+                            ? "gold"
+                            : product.badge.variant ?? "gold"
+                        }
+                      />
+                    </div>
+                  )}
                 </div>
 
-                 {/* description + favourite heart */}
-<div className="mt-3 flex items-start justify-between gap-3">
-  <p className="text-[12px] leading-snug text-gray-500 line-clamp-2">
-    {product.description}
-  </p>
+                {/* Product name + price */}
+                <div className="flex flex-1 flex-col px-5 pb-4 pt-3">
+                  <h3 className="text-sm font-semibold text-gray-900 leading-snug line-clamp-2">
+                    {product.name}
+                  </h3>
 
-  <button
-  onClick={() => toggleFavorite(product.id)}
-  aria-label="Toggle favourite"
-  className={[
-    "mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border transition",
-    favorites.includes(product.id)
-      ? "border-red-500 text-red-500 bg-red-50"
-      : "border-gray-200 text-gray-400 hover:border-red-400 hover:text-red-500",
-  ].join(" ")}
->
-  {favorites.includes(product.id) ? "♥" : "♡"}
-</button>
+                  <div className="mt-2 text-xs text-gray-500">
+                    <span className="text-[11px] uppercase tracking-[0.18em]">
+                      AED
+                    </span>{" "}
+                    <span className="text-base font-semibold text-gray-900">
+                      {product.price}
+                    </span>
+                  </div>
 
-</div>
-              </div>
-            </article>
-          ))}
+                  {/* description + favourite heart */}
+                  <div className="mt-3 flex items-start justify-between gap-3">
+                    <p className="text-[12px] leading-snug text-gray-500 line-clamp-2">
+                      {product.description}
+                    </p>
+
+                    <button
+                      onClick={() => toggle(product.id)}
+                      aria-label="Toggle favourite"
+                      className={[
+                        "mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border transition",
+                        active
+                          ? "border-red-500 text-red-500 bg-red-50"
+                          : "border-gray-200 text-gray-400 hover:border-red-400 hover:text-red-500",
+                      ].join(" ")}
+                    >
+                      {active ? "♥" : "♡"}
+                    </button>
+                  </div>
+                </div>
+              </article>
+            );
+          })}
         </div>
       </div>
     </section>

@@ -9,7 +9,12 @@ import LivePriceHeader from "@/components/LivePriceHeader";
 export default function MainHeader() {
   const pathname = usePathname();
   const router = useRouter();
-  const isHome = pathname === "/";
+
+  const isArabic = pathname?.startsWith("/ar") ?? false;
+  const prefix = isArabic ? "/ar" : "";
+
+  const isHome = pathname === "/" || pathname === "/ar";
+
   const { count, hydrated } = useFavorites();
 
   // On home, switch to "light mode" after you scroll past the hero
@@ -29,9 +34,6 @@ export default function MainHeader() {
   // - Home at top: light text (over hero)
   const lightMode = !isHome || pastHero;
 
-  // Header surface:
-  // - Home BEFORE scroll: transparent
-  // - Home AFTER scroll + inner pages: glassy
   const headerSurface = useMemo(() => {
     if (isHome && !pastHero) {
       return [
@@ -61,16 +63,23 @@ export default function MainHeader() {
     ? "hover:border-red-400 hover:text-red-600"
     : "hover:border-red-300 hover:text-red-200";
 
+  const nav = [
+    { label: isArabic ? "السبائك" : "Bullion", href: `${prefix}/bullion` },
+    { label: isArabic ? "من نحن" : "About", href: `${prefix}/about` },
+    { label: isArabic ? "تواصل" : "Contact", href: `${prefix}/contact` },
+  ];
+
   return (
     <header
       className={[
         "fixed inset-x-0 top-0 z-[9999] border-b backdrop-blur-xl transition-all duration-300",
         headerSurface,
       ].join(" ")}
+      dir={isArabic ? "rtl" : "ltr"}
     >
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
         {/* LEFT: LOGO */}
-        <Link href="/" className="flex items-center gap-2">
+        <Link href={isArabic ? "/ar" : "/"} className="flex items-center gap-2">
           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-yellow-300 via-amber-500 to-yellow-700 shadow-lg shadow-yellow-500/40">
             <span className="text-xs font-black tracking-[0.15em] text-black">
               WG
@@ -99,43 +108,44 @@ export default function MainHeader() {
 
         {/* CENTER: NAV LINKS */}
         <nav className="hidden items-center gap-8 text-xs font-medium uppercase tracking-[0.18em] lg:flex">
-          {[
-            { label: "Bullion", href: "/bullion" },
-            { label: "About", href: "/about" },
-            { label: "Contact", href: "/contact" },
-          ].map((item) => (
-            <Link key={item.label} href={item.href} className={linkClass}>
+          {nav.map((item) => (
+            <Link key={item.href} href={item.href} className={linkClass}>
               {item.label}
             </Link>
           ))}
         </nav>
 
         {/* RIGHT: PRICES (HOME ONLY) + FAVORITES */}
-<div className="flex items-center gap-4 text-[11px]">
-{isHome && <LivePriceHeader lightMode={lightMode} fetchEveryMs={10_000} tickEveryMs={1_000} />}
+        <div className="flex items-center gap-4 text-[11px]">
+          {isHome && (
+            <LivePriceHeader
+              lightMode={lightMode}
+              fetchEveryMs={10_000}
+              tickEveryMs={1_000}
+            />
+          )}
 
-  {/* Favorites icon */}
-  <button
-    type="button"
-    onClick={() => router.push("/favorites")}
-    className={[
-      "relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full border transition",
-      favBorder,
-      favText,
-      favHover,
-    ].join(" ")}
-    aria-label="Open favourites"
-  >
-    <span className="text-lg leading-none">♥</span>
+          <button
+            type="button"
+            onClick={() => router.push(`${prefix}/favorites`)}
+            className={[
+              "relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full border transition",
+              favBorder,
+              favText,
+              favHover,
+            ].join(" ")}
+            aria-label="Open favourites"
+          >
+            <span className="text-lg leading-none">♥</span>
 
-    {hydrated && count > 0 && (
-      <span className="absolute -right-1.5 -top-1.5 flex h-5 min-w-[20px] items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold text-white">
-        {count}
-      </span>
-    )}
-  </button>
-</div>
-     </div>
+            {hydrated && count > 0 && (
+              <span className="absolute -right-1.5 -top-1.5 flex h-5 min-w-[20px] items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold text-white">
+                {count}
+              </span>
+            )}
+          </button>
+        </div>
+      </div>
     </header>
   );
 }
