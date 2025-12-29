@@ -1,80 +1,69 @@
+"use client";
+
 import Link from "next/link";
 import ContactForm from "@/components/ContactForm";
 import type { Locale } from "@/lib/i18n";
 import { getDict } from "@/lib/i18n";
 
-export default function ContactPage({ locale }: { locale: Locale }) {
+type Props = {
+  locale: Locale;
+};
+
+function hrefFor(locale: Locale, path: `/${string}`) {
+  return locale === "ar" ? `/ar${path}` : path;
+}
+
+export default function ContactPage({ locale }: Props) {
   const t = getDict(locale);
+  const isArabic = locale === "ar";
 
-  const homeHref = locale === "ar" ? "/ar" : "/";
-  const contactHref = locale === "ar" ? "/ar/contact" : "/contact";
-
-  // Minimal bilingual strings for now (we’ll move these to dictionary next)
   const ui = {
-    pageTitle: locale === "ar" ? "تواصل معنا" : "Contact",
-    addressTitle: locale === "ar" ? "العنوان" : "Address",
-    contactDetailsTitle: locale === "ar" ? "بيانات التواصل" : "Contact Details",
-    businessTimeTitle: locale === "ar" ? "ساعات العمل" : "Business Time",
-    getInTouchTitle: locale === "ar" ? "تواصل معنا" : "Get In Touch",
+    pageTitle: isArabic ? "تواصل معنا" : "Contact",
+    addressTitle: isArabic ? "العنوان" : "Address",
+    contactDetailsTitle: isArabic ? "بيانات التواصل" : "Contact Details",
+    businessTimeTitle: isArabic ? "ساعات العمل" : "Business Time",
+    getInTouchTitle: isArabic ? "تواصل معنا" : "Get In Touch",
 
-    banner1Title:
-      locale === "ar" ? "اكتشف مجموعات وهـاج جولد" : "Discover Wahaj Gold Collections",
-    banner1Text:
-      locale === "ar"
-        ? "سبائك مميزة، هدايا مختارة، وخدمة موثوقة."
-        : "Premium bullion, curated gifts, and trusted service.",
+    banner1Title: isArabic ? "اكتشف مجموعات وهـاج جولد" : "Discover Wahaj Gold Collections",
+    banner1Text: isArabic ? "سبائك مميزة، هدايا مختارة، وخدمة موثوقة." : "Premium bullion, curated gifts, and trusted service.",
 
-    banner2Title:
-      locale === "ar" ? "اشترِ الذهب بثقة" : "Buy Gold With Confidence",
-    banner2Text:
-      locale === "ar"
-        ? "طلب آمن ودعم موثوق عند الحاجة."
-        : "Secure ordering and reliable support when you need it.",
+    banner2Title: isArabic ? "اشترِ الذهب بثقة" : "Buy Gold With Confidence",
+    banner2Text: isArabic ? "طلب آمن ودعم موثوق عند الحاجة." : "Secure ordering and reliable support when you need it.",
 
-    banner3Title: locale === "ar" ? "نحن هنا للمساعدة" : "Here To Help",
-    banner3Text:
-      locale === "ar"
-        ? "تواصل معنا للتوفر والأسعار وتفاصيل التوصيل."
-        : "Contact us for availability, pricing, and delivery details.",
+    banner3Title: isArabic ? "نحن هنا للمساعدة" : "Here To Help",
+    banner3Text: isArabic ? "تواصل معنا للتوفر والأسعار وتفاصيل التوصيل." : "Contact us for availability, pricing, and delivery details.",
 
-    // Address block (placeholder)
-    addressLine1: locale === "ar" ? "وهـاج جولد (مثال)" : "Wahaj Gold (example)",
-    addressLine2: locale === "ar" ? "منطقة سوق الذهب" : "Gold Souq Area",
-    addressLine3: locale === "ar" ? "دبي، الإمارات العربية المتحدة" : "Dubai, United Arab Emirates",
-    addressNote:
-      locale === "ar"
-        ? "يمكنك لاحقاً تحديث هذا القسم بتفاصيل المحل/المبنى الدقيقة."
-        : "Update this section later with your exact building / shop details.",
+    addressLine1: isArabic ? "وهـاج جولد (مثال)" : "Wahaj Gold (example)",
+    addressLine2: isArabic ? "منطقة سوق الذهب" : "Gold Souq Area",
+    addressLine3: isArabic ? "دبي، الإمارات العربية المتحدة" : "Dubai, United Arab Emirates",
+    addressNote: isArabic
+      ? "يمكنك لاحقاً تحديث هذا القسم بتفاصيل المحل/المبنى الدقيقة."
+      : "Update this section later with your exact building / shop details.",
 
-    businessTimeText:
-      locale === "ar"
-        ? "من الإثنين إلى السبت: 10:00 صباحاً – 9:00 مساءً (GST)"
-        : "Monday to Saturday: 10:00 AM – 21:00 PM (GST)",
+    businessTimeText: isArabic
+      ? "من الإثنين إلى السبت: 10:00 صباحاً – 9:00 مساءً (GST)"
+      : "Monday to Saturday: 10:00 AM – 9:00 PM (GST)",
 
-    mapPlaceholderTitle:
-      locale === "ar"
-        ? "عنصر نائب لخريطة العالم / الموقع."
-        : "World map / location image placeholder.",
-    mapPlaceholderText:
-      locale === "ar"
-        ? "لاحقاً يمكنك استبدال هذا بخريطة حقيقية أو صورة تحمل هوية العلامة التجارية."
-        : "Later you can replace this with a real map or branded image.",
+    mapPlaceholderTitle: isArabic ? "عنصر نائب لخريطة العالم / الموقع." : "World map / location image placeholder.",
+    mapPlaceholderText: isArabic
+      ? "لاحقاً يمكنك استبدال هذا بخريطة حقيقية أو صورة تحمل هوية العلامة التجارية."
+      : "Later you can replace this with a real map or branded image.",
   };
 
   return (
-    <main className="min-h-screen bg-[#f5f5f7] text-slate-900">
+    <main className="min-h-screen bg-[#f5f5f7] text-slate-900" dir={isArabic ? "rtl" : "ltr"}>
       <div className="mx-auto max-w-6xl px-4 pb-20 pt-20">
         {/* Breadcrumb */}
         <nav className="mb-6 text-xs text-slate-500">
-          <Link href={homeHref} className="hover:text-slate-700">
-          {t.common.home}
+          <Link href={hrefFor(locale, "/")} className="hover:text-slate-700">
+            {t.common.home}
           </Link>
           <span className="mx-1">›</span>
           <span className="font-medium text-slate-700">{t.common.contact}</span>
         </nav>
 
         <div className="grid gap-10 lg:grid-cols-[280px,minmax(0,1fr)]">
-          {/* LEFT COLUMN – MEDIA BANNERS */}
+          {/* LEFT: BANNERS */}
           <aside className="space-y-6">
             <div className="relative h-80 overflow-hidden rounded-[32px] shadow-[0_18px_40px_rgba(15,23,42,0.18)]">
               <img
@@ -102,9 +91,7 @@ export default function ContactPage({ locale }: { locale: Locale }) {
                 <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-white">
                   {ui.banner2Title}
                 </p>
-                <p className="mt-2 text-[11px] leading-relaxed text-white/90">
-                  {ui.banner2Text}
-                </p>
+                <p className="mt-2 text-[11px] leading-relaxed text-white/90">{ui.banner2Text}</p>
               </div>
             </div>
 
@@ -119,14 +106,12 @@ export default function ContactPage({ locale }: { locale: Locale }) {
                 <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-white">
                   {ui.banner3Title}
                 </p>
-                <p className="mt-2 text-[11px] leading-relaxed text-white/90">
-                  {ui.banner3Text}
-                </p>
+                <p className="mt-2 text-[11px] leading-relaxed text-white/90">{ui.banner3Text}</p>
               </div>
             </div>
           </aside>
 
-          {/* RIGHT COLUMN – CONTENT + FORM */}
+          {/* RIGHT: CONTENT */}
           <section className="space-y-10">
             <div>
               <h1 className="text-4xl font-bold tracking-tight text-slate-900">
@@ -136,9 +121,7 @@ export default function ContactPage({ locale }: { locale: Locale }) {
 
             <div className="grid gap-10 md:grid-cols-2">
               <div className="space-y-2">
-                <h2 className="text-base font-semibold text-slate-900">
-                  {ui.addressTitle}
-                </h2>
+                <h2 className="text-base font-semibold text-slate-900">{ui.addressTitle}</h2>
                 <div className="space-y-1 text-sm text-slate-700">
                   <p>{ui.addressLine1}</p>
                   <p>{ui.addressLine2}</p>
@@ -148,9 +131,7 @@ export default function ContactPage({ locale }: { locale: Locale }) {
               </div>
 
               <div className="space-y-2">
-                <h2 className="text-base font-semibold text-slate-900">
-                  {ui.contactDetailsTitle}
-                </h2>
+                <h2 className="text-base font-semibold text-slate-900">{ui.contactDetailsTitle}</h2>
                 <div className="space-y-1 text-sm text-slate-700">
                   <p>+971 XX XXX XXXX</p>
                   <p>+971 X XXX XXXX</p>
@@ -160,9 +141,7 @@ export default function ContactPage({ locale }: { locale: Locale }) {
             </div>
 
             <div className="space-y-2">
-              <h2 className="text-base font-semibold text-slate-900">
-                {ui.businessTimeTitle}
-              </h2>
+              <h2 className="text-base font-semibold text-slate-900">{ui.businessTimeTitle}</h2>
               <p className="text-sm text-slate-700">{ui.businessTimeText}</p>
             </div>
 
@@ -172,10 +151,7 @@ export default function ContactPage({ locale }: { locale: Locale }) {
                   <p>{ui.mapPlaceholderTitle}</p>
                   <p className="mt-2">
                     {ui.mapPlaceholderText}{" "}
-                    <span className="mx-1 font-mono text-[10px]">
-                      /contact/world-map.png
-                    </span>
-                    .
+                    <span className="mx-1 font-mono text-[10px]">/contact/world-map.png</span>.
                   </p>
                 </div>
               </div>
@@ -193,4 +169,3 @@ export default function ContactPage({ locale }: { locale: Locale }) {
     </main>
   );
 }
-

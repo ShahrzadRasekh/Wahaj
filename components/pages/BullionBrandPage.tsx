@@ -25,6 +25,10 @@ type BrandConfig = {
   products: Product[];
 };
 
+function hrefFor(locale: Locale, path: `/${string}`) {
+  return locale === "ar" ? `/ar${path}` : path;
+}
+
 const brandConfigs: Record<BrandKey, BrandConfig> = {
   pamp: {
     slug: "pamp",
@@ -55,7 +59,9 @@ const brandConfigs: Record<BrandKey, BrandConfig> = {
     description:
       "Al Etihad Gold bars combine regional heritage with modern refinery standards, trusted across the GCC region.",
     heroImage: "/brands/aletihad-hero.jpg",
-    products: [{ id: 1, name: "Al Etihad 10 Gram", weight: "10 g", price: "3,880.00", image: "/products/aletihad-10g.jpg" }],
+    products: [
+      { id: 1, name: "Al Etihad 10 Gram", weight: "10 g", price: "3,880.00", image: "/products/aletihad-10g.jpg" },
+    ],
   },
   sam: {
     slug: "sam",
@@ -63,25 +69,24 @@ const brandConfigs: Record<BrandKey, BrandConfig> = {
     description:
       "SAM Precious Metals offers innovative minted and cast bars, popular among both investors and jewellers.",
     heroImage: "/brands/sam-hero.jpg",
-    products: [{ id: 1, name: "SAM 1/2 Ounce Oval Pendant", weight: "15.55 g", price: "7,924.18", image: "/products/sam-oval-half-oz.jpg" }],
+    products: [
+      { id: 1, name: "SAM 1/2 Ounce Oval Pendant", weight: "15.55 g", price: "7,924.18", image: "/products/sam-oval-half-oz.jpg" },
+    ],
   },
 };
 
-export default function BullionBrandPage({
-  locale,
-  brand,
-}: {
+type Props = {
   locale: Locale;
   brand: string;
-}) {
+};
+
+export default function BullionBrandPage({ locale, brand }: Props) {
   const t = getDict(locale);
+  const isArabic = locale === "ar";
+
   const brandKey = brand as BrandKey;
   const config = brandConfigs[brandKey];
   if (!config) notFound();
-
-  const homeHref = locale === "ar" ? "/ar" : "/";
-  const bullionHref = locale === "ar" ? "/ar/bullion" : "/bullion";
-  const brandHref = (slug: string) => (locale === "ar" ? `/ar/bullion/${slug}` : `/bullion/${slug}`);
 
   const [search, setSearch] = useState("");
 
@@ -92,31 +97,34 @@ export default function BullionBrandPage({
   }, [search, config.products]);
 
   const ui = {
-    filters: locale === "ar" ? "الفلاتر" : "Filters",
-    availability: locale === "ar" ? "التوفر" : "Availability",
-    all: locale === "ar" ? "الكل" : "All",
-    inStock: locale === "ar" ? "متوفر" : "In Stock",
-    outStock: locale === "ar" ? "غير متوفر" : "Out of Stock",
-    promoTitle: locale === "ar" ? "مرونة الاستثمار" : "Investment Flexibility",
-    promoBody:
-      locale === "ar"
-        ? "نوّع الأوزان لبناء محفظة تناسب ميزانيتك واستراتيجيتك."
-        : "Mix and match weights to build a portfolio that fits your budget and strategy.",
-    collections: locale === "ar" ? "المجموعات" : "Collections",
-    breadcrumbCatalogue: locale === "ar" ? "كتالوج وهـاج" : "Wahaj Catalogue",
-    countLine:
-      locale === "ar"
-        ? `يوجد ${products.length} منتجاً في هذه المجموعة`
-        : `There are ${products.length} products in this collection`,
-    searchPlaceholder: locale === "ar" ? "ابحث عن منتج" : "Search product",
-    relevance: locale === "ar" ? "الأكثر صلة" : "Relevance",
-    indicative: locale === "ar" ? "يُطبق السعر المباشر — استرشادي فقط." : "Live rate applied — indicative only.",
+    // Sidebar
+    filters: isArabic ? "الفلاتر" : "Filters",
+    availability: isArabic ? "التوفر" : "Availability",
+    all: isArabic ? "الكل" : "All",
+    inStock: isArabic ? "متوفر" : "In Stock",
+    outStock: isArabic ? "غير متوفر" : "Out of Stock",
+    promoTitle: isArabic ? "مرونة الاستثمار" : "Investment Flexibility",
+    promoBody: isArabic
+      ? "نوّع الأوزان لبناء محفظة تناسب ميزانيتك واستراتيجيتك."
+      : "Mix and match weights to build a portfolio that fits your budget and strategy.",
+    collections: isArabic ? "المجموعات" : "Collections",
+
+    // Header row
+    productsCount: isArabic
+      ? `عدد المنتجات: ${products.length}`
+      : `Products: ${products.length}`,
+    searchPlaceholder: isArabic ? "ابحث عن منتج" : "Search product",
+    relevance: isArabic ? "الأكثر صلة" : "Relevance",
+    indicative: isArabic ? "يُطبق السعر المباشر — استرشادي فقط." : "Live rate applied — indicative only.",
+
+    // Breadcrumb label
+    catalogueLabel: isArabic ? "السبائك" : "Bullion",
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white" dir={isArabic ? "rtl" : "ltr"}>
       <main className="mx-auto flex max-w-6xl gap-8 px-4 pb-16 pt-24">
-        {/* LEFT: FILTERS / COLLECTIONS */}
+        {/* LEFT: Filters/Collections */}
         <aside className="hidden w-64 flex-shrink-0 space-y-6 md:block">
           <div className="rounded-xl border border-gray-200 bg-[#f9fafb] px-4 py-4">
             <h2 className="text-sm font-semibold text-gray-900">{ui.filters}</h2>
@@ -125,18 +133,18 @@ export default function BullionBrandPage({
               <div>
                 <p className="font-semibold">{ui.availability}</p>
                 <div className="mt-2 space-y-1">
-                  <label className="flex items-center gap-2">
+                  <div className="flex items-center gap-2">
                     <span className="inline-block h-2.5 w-2.5 rounded-[4px] bg-black" />
                     {ui.all}
-                  </label>
-                  <label className="flex items-center gap-2 text-gray-400">
+                  </div>
+                  <div className="flex items-center gap-2 text-gray-400">
                     <span className="inline-block h-2.5 w-2.5 rounded-[4px] border border-gray-300" />
                     {ui.inStock}
-                  </label>
-                  <label className="flex items-center gap-2 text-gray-400">
+                  </div>
+                  <div className="flex items-center gap-2 text-gray-400">
                     <span className="inline-block h-2.5 w-2.5 rounded-[4px] border border-gray-300" />
                     {ui.outStock}
-                  </label>
+                  </div>
                 </div>
               </div>
             </div>
@@ -153,15 +161,19 @@ export default function BullionBrandPage({
               {Object.values(brandConfigs).map((b) => (
                 <Link
                   key={b.slug}
-                  href={brandHref(b.slug)}
-                  className={`flex items-center gap-2 ${
-                    b.slug === config.slug ? "font-semibold text-gray-900" : "text-gray-500 hover:text-gray-800"
-                  }`}
+                  href={hrefFor(locale, `/bullion/${b.slug}`)}
+                  className={[
+                    "flex items-center gap-2",
+                    b.slug === config.slug
+                      ? "font-semibold text-gray-900"
+                      : "text-gray-500 hover:text-gray-800",
+                  ].join(" ")}
                 >
                   <span
-                    className={`inline-block h-2.5 w-2.5 rounded-[4px] ${
-                      b.slug === config.slug ? "bg-black" : "border border-gray-300"
-                    }`}
+                    className={[
+                      "inline-block h-2.5 w-2.5 rounded-[4px]",
+                      b.slug === config.slug ? "bg-black" : "border border-gray-300",
+                    ].join(" ")}
                   />
                   {b.name}
                 </Link>
@@ -170,25 +182,30 @@ export default function BullionBrandPage({
           </div>
         </aside>
 
-        {/* RIGHT: CONTENT */}
+        {/* RIGHT: Content */}
         <section className="flex-1">
+          {/* Breadcrumb */}
           <nav className="mb-3 text-xs text-gray-500">
-            <Link href={homeHref} className="hover:text-gray-800">
-            {t.common.home}
+            <Link href={hrefFor(locale, "/")} className="hover:text-gray-800">
+              {t.common.home}
             </Link>
             <span className="mx-1">›</span>
-            <Link href={bullionHref} className="hover:text-gray-800">
-              {ui.breadcrumbCatalogue}
+            <Link href={hrefFor(locale, "/bullion")} className="hover:text-gray-800">
+              {ui.catalogueLabel}
             </Link>
             <span className="mx-1">›</span>
             <span className="text-gray-700">{config.name}</span>
           </nav>
 
+          {/* Hero */}
           <div className="mb-5 overflow-hidden rounded-3xl border border-gray-200 bg-gray-900 text-white shadow-[0_18px_40px_rgba(15,23,42,0.35)]">
             <div className="relative flex min-h-[190px] items-center">
-              {config.heroImage && (
-                <div className="absolute inset-0 bg-cover bg-center opacity-80" style={{ backgroundImage: `url('${config.heroImage}')` }} />
-              )}
+              {config.heroImage ? (
+                <div
+                  className="absolute inset-0 bg-cover bg-center opacity-80"
+                  style={{ backgroundImage: `url('${config.heroImage}')` }}
+                />
+              ) : null}
               <div className="absolute inset-0 bg-black/55" />
               <div className="relative px-6 py-8 md:px-10">
                 <h1 className="text-2xl font-semibold">{config.name}</h1>
@@ -197,16 +214,17 @@ export default function BullionBrandPage({
             </div>
           </div>
 
+          {/* Search / Sort Row */}
           <div className="mb-6 flex flex-col gap-3 rounded-2xl border border-gray-200 bg-white px-4 py-3 text-xs text-gray-600 md:flex-row md:items-center md:justify-between">
-            <p>
-              {ui.countLine.replace(String(products.length), "")}
-              <span className="font-semibold text-gray-900">{products.length}</span>
-              {ui.countLine.includes(String(products.length)) ? "" : ""}
+            <p className="text-gray-700">
+              <span className="font-semibold text-gray-900">{ui.productsCount}</span>
             </p>
 
             <div className="flex flex-1 items-center justify-end gap-3">
               <div className="relative w-full max-w-xs">
-                <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
+                <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                  🔍
+                </span>
                 <input
                   type="text"
                   placeholder={ui.searchPlaceholder}
@@ -216,13 +234,16 @@ export default function BullionBrandPage({
                 />
               </div>
 
-              <button className="flex items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-3 py-2 text-[11px] text-gray-700">
-                {ui.relevance}
-                <span>▾</span>
+              <button
+                type="button"
+                className="flex items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-3 py-2 text-[11px] text-gray-700"
+              >
+                {ui.relevance} <span>▾</span>
               </button>
             </div>
           </div>
 
+          {/* Products */}
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {products.map((product) => (
               <article
@@ -230,17 +251,26 @@ export default function BullionBrandPage({
                 className="flex flex-col overflow-hidden rounded-3xl bg-[#f6f9fc] shadow-[0_14px_30px_rgba(15,23,42,0.08)] border border-gray-100"
               >
                 <div className="relative flex items-center justify-center bg-[#f6f9fc] px-4 pt-6 pb-2">
-                  {product.image && <img src={product.image} alt={product.name} className="h-40 w-auto object-contain" />}
+                  {product.image ? (
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="h-40 w-auto object-contain"
+                      loading="lazy"
+                    />
+                  ) : null}
 
-                  {product.badge && (
+                  {product.badge ? (
                     <span className="absolute right-4 top-4 rounded-full bg-[#b91c1c] px-3 py-1 text-[10px] font-semibold text-white">
                       {product.badge}
                     </span>
-                  )}
+                  ) : null}
                 </div>
 
                 <div className="flex flex-1 flex-col px-4 pb-4 pt-3 text-xs">
-                  <h3 className="text-sm font-semibold text-gray-900 leading-snug line-clamp-2">{product.name}</h3>
+                  <h3 className="text-sm font-semibold text-gray-900 leading-snug line-clamp-2">
+                    {product.name}
+                  </h3>
                   <p className="mt-1 text-[11px] text-gray-500">{product.weight}</p>
 
                   <div className="mt-2 text-gray-700">
