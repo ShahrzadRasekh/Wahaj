@@ -3,6 +3,11 @@ import { ar } from "./ar";
 
 export type Locale = "en" | "ar";
 
+export const dictionaries = {
+  en,
+  ar,
+} as const;
+
 export function getDict(locale: Locale) {
-  return locale === "ar" ? ar : en;
+  return dictionaries[locale] ?? dictionaries.en;
 }

@@ -1,6 +1,7 @@
 "use client";
 
-import type { Locale } from "@/lib/i18n"; // (ONLY if you exported Locale from lib/i18n/index.ts)
+import type { Locale } from "@/lib/i18n";
+
 import HeroSection from "@/components/home/HeroSection";
 import USPSection from "@/components/home/USPSection";
 import CategorySection from "@/components/home/CategorySection";
@@ -19,7 +20,6 @@ import {
   latestNews,
   brandLogos,
 } from "@/lib/data/homeContent";
-
 
 type HomePageProps = {
   locale: Locale;

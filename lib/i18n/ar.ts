@@ -1,32 +1,45 @@
 export const ar = {
-    common: {
-      brandLine: "ذهب وألماس ذ.م.م",
-    },
-    nav: {
-      home: "الرئيسية",
-      bullion: "السبائك",
-      about: "من نحن",
-      contact: "تواصل",
-    },
-    home: {
-      heroLabel: "استثمر في مستقبلك مع سبائك موثوقة",
-      heroTitle: "وهـاج جولد",
-      heroSubtitle:
-        "شراء آمن وبسيط وشفاف عبر الإنترنت. اكتشف سبائك ذهب معتمدة ومجموعات هدايا مختارة للمستثمرين وهواة الاقتناء.",
-      ctaBullion: "السبائك",
-      ctaGifts: "مجموعات الهدايا",
-      sections: {
-        categories: "التصنيفات",
-        featured: "مختارات مميزة",
-        worth: "يستحق التجربة",
-        latest: "آخر الأخبار",
-      },
-    },
-    footer: {
-      disclaimerTitle: "سعر استرشادي.",
-      disclaimerText:
-        "الأسعار مبنية على سعر الذهب العالمي وسعر الصرف المباشر. السعر النهائي قد يختلف حسب المصنعية والرسوم والضرائب وتغيرات السوق.",
-      ratesBy: "الأسعار مقدمة من ExchangeRate-API",
-    },
-  };
-  
+  common: {
+    home: "الرئيسية",
+    bullion: "السبائك",
+    gifts: "مجموعات الهدايا",
+    about: "من نحن",
+    contact: "تواصل معنا",
+    favorites: "المفضلة",
+  },
+
+  home: {
+    categories: "الفئات",
+    featured: "المجموعة المميزة", // kept for backward compatibility if used elsewhere
+    promo: "الخدمات",
+    worth: "مختارات تستحق",
+    latest: "آخر الأخبار",
+    explore: "استكشف",
+    ctaBullion: "السبائك",
+    ctaGifts: "مجموعات الهدايا",
+  },
+
+  // NEW: used by USPSection.tsx
+  usp: {
+    fastDelivery: "توصيل سريع",
+    fastDeliveryDesc:
+      "استمتع بتوصيل سريع لجميع الطلبات. استلم سبائك الذهب والهدايا بسرعة وأمان.",
+
+    secureOrdering: "طلب آمن",
+    secureOrderingDesc:
+      "تسوّق بثقة. نستخدم تشفيراً حديثاً ووسائل دفع آمنة لحماية بياناتك.",
+
+    certifiedProducts: "منتجات معتمدة",
+    certifiedProductsDesc:
+      "جميع المنتجات موثّقة من حيث الأصالة والجودة لتشتري بثقة.",
+
+    satisfaction: "رضا مضمون 100%",
+    satisfactionDesc:
+      "نضمن تجربة سلسة مع دعم سريع وخدمة موثوقة لكل طلب.",
+  },
+
+  // NEW: used by FeaturedSection.tsx (t.featured.title)
+  featured: {
+    title: "المجموعة المميزة",
+  },
+} as const;
