@@ -174,7 +174,7 @@ export default function BullionBrandPage({
         <section className="flex-1">
           <nav className="mb-3 text-xs text-gray-500">
             <Link href={homeHref} className="hover:text-gray-800">
-              {t.nav.home}
+            {t.common.home}
             </Link>
             <span className="mx-1">›</span>
             <Link href={bullionHref} className="hover:text-gray-800">

@@ -67,10 +67,10 @@ export default function ContactPage({ locale }: { locale: Locale }) {
         {/* Breadcrumb */}
         <nav className="mb-6 text-xs text-slate-500">
           <Link href={homeHref} className="hover:text-slate-700">
-            {t.nav.home}
+          {t.common.home}
           </Link>
           <span className="mx-1">›</span>
-          <span className="font-medium text-slate-700">{t.nav.contact}</span>
+          <span className="font-medium text-slate-700">{t.common.contact}</span>
         </nav>
 
         <div className="grid gap-10 lg:grid-cols-[280px,minmax(0,1fr)]">

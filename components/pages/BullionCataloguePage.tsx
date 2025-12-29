@@ -67,7 +67,7 @@ export default function BullionCataloguePage({ locale }: { locale: Locale }) {
         {/* Breadcrumb */}
         <nav className="mb-4 text-xs text-gray-500">
           <Link href={homeHref} className="hover:text-gray-800">
-            {t.nav.home}
+          {t.common.home}
           </Link>
           <span className="mx-1">›</span>
           <span className="text-gray-700">{ui.breadcrumbCatalogue}</span>

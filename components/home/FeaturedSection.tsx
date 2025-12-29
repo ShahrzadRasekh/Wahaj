@@ -1,3 +1,4 @@
+// components/home/FeaturedSection.tsx
 "use client";
 
 import type { Locale } from "@/lib/i18n";
@@ -58,31 +59,21 @@ function LuxuryBadge({
 
 export default function FeaturedSection({ locale, products }: Props) {
   const t = getDict(locale);
-
-  // IMPORTANT: use the shared hook only (no extra localStorage state here)
-  const { ids, hydrated, toggle } = useFavorites();
+  const { ids, toggle } = useFavorites();
 
   return (
     <section className="bg-white py-16">
       <div className="mx-auto max-w-6xl px-4">
         <div className="flex items-center justify-between gap-4">
           <h2 className="text-2xl font-semibold text-gray-900">
-            {t.featured.title}
+            {t.home.featured}
           </h2>
 
           <div className="flex items-center gap-2">
-            <button
-              type="button"
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 hover:bg-gray-100"
-              aria-label="Previous"
-            >
+            <button className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 hover:bg-gray-100">
               ←
             </button>
-            <button
-              type="button"
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 hover:bg-gray-100"
-              aria-label="Next"
-            >
+            <button className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 hover:bg-gray-100">
               →
             </button>
           </div>
@@ -90,7 +81,7 @@ export default function FeaturedSection({ locale, products }: Props) {
 
         <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {products.map((product) => {
-            const isFav = hydrated ? ids.includes(product.id) : false;
+            const isFav = ids.includes(product.id);
 
             return (
               <article
@@ -103,7 +94,6 @@ export default function FeaturedSection({ locale, products }: Props) {
                       src={product.image}
                       alt={product.name}
                       className="h-40 w-auto object-contain"
-                      loading="lazy"
                     />
                   ) : (
                     <div className="h-40 w-full rounded-xl bg-gradient-to-br from-yellow-100 via-amber-300 to-yellow-700" />

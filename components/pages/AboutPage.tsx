@@ -14,10 +14,10 @@ export default function AboutPage({ locale }: { locale: Locale }) {
         {/* BREADCRUMB */}
         <nav className="mb-6 text-xs text-gray-500">
           <Link href={homeHref} className="hover:text-gray-800">
-            {t.nav.home}
+            {t.common.home}
           </Link>
           <span className="mx-1">›</span>
-          <span className="text-gray-700">{t.nav.about}</span>
+          <span className="text-gray-700">{t.common.about}</span>
         </nav>
 
         <section className="grid gap-10 md:grid-cols-[280px,1fr]">

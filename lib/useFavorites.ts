@@ -1,31 +1,25 @@
+// lib/useFavorites.ts
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
-const STORAGE_KEY = "favorites";
-const EVENT_NAME = "favorites:changed";
+const KEY = "favorites";
+const EVENT = "favorites:change";
 
-function safeParseIds(raw: string | null): number[] {
-  if (!raw) return [];
+function readIds(): number[] {
+  if (typeof window === "undefined") return [];
   try {
-    const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed)) return [];
-    return parsed
-      .map((v) => Number(v))
-      .filter((n) => Number.isFinite(n));
+    const raw = window.localStorage.getItem(KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed.filter((x) => typeof x === "number") : [];
   } catch {
     return [];
   }
 }
 
-function readIds(): number[] {
-  if (typeof window === "undefined") return [];
-  return safeParseIds(localStorage.getItem(STORAGE_KEY));
-}
-
 function writeIds(ids: number[]) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(ids));
-  window.dispatchEvent(new Event(EVENT_NAME));
+  window.localStorage.setItem(KEY, JSON.stringify(ids));
+  window.dispatchEvent(new Event(EVENT));
 }
 
 export function useFavorites() {
@@ -33,32 +27,24 @@ export function useFavorites() {
   const [ids, setIds] = useState<number[]>([]);
 
   useEffect(() => {
-    // initial hydrate
     setIds(readIds());
     setHydrated(true);
 
-    // same-tab updates
-    const onCustom = () => setIds(readIds());
-
-    // cross-tab updates
-    const onStorage = (e: StorageEvent) => {
-      if (e.key === STORAGE_KEY) setIds(readIds());
-    };
-
-    window.addEventListener(EVENT_NAME, onCustom);
-    window.addEventListener("storage", onStorage);
+    const onChange = () => setIds(readIds());
+    window.addEventListener("storage", onChange); // other tabs
+    window.addEventListener(EVENT, onChange);     // same tab
 
     return () => {
-      window.removeEventListener(EVENT_NAME, onCustom);
-      window.removeEventListener("storage", onStorage);
+      window.removeEventListener("storage", onChange);
+      window.removeEventListener(EVENT, onChange);
     };
   }, []);
 
+  const count = ids.length;
+
   const toggle = (id: number) => {
     setIds((prev) => {
-      const next = prev.includes(id)
-        ? prev.filter((x) => x !== id)
-        : [...prev, id];
+      const next = prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id];
       writeIds(next);
       return next;
     });
@@ -73,18 +59,12 @@ export function useFavorites() {
   };
 
   const clear = () => {
-    setIds(() => {
-      writeIds([]);
-      return [];
-    });
+    writeIds([]);
+    setIds([]);
   };
 
-  return {
-    ids,
-    count: ids.length,
-    hydrated,
-    toggle,
-    remove,
-    clear,
-  };
+  return useMemo(
+    () => ({ ids, count, hydrated, toggle, remove, clear }),
+    [ids, count, hydrated]
+  );
 }

@@ -1,3 +1,4 @@
+// components/home/USPSection.tsx
 "use client";
 
 import type { Locale } from "@/lib/i18n";
@@ -12,23 +13,23 @@ export default function USPSection({ locale }: Props) {
 
   const items = [
     {
-      title: t.usp.fastDelivery,
-      desc: t.usp.fastDeliveryDesc,
+      title: t.home.usp.fastDelivery,
+      desc: t.home.usp.fastDeliveryDesc,
       icon: "🚚",
     },
     {
-      title: t.usp.secureOrdering,
-      desc: t.usp.secureOrderingDesc,
+      title: t.home.usp.secureOrdering,
+      desc: t.home.usp.secureOrderingDesc,
       icon: "🔒",
     },
     {
-      title: t.usp.certifiedProducts,
-      desc: t.usp.certifiedProductsDesc,
+      title: t.home.usp.certifiedProducts,
+      desc: t.home.usp.certifiedProductsDesc,
       icon: "🏅",
     },
     {
-      title: t.usp.satisfaction,
-      desc: t.usp.satisfactionDesc,
+      title: t.home.usp.satisfaction,
+      desc: t.home.usp.satisfactionDesc,
       icon: "✔️",
     },
   ];
