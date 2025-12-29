@@ -1,3 +1,4 @@
+// components/MainHeader.tsx
 "use client";
 
 import Link from "next/link";
@@ -5,19 +6,21 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { useFavorites } from "@/lib/useFavorites";
 import LivePriceHeader from "@/components/LivePriceHeader";
+import type { Locale } from "@/lib/i18n";
+import { getDict } from "@/lib/i18n";
 
-export default function MainHeader() {
-  const pathname = usePathname();
+export default function MainHeader({ locale }: { locale: Locale }) {
   const router = useRouter();
+  const pathname = usePathname();
 
-  const isArabic = pathname?.startsWith("/ar") ?? false;
-  const prefix = isArabic ? "/ar" : "";
+  const t = getDict(locale);
 
-  const isHome = pathname === "/" || pathname === "/ar";
+  const prefix = `/${locale}`; // /en or /ar
+  const isHome = pathname === `/${locale}`; // home is /en or /ar
+  const isArabic = locale === "ar";
 
   const { count, hydrated } = useFavorites();
 
-  // On home, switch to "light mode" after you scroll past the hero
   const [pastHero, setPastHero] = useState(false);
 
   useEffect(() => {
@@ -27,11 +30,6 @@ export default function MainHeader() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Light mode:
-  // - Home after scroll: dark text
-  // - Inner pages always: dark text
-  // Dark mode:
-  // - Home at top: light text (over hero)
   const lightMode = !isHome || pastHero;
 
   const headerSurface = useMemo(() => {
@@ -64,10 +62,23 @@ export default function MainHeader() {
     : "hover:border-red-300 hover:text-red-200";
 
   const nav = [
-    { label: isArabic ? "السبائك" : "Bullion", href: `${prefix}/bullion` },
-    { label: isArabic ? "من نحن" : "About", href: `${prefix}/about` },
-    { label: isArabic ? "تواصل" : "Contact", href: `${prefix}/contact` },
+    { label: t.common.bullion, href: `${prefix}/bullion` },
+    { label: t.common.about, href: `${prefix}/about` },
+    { label: t.common.contact, href: `${prefix}/contact` },
   ];
+
+  // Optional language switch (keeps same path after /en or /ar)
+  const otherLocale: Locale = locale === "ar" ? "en" : "ar";
+  const switchedPath = (() => {
+    // If user is on /en/.... or /ar/....
+    const parts = (pathname || "").split("/");
+    // ["", "en", "bullion", ...]
+    if (parts.length >= 2 && (parts[1] === "en" || parts[1] === "ar")) {
+      parts[1] = otherLocale;
+      return parts.join("/") || `/${otherLocale}`;
+    }
+    return `/${otherLocale}`;
+  })();
 
   return (
     <header
@@ -78,8 +89,8 @@ export default function MainHeader() {
       dir={isArabic ? "rtl" : "ltr"}
     >
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-        {/* LEFT: LOGO */}
-        <Link href={isArabic ? "/ar" : "/"} className="flex items-center gap-2">
+        {/* LOGO */}
+        <Link href={`/${locale}`} className="flex items-center gap-2">
           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-yellow-300 via-amber-500 to-yellow-700 shadow-lg shadow-yellow-500/40">
             <span className="text-xs font-black tracking-[0.15em] text-black">
               WG
@@ -106,7 +117,7 @@ export default function MainHeader() {
           </div>
         </Link>
 
-        {/* CENTER: NAV LINKS */}
+        {/* NAV */}
         <nav className="hidden items-center gap-8 text-xs font-medium uppercase tracking-[0.18em] lg:flex">
           {nav.map((item) => (
             <Link key={item.href} href={item.href} className={linkClass}>
@@ -115,7 +126,7 @@ export default function MainHeader() {
           ))}
         </nav>
 
-        {/* RIGHT: PRICES (HOME ONLY) + FAVORITES */}
+        {/* RIGHT */}
         <div className="flex items-center gap-4 text-[11px]">
           {isHome && (
             <LivePriceHeader
@@ -125,6 +136,22 @@ export default function MainHeader() {
             />
           )}
 
+          {/* Language switch */}
+          <button
+            type="button"
+            onClick={() => router.push(switchedPath)}
+            className={[
+              "rounded-full border px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.2em] transition",
+              lightMode
+                ? "border-black/15 text-slate-700 hover:border-black/30"
+                : "border-white/30 text-white/90 hover:border-white/50",
+            ].join(" ")}
+            aria-label="Switch language"
+          >
+            {locale === "ar" ? "EN" : "AR"}
+          </button>
+
+          {/* Favorites */}
           <button
             type="button"
             onClick={() => router.push(`${prefix}/favorites`)}

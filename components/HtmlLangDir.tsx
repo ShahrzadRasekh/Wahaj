@@ -1,17 +1,17 @@
+// components/HtmlLangDir.tsx
 "use client";
 
-import { usePathname } from "next/navigation";
 import { useEffect } from "react";
+import type { Locale } from "@/lib/i18n";
 
-export default function HtmlLangDir() {
-  const pathname = usePathname() || "/";
-  const isArabic = pathname === "/ar" || pathname.startsWith("/ar/");
-
+export default function HtmlLangDir({ locale }: { locale: Locale }) {
   useEffect(() => {
-    const html = document.documentElement;
-    html.lang = isArabic ? "ar" : "en";
-    html.dir = isArabic ? "rtl" : "ltr";
-  }, [isArabic]);
+    if (typeof document === "undefined") return;
+
+    const dir = locale === "ar" ? "rtl" : "ltr";
+    document.documentElement.lang = locale;
+    document.documentElement.dir = dir;
+  }, [locale]);
 
   return null;
 }
