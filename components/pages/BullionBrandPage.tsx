@@ -12,7 +12,7 @@ type Product = {
   id: number;
   name: string;
   weight: string;
-  price: string;
+  price: string; // keep in data for later, but we won't render it
   badge?: string;
   image: string;
 };
@@ -37,9 +37,29 @@ const brandConfigs: Record<BrandKey, BrandConfig> = {
       "PAMP is a renowned precious metals refiner based in Switzerland, known for its high-quality gold bars trusted by investors worldwide.",
     heroImage: "/brands/pamp-hero.jpg",
     products: [
-      { id: 1, name: "PAMP 1 Gram", weight: "1 g", price: "225.50", badge: "Best Seller", image: "/products/pamp-1g.jpg" },
-      { id: 2, name: "PAMP 2.5 Gram", weight: "2.5 g", price: "528.20", image: "/products/pamp-2_5g.jpg" },
-      { id: 3, name: "PAMP 5 Gram", weight: "5 g", price: "1,055.40", badge: "Best Seller", image: "/products/pamp-5g.jpg" },
+      {
+        id: 1,
+        name: "PAMP 1 Gram",
+        weight: "1 g",
+        price: "225.50",
+        badge: "Best Seller",
+        image: "/products/pamp-1g.jpg",
+      },
+      {
+        id: 2,
+        name: "PAMP 2.5 Gram",
+        weight: "2.5 g",
+        price: "528.20",
+        image: "/products/pamp-2_5g.jpg",
+      },
+      {
+        id: 3,
+        name: "PAMP 5 Gram",
+        weight: "5 g",
+        price: "1,055.40",
+        badge: "Best Seller",
+        image: "/products/pamp-5g.jpg",
+      },
     ],
   },
   valcambi: {
@@ -49,8 +69,21 @@ const brandConfigs: Record<BrandKey, BrandConfig> = {
       "Valcambi Suisse bars are recognized for their precision, purity and global acceptability among investors and institutions.",
     heroImage: "/brands/valcambi-hero.jpg",
     products: [
-      { id: 1, name: "Valcambi 10 Gram", weight: "10 g", price: "3,920.80", image: "/products/valcambi-10g.jpg" },
-      { id: 2, name: "Valcambi 20 Gram", weight: "20 g", price: "7,810.60", badge: "Best Seller", image: "/products/valcambi-20g.jpg" },
+      {
+        id: 1,
+        name: "Valcambi 10 Gram",
+        weight: "10 g",
+        price: "3,920.80",
+        image: "/products/valcambi-10g.jpg",
+      },
+      {
+        id: 2,
+        name: "Valcambi 20 Gram",
+        weight: "20 g",
+        price: "7,810.60",
+        badge: "Best Seller",
+        image: "/products/valcambi-20g.jpg",
+      },
     ],
   },
   aletihad: {
@@ -60,7 +93,13 @@ const brandConfigs: Record<BrandKey, BrandConfig> = {
       "Al Etihad Gold bars combine regional heritage with modern refinery standards, trusted across the GCC region.",
     heroImage: "/brands/aletihad-hero.jpg",
     products: [
-      { id: 1, name: "Al Etihad 10 Gram", weight: "10 g", price: "3,880.00", image: "/products/aletihad-10g.jpg" },
+      {
+        id: 1,
+        name: "Al Etihad 10 Gram",
+        weight: "10 g",
+        price: "3,880.00",
+        image: "/products/aletihad-10g.jpg",
+      },
     ],
   },
   sam: {
@@ -70,7 +109,13 @@ const brandConfigs: Record<BrandKey, BrandConfig> = {
       "SAM Precious Metals offers innovative minted and cast bars, popular among both investors and jewellers.",
     heroImage: "/brands/sam-hero.jpg",
     products: [
-      { id: 1, name: "SAM 1/2 Ounce Oval Pendant", weight: "15.55 g", price: "7,924.18", image: "/products/sam-oval-half-oz.jpg" },
+      {
+        id: 1,
+        name: "SAM 1/2 Ounce Oval Pendant",
+        weight: "15.55 g",
+        price: "7,924.18",
+        image: "/products/sam-oval-half-oz.jpg",
+      },
     ],
   },
 };
@@ -115,7 +160,9 @@ export default function BullionBrandPage({ locale, brand }: Props) {
       : `Products: ${products.length}`,
     searchPlaceholder: isArabic ? "ابحث عن منتج" : "Search product",
     relevance: isArabic ? "الأكثر صلة" : "Relevance",
-    indicative: isArabic ? "يُطبق السعر المباشر — استرشادي فقط." : "Live rate applied — indicative only.",
+    indicative: isArabic
+      ? "يُطبق السعر المباشر — استرشادي فقط."
+      : "Live rate applied — indicative only.",
 
     // Breadcrumb label
     catalogueLabel: isArabic ? "السبائك" : "Bullion",
@@ -127,7 +174,9 @@ export default function BullionBrandPage({ locale, brand }: Props) {
         {/* LEFT: Filters/Collections */}
         <aside className="hidden w-64 flex-shrink-0 space-y-6 md:block">
           <div className="rounded-xl border border-gray-200 bg-[#f9fafb] px-4 py-4">
-            <h2 className="text-sm font-semibold text-gray-900">{ui.filters}</h2>
+            <h2 className="text-sm font-semibold text-gray-900">
+              {ui.filters}
+            </h2>
 
             <div className="mt-4 space-y-3 text-xs text-gray-700">
               <div>
@@ -151,12 +200,18 @@ export default function BullionBrandPage({ locale, brand }: Props) {
           </div>
 
           <div className="h-40 rounded-xl bg-gradient-to-br from-[#7f1d1d] via-[#b91c1c] to-[#f97316] p-4 text-xs text-white shadow-lg">
-            <p className="font-semibold uppercase tracking-[0.18em] opacity-90">{ui.promoTitle}</p>
-            <p className="mt-2 text-[11px] leading-relaxed opacity-90">{ui.promoBody}</p>
+            <p className="font-semibold uppercase tracking-[0.18em] opacity-90">
+              {ui.promoTitle}
+            </p>
+            <p className="mt-2 text-[11px] leading-relaxed opacity-90">
+              {ui.promoBody}
+            </p>
           </div>
 
           <div className="rounded-xl border border-gray-200 bg-[#f9fafb] px-4 py-4">
-            <h2 className="text-sm font-semibold text-gray-900">{ui.collections}</h2>
+            <h2 className="text-sm font-semibold text-gray-900">
+              {ui.collections}
+            </h2>
             <div className="mt-3 space-y-2 text-xs">
               {Object.values(brandConfigs).map((b) => (
                 <Link
@@ -172,7 +227,9 @@ export default function BullionBrandPage({ locale, brand }: Props) {
                   <span
                     className={[
                       "inline-block h-2.5 w-2.5 rounded-[4px]",
-                      b.slug === config.slug ? "bg-black" : "border border-gray-300",
+                      b.slug === config.slug
+                        ? "bg-black"
+                        : "border border-gray-300",
                     ].join(" ")}
                   />
                   {b.name}
@@ -190,7 +247,10 @@ export default function BullionBrandPage({ locale, brand }: Props) {
               {t.common.home}
             </Link>
             <span className="mx-1">›</span>
-            <Link href={hrefFor(locale, "/bullion")} className="hover:text-gray-800">
+            <Link
+              href={hrefFor(locale, "/bullion")}
+              className="hover:text-gray-800"
+            >
               {ui.catalogueLabel}
             </Link>
             <span className="mx-1">›</span>
@@ -209,7 +269,9 @@ export default function BullionBrandPage({ locale, brand }: Props) {
               <div className="absolute inset-0 bg-black/55" />
               <div className="relative px-6 py-8 md:px-10">
                 <h1 className="text-2xl font-semibold">{config.name}</h1>
-                <p className="mt-2 max-w-xl text-sm text-gray-100">{config.description}</p>
+                <p className="mt-2 max-w-xl text-sm text-gray-100">
+                  {config.description}
+                </p>
               </div>
             </div>
           </div>
@@ -217,7 +279,9 @@ export default function BullionBrandPage({ locale, brand }: Props) {
           {/* Search / Sort Row */}
           <div className="mb-6 flex flex-col gap-3 rounded-2xl border border-gray-200 bg-white px-4 py-3 text-xs text-gray-600 md:flex-row md:items-center md:justify-between">
             <p className="text-gray-700">
-              <span className="font-semibold text-gray-900">{ui.productsCount}</span>
+              <span className="font-semibold text-gray-900">
+                {ui.productsCount}
+              </span>
             </p>
 
             <div className="flex flex-1 items-center justify-end gap-3">
@@ -271,14 +335,15 @@ export default function BullionBrandPage({ locale, brand }: Props) {
                   <h3 className="text-sm font-semibold text-gray-900 leading-snug line-clamp-2">
                     {product.name}
                   </h3>
-                  <p className="mt-1 text-[11px] text-gray-500">{product.weight}</p>
+                  <p className="mt-1 text-[11px] text-gray-500">
+                    {product.weight}
+                  </p>
 
-                  <div className="mt-2 text-gray-700">
-                    <span className="text-[11px] uppercase tracking-[0.18em]">AED</span>{" "}
-                    <span className="text-base font-semibold text-gray-900">{product.price}</span>
-                  </div>
+                  {/* Price intentionally removed */}
 
-                  <p className="mt-2 text-[11px] text-gray-400">{ui.indicative}</p>
+                  <p className="mt-2 text-[11px] text-gray-400">
+                    {ui.indicative}
+                  </p>
                 </div>
               </article>
             ))}
