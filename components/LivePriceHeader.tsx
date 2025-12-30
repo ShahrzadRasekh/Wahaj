@@ -21,20 +21,8 @@ export default function LivePriceHeader({
   tickEveryMs = 1_000,
 }: Props) {
   const [data, setData] = useState<LivePricePayload | null>(null);
-  const [now, setNow] = useState(() => Date.now());
+  const [now, setNow] = useState(Date.now());
   const inFlight = useRef(false);
-
-  // Detect RTL from <html dir="rtl">
-  const isRTL =
-    typeof document !== "undefined" &&
-    (document.documentElement.dir || "").toLowerCase() === "rtl";
-
-  const labels = useMemo(() => {
-    if (isRTL) {
-      return { oz: "ذهب أونصة", g: "ذهب جرام", s: "ث", m: "د" };
-    }
-    return { oz: "Gold Oz", g: "Gold g", s: "s", m: "m" };
-  }, [isRTL]);
 
   const textClass = lightMode ? "text-slate-700" : "text-white/90";
   const dimClass = lightMode ? "text-slate-400" : "text-white/60";
@@ -45,12 +33,10 @@ export default function LivePriceHeader({
     inFlight.current = true;
 
     try {
-      const res = await fetch("/api/live-prices", {
-        cache: "no-store",
-        headers: { Accept: "application/json" },
-      });
-
+      // IMPORTANT: your folder is /api/live-prices (plural)
+      const res = await fetch("/api/live-prices", { cache: "no-store" });
       const json = (await res.json()) as LivePricePayload;
+
       setData(json);
 
       if (json?.error) {
@@ -69,49 +55,41 @@ export default function LivePriceHeader({
     }
   }
 
-  // Poll the API
   useEffect(() => {
     load();
-    const id = window.setInterval(load, fetchEveryMs);
-    return () => window.clearInterval(id);
+    const id = setInterval(load, fetchEveryMs);
+    return () => clearInterval(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchEveryMs]);
 
-  // Update the "age" label
   useEffect(() => {
-    const id = window.setInterval(() => setNow(Date.now()), tickEveryMs);
-    return () => window.clearInterval(id);
+    const id = setInterval(() => setNow(Date.now()), tickEveryMs);
+    return () => clearInterval(id);
   }, [tickEveryMs]);
 
   const ageLabel = useMemo(() => {
     if (!data?.updatedAt) return "";
     const t = new Date(data.updatedAt).getTime();
     if (!Number.isFinite(t)) return "";
-
     const diffSec = Math.max(0, Math.floor((now - t) / 1000));
-    if (diffSec < 60) return `${diffSec}${labels.s}`;
-
-    const m = Math.floor(diffSec / 60);
-    return `${m}${labels.m}`;
-  }, [data?.updatedAt, now, labels]);
+    if (diffSec < 60) return `${diffSec}s`;
+    return `${Math.floor(diffSec / 60)}m`;
+  }, [data?.updatedAt, now]);
 
   return (
-    <div className="hidden items-center gap-4 md:flex" dir={isRTL ? "rtl" : "ltr"}>
-      {/* Gold Oz */}
+    <div className="hidden items-center gap-3 md:flex">
       <div className={["flex items-center gap-2 text-[10px]", textClass].join(" ")}>
-        <span className="uppercase tracking-[0.22em]">{labels.oz}</span>
+        <span className="uppercase tracking-[0.22em]">Gold Oz</span>
         <span className={["h-1.5 w-1.5 rounded-full", dotClass].join(" ")} />
         <span className="font-semibold tabular-nums">{data?.goldOz ?? "--"}</span>
       </div>
 
-      {/* Gold g */}
       <div className={["flex items-center gap-2 text-[10px]", textClass].join(" ")}>
-        <span className="uppercase tracking-[0.22em]">{labels.g}</span>
+        <span className="uppercase tracking-[0.22em]">Gold g</span>
         <span className={["h-1.5 w-1.5 rounded-full", dotClass].join(" ")} />
         <span className="font-semibold tabular-nums">{data?.goldG ?? "--"}</span>
       </div>
 
-      {/* Age */}
       {!!ageLabel && (
         <div className={["text-[10px] tabular-nums", dimClass].join(" ")}>
           {ageLabel}
