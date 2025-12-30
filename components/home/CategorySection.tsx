@@ -7,17 +7,19 @@ type Props = {
 };
 
 export default function CategorySection({ locale }: Props) {
+  const prefix = `/${locale}`;
+
   const categories = [
     {
       title: "BULLION",
       subtitle: "Bars, coins & investment gold",
-      href: locale === "ar" ? "/ar/bullion" : "/bullion",
+      href: `${prefix}/bullion`,
       image: "/products/category-bullion.jpg",
     },
     {
       title: "GIFT COLLECTIONS",
       subtitle: "Gold crafted for meaningful moments",
-      href: locale === "ar" ? "/ar/gifts" : "/gifts",
+      href: `${prefix}/gifts`,
       image: "/products/category-gifts.jpg",
     },
   ];
