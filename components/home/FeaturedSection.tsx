@@ -3,14 +3,7 @@
 import type { Locale } from "@/lib/i18n";
 import { getDict } from "@/lib/i18n";
 import { useFavorites } from "@/lib/useFavorites";
-
-type FeaturedProduct = {
-  id: number;
-  title: string;
-  description?: string; // <-- IMPORTANT: optional fixes Vercel build
-  image: string;
-  // price?: string; // keep if exists in data, but we won't render it
-};
+import type { FeaturedProduct } from "@/lib/data/homeContent";
 
 type Props = {
   locale: Locale;
@@ -27,7 +20,9 @@ export default function FeaturedSection({ locale, products }: Props) {
     <section className="bg-white py-20" dir={isArabic ? "rtl" : "ltr"}>
       <div className="mx-auto max-w-6xl px-4">
         <div className="flex items-end justify-between gap-6">
-          <h2 className="text-2xl font-semibold text-gray-900">{t.home.featured}</h2>
+          <h2 className="text-2xl font-semibold text-gray-900">
+            {t.home.featured}
+          </h2>
         </div>
 
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -42,14 +37,16 @@ export default function FeaturedSection({ locale, products }: Props) {
                 <div className="flex items-center justify-center px-6 pt-8">
                   <img
                     src={p.image}
-                    alt={p.title}
+                    alt={p.name}
                     className="h-44 w-auto object-contain"
                     loading="lazy"
                   />
                 </div>
 
                 <div className="px-6 pb-6 pt-5">
-                  <h3 className="text-sm font-semibold text-gray-900">{p.title}</h3>
+                  <h3 className="text-sm font-semibold text-gray-900">
+                    {p.name}
+                  </h3>
 
                   {p.description ? (
                     <p className="mt-2 text-sm leading-relaxed text-gray-600">
