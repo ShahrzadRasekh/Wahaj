@@ -6,6 +6,8 @@ import { featuredProducts } from "@/lib/data/homeContent";
 import type { Locale } from "@/lib/i18n";
 import { getDict } from "@/lib/i18n";
 
+import RelatedProducts from "@/components/products/RelatedProducts";
+
 function absUrl(path: string) {
   // You can replace with your real domain later
   const base =
@@ -56,10 +58,11 @@ export async function generateMetadata({
     openGraph: {
       title,
       description,
+      // Next's types want a supported OG type. Use "website" here.
+      type: "website",
       url: canonical,
       siteName: "Wahaj Gold",
       locale: locale === "ar" ? "ar_AE" : "en_US",
-      type: "website", // ✅ must be website/article
       images: [
         {
           url: absUrl(product.image),
@@ -139,6 +142,25 @@ export default function ProductPage({
             </div>
           </section>
         </div>
+
+        {/* Related Products / Cross-linking */}
+        <RelatedProducts
+          locale={locale}
+          current={{
+            id: product.id,
+            slug: product.slug,
+            name: product.name,
+            description: product.description,
+            image: product.image,
+          }}
+          products={featuredProducts.map((p) => ({
+            id: p.id,
+            slug: p.slug,
+            name: p.name,
+            description: p.description,
+            image: p.image,
+          }))}
+        />
       </div>
 
       {/* JSON-LD Product */}
