@@ -10,7 +10,7 @@ export const ar = {
   },
   home: {
     categories: "الفئات",
-    featured: "المجموعة المميزة",
+    featured: "المنتجات المميزة",
     promo: "الخدمات",
     worth: "مختارات تستحق",
     latest: "آخر الأخبار",

@@ -10,7 +10,7 @@ export const en = {
   },
   home: {
     categories: "Categories",
-    featured: "Featured Collection",
+    featured: "Featured Products",
     promo: "Services",
     worth: "Worth Your While",
     latest: "Latest News",
