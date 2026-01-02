@@ -7,6 +7,7 @@ import { useFavorites } from "@/lib/useFavorites";
 
 type FeaturedProduct = {
   id: number;
+  slug: string;
   name: string;
   description?: string;
   image: string;
@@ -36,7 +37,7 @@ export default function FeaturedSection({ locale, products }: Props) {
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {products.map((p) => {
             const isFav = ids.includes(p.id);
-            const productHref = hrefFor(locale, `/products/${p.id}`);
+            const productHref = hrefFor(locale, `/products/${p.slug}`);
 
             return (
               <article

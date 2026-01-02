@@ -9,14 +9,16 @@ export type ProductBadge =
       variant?: BadgeVariant;
     };
 
-export type FeaturedProduct = {
-  id: number;
-  name: string;
-  price: string;
-  image: string;
-  description?: string;
-  badge?: ProductBadge;
-};
+    export type FeaturedProduct = {
+      id: number;
+      slug: string;            // ✅ add this
+      name: string;
+      price: string;           // you’re not showing it now, but keep if needed later
+      image: string;
+      description?: string;
+      badge?: ProductBadge;
+    };
+    
 
 export type HeroSlide = {
   id: number;
@@ -80,6 +82,7 @@ export const heroSlides: HeroSlide[] = [
 export const featuredProducts: FeaturedProduct[] = [
   {
     id: 1,
+    slug: "strength",
     name: "Strength",
     price: "5,207.69",
     image: "/products/LionKing.jpg",
@@ -88,6 +91,7 @@ export const featuredProducts: FeaturedProduct[] = [
   },
   {
     id: 2,
+    slug: "my-love",
     name: "My Love",
     price: "1,344.29",
     badge: { label: "Best Seller", variant: "gold" },
@@ -97,6 +101,7 @@ export const featuredProducts: FeaturedProduct[] = [
   },
   {
     id: 3,
+    slug: "sea-queen",
     name: "Sea Queen",
     price: "10,120.50",
     image: "/products/Mermaid.jpg",
@@ -105,6 +110,7 @@ export const featuredProducts: FeaturedProduct[] = [
   },
   {
     id: 4,
+    slug: "my-mother",
     name: "My Mother",
     price: "1,062.05",
     image: "/products/MyMother.jpg",
@@ -113,6 +119,7 @@ export const featuredProducts: FeaturedProduct[] = [
   },
   {
     id: 5,
+    slug: "my-heart",
     name: "My Heart",
     price: "5,310.42",
     image: "/products/MyHeart.jpg",
@@ -121,6 +128,7 @@ export const featuredProducts: FeaturedProduct[] = [
   },
   {
     id: 6,
+    slug: "makkah",
     name: "Makkah",
     price: "720.30",
     image: "/products/makkahbar.jpg",
@@ -129,6 +137,7 @@ export const featuredProducts: FeaturedProduct[] = [
   },
   {
     id: 7,
+    slug: "moon-flower",
     name: "Moon Flower",
     price: "1,180.75",
     badge: { label: "New Arrival", variant: "gold" },
@@ -138,6 +147,7 @@ export const featuredProducts: FeaturedProduct[] = [
   },
   {
     id: 8,
+    slug: "love-tree",
     name: "Love Tree",
     price: "24,950.00",
     image: "/products/Love-Tree.jpg",
