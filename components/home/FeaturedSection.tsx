@@ -19,7 +19,7 @@ type Props = {
 };
 
 function hrefFor(locale: Locale, path: `/${string}`) {
-  return locale === "ar" ? `/ar${path}` : path;
+  return `/${locale}${path}`;
 }
 
 export default function FeaturedSection({ locale, products }: Props) {
@@ -28,10 +28,16 @@ export default function FeaturedSection({ locale, products }: Props) {
   const { ids, toggle } = useFavorites();
 
   return (
-    <section id="featured" className="bg-white py-20" dir={isArabic ? "rtl" : "ltr"}>
+    <section
+      id="featured"
+      className="bg-white py-20"
+      dir={isArabic ? "rtl" : "ltr"}
+    >
       <div className="mx-auto max-w-6xl px-4">
         <div className="flex items-end justify-between gap-6">
-          <h2 className="text-2xl font-semibold text-gray-900">{t.home.featured}</h2>
+          <h2 className="text-2xl font-semibold text-gray-900">
+            {t.home.featured}
+          </h2>
         </div>
 
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -44,7 +50,6 @@ export default function FeaturedSection({ locale, products }: Props) {
                 key={p.id}
                 className="relative overflow-hidden rounded-3xl border border-gray-100 bg-[#f6f9fc] shadow-[0_14px_30px_rgba(15,23,42,0.08)]"
               >
-                {/* Clickable card */}
                 <Link href={productHref} className="block">
                   <div className="flex items-center justify-center px-6 pt-8">
                     <img
@@ -56,19 +61,18 @@ export default function FeaturedSection({ locale, products }: Props) {
                   </div>
 
                   <div className="px-6 pb-6 pt-5">
-                    <h3 className="text-sm font-semibold text-gray-900">{p.name}</h3>
+                    <h3 className="text-sm font-semibold text-gray-900">
+                      {p.name}
+                    </h3>
 
                     {p.description ? (
                       <p className="mt-2 text-sm leading-relaxed text-gray-600">
                         {p.description}
                       </p>
                     ) : null}
-
-                    {/* Price intentionally not rendered */}
                   </div>
                 </Link>
 
-                {/* Favorite button (must not navigate) */}
                 <button
                   type="button"
                   onClick={(e) => {
