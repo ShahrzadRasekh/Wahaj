@@ -3,12 +3,15 @@
 import Link from "next/link";
 import type { Locale } from "@/lib/i18n";
 
+type Metal = "Gold" | "Silver" | "Platinum";
+
 type FeaturedProduct = {
   id: number;
   slug: string;
   name: string;
   description?: string;
   image: string;
+  metal?: Metal; // optional, but used when available
 };
 
 function hrefFor(locale: Locale, path: `/${string}`) {
@@ -25,39 +28,71 @@ function normalizeText(s: string) {
 
 function tokenSet(s: string) {
   const words = normalizeText(s).split(" ").filter(Boolean);
-  // remove very short tokens
   return new Set(words.filter((w) => w.length >= 3));
 }
 
-function relatedByOverlap(
+function jaccard(a: Set<string>, b: Set<string>) {
+  if (!a.size && !b.size) return 0;
+  let inter = 0;
+  a.forEach((w) => {
+    if (b.has(w)) inter += 1;
+  });
+  const union = a.size + b.size - inter;
+  return union === 0 ? 0 : inter / union;
+}
+
+function pickRelated(
   all: FeaturedProduct[],
   current: FeaturedProduct,
   limit = 3
 ) {
   const currentTokens = tokenSet(`${current.name} ${current.description ?? ""}`);
 
-  const scored = all
-    .filter((p) => p.slug !== current.slug)
-    .map((p) => {
-      const tokens = tokenSet(`${p.name} ${p.description ?? ""}`);
-      let score = 0;
-      currentTokens.forEach((w) => {
-        if (tokens.has(w)) score += 1;
-      });
-      return { p, score };
-    })
-    .sort((a, b) => b.score - a.score);
+  // Step 1: exclude current
+  const candidates = all.filter((p) => p.slug !== current.slug);
 
-  // If overlap is weak (all 0), just take the first few others
-  const top = scored.filter((x) => x.score > 0).slice(0, limit).map((x) => x.p);
-  if (top.length >= limit) return top;
+  // Step 2: score candidates with:
+  // - same metal boost (if both have metal)
+  // - text similarity (Jaccard)
+  // - stable tiebreakers (name/slug) for deterministic output
+  const scored = candidates.map((p) => {
+    const tokens = tokenSet(`${p.name} ${p.description ?? ""}`);
+    const sim = jaccard(currentTokens, tokens);
 
-  const fallback = scored
-    .filter((x) => !top.some((t) => t.slug === x.p.slug))
-    .slice(0, limit - top.length)
+    const sameMetal =
+      current.metal && p.metal && current.metal === p.metal ? 1 : 0;
+
+    // weight: sameMetal is a strong signal, similarity is refined signal
+    const score = sameMetal * 100 + sim * 10;
+
+    return { p, score, sameMetal, sim };
+  });
+
+  // Step 3: sort by score, then stable tie-breakers
+  scored.sort((a, b) => {
+    if (b.score !== a.score) return b.score - a.score;
+    // stable ordering:
+    const nameCmp = a.p.name.localeCompare(b.p.name);
+    if (nameCmp !== 0) return nameCmp;
+    return a.p.slug.localeCompare(b.p.slug);
+  });
+
+  // Step 4: if we have any same-metal, prefer them first
+  const sameMetalFirst = scored
+    .filter((x) => x.sameMetal === 1)
+    .slice(0, limit)
     .map((x) => x.p);
 
-  return [...top, ...fallback];
+  if (sameMetalFirst.length >= limit) return sameMetalFirst;
+
+  // Step 5: fill remaining by best similarity (or fallback deterministic)
+  const used = new Set(sameMetalFirst.map((p) => p.slug));
+  const fill = scored
+    .filter((x) => !used.has(x.p.slug))
+    .slice(0, limit - sameMetalFirst.length)
+    .map((x) => x.p);
+
+  return [...sameMetalFirst, ...fill];
 }
 
 export default function RelatedProducts({
@@ -76,8 +111,7 @@ export default function RelatedProducts({
     view: isArabic ? "عرض المنتج" : "View product",
   };
 
-  const related = relatedByOverlap(products, current, 3);
-
+  const related = pickRelated(products, current, 3);
   if (!related.length) return null;
 
   return (

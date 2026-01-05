@@ -1,24 +1,30 @@
+// app/(site)/[locale]/products/[slug]/page.tsx
+
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
+
 import { allFeaturedProducts } from "@/lib/data/homeContent";
 import type { Locale } from "@/lib/i18n";
 import { getDict } from "@/lib/i18n";
 
 import RelatedProducts from "@/components/products/RelatedProducts";
 
+function siteUrl() {
+  return (
+    process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "https://wahajgold.com"
+  );
+}
+
 function absUrl(path: string) {
-  // You can replace with your real domain later
-  const base =
-    process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ||
-    "https://wahajgold.com";
-  return path.startsWith("http") ? path : `${base}${path}`;
+  const base = siteUrl();
+  return path.startsWith("http") ? path : `${base}${path.startsWith("/") ? "" : "/"}${path}`;
 }
 
 export async function generateStaticParams() {
   const locales: Locale[] = ["en", "ar"];
   return locales.flatMap((locale) =>
-  allFeaturedProducts.map((p) => ({
+    allFeaturedProducts.map((p) => ({
       locale,
       slug: p.slug,
     }))
@@ -42,24 +48,27 @@ export async function generateMetadata({
       ? "منتج مختار من وهـاج جولد."
       : "A featured product from Wahaj Gold.");
 
-  const canonical = `/${locale}/products/${product.slug}`;
+  // Canonical should be absolute for best SEO consistency
+  const canonicalPath = `/${locale}/products/${product.slug}`;
+  const canonicalAbs = absUrl(canonicalPath);
 
   return {
     title,
     description,
+
     alternates: {
-      canonical,
+      canonical: canonicalAbs,
       languages: {
-        en: `/en/products/${product.slug}`,
-        ar: `/ar/products/${product.slug}`,
+        en: absUrl(`/en/products/${product.slug}`),
+        ar: absUrl(`/ar/products/${product.slug}`),
       },
     },
+
     openGraph: {
       title,
       description,
-      // Next's types want a supported OG type. Use "website" here.
       type: "website",
-      url: canonical,
+      url: canonicalAbs,
       siteName: "Wahaj Gold",
       locale: locale === "ar" ? "ar_AE" : "en_US",
       images: [
@@ -70,6 +79,13 @@ export async function generateMetadata({
           alt: product.name,
         },
       ],
+    },
+
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [absUrl(product.image)],
     },
   };
 }
@@ -86,8 +102,12 @@ export default function ProductPage({
   if (!product) notFound();
 
   const isArabic = locale === "ar";
+
   const homeHref = `/${locale}`;
-  const productsHref = `/${locale}#featured`; // or `/${locale}`
+
+  // If your homepage section id changes later, this is the only line you update.
+  const featuredAnchorId = "featured";
+  const productsHref = `/${locale}#${featuredAnchorId}`;
 
   return (
     <main className="min-h-screen bg-[#f5f5f7]" dir={isArabic ? "rtl" : "ltr"}>
@@ -111,6 +131,7 @@ export default function ProductPage({
               src={product.image}
               alt={product.name}
               className="mx-auto h-80 w-auto object-contain"
+              loading="eager"
             />
           </div>
 
@@ -151,6 +172,7 @@ export default function ProductPage({
             name: product.name,
             description: product.description,
             image: product.image,
+            metal: product.metal,
           }}
           products={allFeaturedProducts.map((p) => ({
             id: p.id,
@@ -158,6 +180,7 @@ export default function ProductPage({
             name: p.name,
             description: p.description,
             image: p.image,
+            metal: p.metal,
           }))}
         />
       </div>
