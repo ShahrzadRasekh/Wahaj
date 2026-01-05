@@ -85,7 +85,7 @@ export default function HeroSection({ locale, slides }: Props) {
   className={[
     "w-full max-w-xl rounded-3xl",
     "border border-white/10",
-    "bg-black/20 backdrop-blur-3xl", // ← more transparent + smoother blur
+    "bg-black/20 backdrop-blur-4xl", // ← more transparent + smoother blur
     "shadow-[0_14px_32px_rgba(0,0,0,0.25)]", // ← lighter shadow
     "px-7 py-8 md:px-10 md:py-10",
     cardOffset,

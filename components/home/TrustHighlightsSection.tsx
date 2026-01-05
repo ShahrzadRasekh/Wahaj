@@ -17,7 +17,7 @@ export default function TrustHighlightsSection({ locale }: { locale: Locale }) {
             <p className="mt-2 text-sm text-gray-600">
               {isArabic
                 ? "إشارات واضحة تعكس أسلوبنا في العمل وتجربة العميل."
-                : "Clear signals that reflect how we operate and support customers."}
+                : "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In eget sagittis lacus."}
             </p>
           </div>
         </div>

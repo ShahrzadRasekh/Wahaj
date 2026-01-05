@@ -9,6 +9,8 @@ import ValuePillarsSection from "@/components/home/ValuePillarsSection";
 import FeaturedSection from "@/components/home/FeaturedSection";
 import TrustHighlightsSection from "@/components/home/TrustHighlightsSection";
 
+import { allFeaturedProducts } from "@/lib/data/homeContent";
+
 import {
   heroSlides,
   featuredGoldProducts,

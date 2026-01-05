@@ -5,6 +5,7 @@ import { brandIntro } from "@/lib/data/homeContent";
 
 export default function BrandIntroSection({ locale }: { locale: Locale }) {
   const isArabic = locale === "ar";
+  const blocks = isArabic ? brandIntro.bodyAr : brandIntro.bodyEn;
 
   return (
     <section className="bg-white py-14" dir={isArabic ? "rtl" : "ltr"}>
@@ -19,9 +20,21 @@ export default function BrandIntroSection({ locale }: { locale: Locale }) {
               {isArabic ? brandIntro.titleAr : brandIntro.titleEn}
             </h2>
 
-            <p className="mt-4 text-sm leading-relaxed text-gray-700 md:text-[15px]">
-              {isArabic ? brandIntro.bodyAr : brandIntro.bodyEn}
-            </p>
+            {/* ✅ Paragraph spacing */}
+            <div className="mt-4 space-y-6 text-sm leading-relaxed text-gray-700 md:text-[15px]">
+              {blocks.map((b, i) => {
+                if (b.type === "p") return <p key={i}>{b.text}</p>;
+                if (b.type === "ul")
+                  return (
+                    <ul key={i} className="list-disc pl-5 space-y-2">
+                      {b.items.map((item, idx) => (
+                        <li key={idx}>{item}</li>
+                      ))}
+                    </ul>
+                  );
+                return null;
+              })}
+            </div>
           </div>
         </div>
       </div>

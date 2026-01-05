@@ -1,5 +1,5 @@
-// lib/data/content.ts
-// New unified content file (clean + compatible with your current structures)
+// lib/data/homeContent.ts
+// Single source of truth for homepage content + featured product data (Gold & Silver)
 
 export type BadgeVariant = "gold" | "ruby" | "black";
 
@@ -10,19 +10,19 @@ export type ProductBadge =
       variant?: BadgeVariant;
     };
 
-// ✅ Featured products (now supports Gold/Silver tabs on homepage)
+export type MetalType = "Gold" | "Silver";
+
 export type FeaturedProduct = {
   id: number;
   slug: string;
   name: string;
-  price: string; // keep for later (not shown now)
+  price: string; // keep for later (you are not rendering it now)
   image: string;
   description?: string;
   badge?: ProductBadge;
-  metal: "Gold" | "Silver";
+  metal: MetalType; // ✅ FIX: you are using this in data, so it must exist in type
 };
 
-// ✅ Hero (keep, since your site uses it now)
 export type HeroSlide = {
   id: number;
   label: string;
@@ -31,49 +31,62 @@ export type HeroSlide = {
   image: string;
 };
 
-// ✅ Keeping these for backward compatibility (even if Home won’t use them)
-export type PromoSlide = {
-  id: number;
-  title: string;
-  description: string;
-  image: string;
-  ctaLabel: string;
-};
+// -----------------------------
+// CMS-ready Rich Text (simple)
+// -----------------------------
+export type RichTextBlock =
+  | { type: "p"; text: string }
+  | { type: "ul"; items: string[] };
 
-export type WorthProduct = {
-  id: number;
-  name: string;
-  price: string;
-  image: string;
-  metal: "Gold" | "Silver" | "Platinum";
-};
-
-export type NewsItem = {
-  id: number;
-  title: string;
-  date: string;
-  source: string;
-  image: string;
-};
-
-// ✅ NEW: Brand intro section data
 export type BrandIntro = {
   titleEn: string;
   titleAr: string;
-  bodyEn: string;
-  bodyAr: string;
+  bodyEn: RichTextBlock[];
+  bodyAr: RichTextBlock[];
 };
 
 export const brandIntro: BrandIntro = {
   titleEn: "Wahaj Gold",
   titleAr: "وهـاج جولد",
-  bodyEn:
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In eget sagittis lacus, pretium congue sem. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Maecenas sed arcu eget risus accumsan eleifend quis et magna. Maecenas convallis, dolor eu venenatis feugiat, lacus dolor luctus turpis, sed elementum odio erat nec mi. Donec in egestas elit. Maecenas varius dolor massa, tempus vestibulum tellus convallis aliquam. Duis sed lacinia diam, sed commodo diam. Sed condimentum ligula sit amet lacus congue eleifend. Sed pretium, massa et lacinia finibus, justo elit ullamcorper eros, vel lobortis orci ipsum eget arcu.",
-  bodyAr:
-    "وجهة حديثة للسبائك مبنية على الوضوح والثقة وسهولة الشراء. اكتشف سبائك مختارة بعناية وقطعًا مناسبة للهدايا ضمن تجربة مميزة من التصفح حتى التسليم.",
+  bodyEn: [
+    {
+      type: "p",
+      text:
+        "Wahaj Al Jawaher is an Iraqi precious metals brand specializing in high-purity gold and silver minted bars, produced in accordance with internationally recognized standards and supported by full compliance and responsible sourcing.",
+    },
+    {
+      type: "p",
+      text:
+        "We believe gold is more than a commodity. It is a store of value, a foundation of trust, and a long-term choice. Every product we offer is selected with clarity, verified integrity, and a focus on enduring worth.",
+    },
+    {
+      type: "p",
+      text:
+        "By combining global best practices with a modern Iraqi identity, Wahaj Al Jawaher sets a refined standard for clean gold and trusted value.",
+    },
+  ],
+  bodyAr: [
+    {
+      type: "p",
+      text:
+        "وهج الجواهر علامة عراقية متخصصة في سبائك الذهب والفضة المصكوكة، تقدّم معادن ثمينة عالية النقاء وفق معايير عالمية معترف بها، وبالتزام كامل بالامتثال والتوريد المسؤول.",
+    },
+    {
+      type: "p",
+      text:
+        "نؤمن بأن الذهب ليس مجرد سلعة، بل قيمة تُحفظ، وثقة تُبنى، وقرار طويل الأمد. لذلك نعمل بوضوح وشفافية، ونقدّم منتجات قابلة للتحقق، مصممة بعناية، ومختارة لتدوم.",
+    },
+    {
+      type: "p",
+      text:
+        "وهج الجواهر يجمع بين أفضل الممارسات العالمية وهوية عراقية حديثة، ليقدّم معيارًا جديدًا للذهب النظيف والقيمة الموثوقة.",
+    },
+  ],
 };
 
-// ✅ NEW: Key value pillars
+// -----------------------------
+// Key Value Pillars
+// -----------------------------
 export type ValuePillarIcon = "delivery" | "secure" | "certified" | "support";
 
 export type ValuePillar = {
@@ -115,7 +128,9 @@ export const valuePillars: ValuePillar[] = [
   },
 ];
 
-// ✅ NEW: Trust & compliance highlights
+// -----------------------------
+// Trust & Compliance Highlights
+// -----------------------------
 export type TrustHighlight = {
   titleEn: string;
   titleAr: string;
@@ -125,30 +140,31 @@ export type TrustHighlight = {
 
 export const trustHighlights: TrustHighlight[] = [
   {
-    titleEn: "Responsible sourcing mindset",
+    titleEn: "Responsible Sourcing Approach",
     titleAr: "نهج توريد مسؤول",
     bodyEn:
-      "We prioritize transparency and responsible practices across the experience.",
+      "We prioritize transparency and responsible sourcing practices across the buying experience.",
     bodyAr: "نُعطي الأولوية للشفافية والممارسات المسؤولة ضمن تجربة الشراء.",
   },
   {
-    titleEn: "Clear policies & guidance",
+    titleEn: "Clear Policies & Guidance",
     titleAr: "سياسات وإرشادات واضحة",
-    bodyEn: "Straightforward product details and customer guidance you can rely on.",
+    bodyEn:
+      "Product details, ordering guidance, and customer support designed to keep decisions clear and confident.",
     bodyAr: "تفاصيل منتج واضحة وإرشادات يمكن الاعتماد عليها.",
   },
   {
-    titleEn: "Secure platform standards",
+    titleEn: "Secure Platform Standards",
     titleAr: "معايير منصة آمنة",
-    bodyEn: "Built with modern web security patterns and safe operational defaults.",
+    bodyEn:
+      "Built using modern security patterns and safe operational defaults for web platforms.",
     bodyAr: "مبنية وفق أنماط أمان حديثة وإعدادات تشغيل آمنة.",
   },
 ];
 
-// -------------------------
-// EXISTING CONTENT (kept)
-// -------------------------
-
+// -----------------------------
+// Hero Slides (Homepage)
+// -----------------------------
 export const heroSlides: HeroSlide[] = [
   {
     id: 1,
@@ -176,7 +192,9 @@ export const heroSlides: HeroSlide[] = [
   },
 ];
 
-// ✅ Gold featured (your existing ones, now marked as Gold)
+// -----------------------------
+// Featured Products (Gold)
+// -----------------------------
 export const featuredGoldProducts: FeaturedProduct[] = [
   {
     id: 1,
@@ -196,7 +214,7 @@ export const featuredGoldProducts: FeaturedProduct[] = [
     badge: { label: "Best Seller", variant: "gold" },
     image: "/products/Bouquet.jpg",
     description:
-      "My Love immortalizes the fleeting beauty of flowers in gold, creating an eternal symbol of affection. Just as love endures, this bouquet remains forever fresh",
+      "My Love immortalizes the fleeting beauty of flowers in gold, creating an eternal symbol of affection. Just as love endures, this bouquet remains forever fresh.",
     metal: "Gold",
   },
   {
@@ -247,7 +265,7 @@ export const featuredGoldProducts: FeaturedProduct[] = [
     badge: { label: "New Arrival", variant: "gold" },
     image: "/products/MoonFlower.jpg",
     description:
-      "Just like the moon, everything in life has its own cycle. The moon rises as the day ends for us and we begin our recovery from it",
+      "Just like the moon, everything in life has its own cycle. The moon rises as the day ends for us and we begin our recovery from it.",
     metal: "Gold",
   },
   {
@@ -257,12 +275,14 @@ export const featuredGoldProducts: FeaturedProduct[] = [
     price: "24,950.00",
     image: "/products/Love-Tree.jpg",
     description:
-      "Trees are used to represent life, wisdom, power, growth, and prosperity. While many believe that flowers are the only symbol that represent love",
+      "Trees are used to represent life, wisdom, power, growth, and prosperity. While many believe that flowers are the only symbol that represent love.",
     metal: "Gold",
   },
 ];
 
-// ✅ Silver featured (add more later; for now, at least one real one you already have)
+// -----------------------------
+// Featured Products (Silver)
+// -----------------------------
 export const featuredSilverProducts: FeaturedProduct[] = [
   {
     id: 101,
@@ -276,18 +296,46 @@ export const featuredSilverProducts: FeaturedProduct[] = [
   },
 ];
 
-// ✅ Use this everywhere for product pages / slug routes (Gold + Silver)
+// -----------------------------
+// Unified “all featured” list
+// (use for slug page lookups + related products)
+// -----------------------------
 export const allFeaturedProducts: FeaturedProduct[] = [
   ...featuredGoldProducts,
   ...featuredSilverProducts,
 ];
 
-// --------- Backward-compatible exports (optional but safe) ---------
-
-// Keeps old import paths working if any file still uses `featuredProducts`
+// ✅ Backward compatible alias (if any code still imports featuredProducts)
 export const featuredProducts: FeaturedProduct[] = allFeaturedProducts;
 
-// Kept for compatibility (not used on new homepage)
+// -----------------------------
+// Legacy types/data (kept only if still used somewhere)
+// If not used anymore, you can delete these safely.
+// -----------------------------
+export type PromoSlide = {
+  id: number;
+  title: string;
+  description: string;
+  image: string;
+  ctaLabel: string;
+};
+
+export type WorthProduct = {
+  id: number;
+  name: string;
+  price: string;
+  image: string;
+  metal: "Gold" | "Silver" | "Platinum";
+};
+
+export type NewsItem = {
+  id: number;
+  title: string;
+  date: string;
+  source: string;
+  image: string;
+};
+
 export const promoSlides: PromoSlide[] = [
   {
     id: 1,
