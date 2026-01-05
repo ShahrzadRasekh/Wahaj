@@ -32,12 +32,15 @@ export default function MainHeader({ locale }: { locale: Locale }) {
 
   const lightMode = !isHome || pastHero;
 
+  // ✅ KEY FIX:
+  // On homepage before scroll we must remove backdrop blur, otherwise it looks grey/white.
   const headerSurface = useMemo(() => {
     if (isHome && !pastHero) {
       return [
         "bg-transparent",
         "border-white/15",
         "shadow-[0_8px_20px_rgba(0,0,0,0.35)]",
+        "backdrop-blur-none", // ✅ makes it truly transparent
       ].join(" ");
     }
 
@@ -45,6 +48,7 @@ export default function MainHeader({ locale }: { locale: Locale }) {
       "bg-white/20",
       "border-black/10",
       "shadow-[0_8px_24px_rgba(15,23,42,0.08)]",
+      "backdrop-blur-xl",
     ].join(" ");
   }, [isHome, pastHero]);
 
@@ -70,9 +74,7 @@ export default function MainHeader({ locale }: { locale: Locale }) {
   // Optional language switch (keeps same path after /en or /ar)
   const otherLocale: Locale = locale === "ar" ? "en" : "ar";
   const switchedPath = (() => {
-    // If user is on /en/.... or /ar/....
     const parts = (pathname || "").split("/");
-    // ["", "en", "bullion", ...]
     if (parts.length >= 2 && (parts[1] === "en" || parts[1] === "ar")) {
       parts[1] = otherLocale;
       return parts.join("/") || `/${otherLocale}`;
@@ -83,7 +85,7 @@ export default function MainHeader({ locale }: { locale: Locale }) {
   return (
     <header
       className={[
-        "fixed inset-x-0 top-0 z-[9999] border-b backdrop-blur-xl transition-all duration-300",
+        "fixed inset-x-0 top-0 z-[9999] border-b transition-all duration-300",
         headerSurface,
       ].join(" ")}
       dir={isArabic ? "rtl" : "ltr"}

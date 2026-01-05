@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { HeroSlide } from "@/lib/data/homeContent";
 
 type Props = {
@@ -10,78 +10,117 @@ type Props = {
   slides: HeroSlide[];
 };
 
+// Your header height is roughly: px-4 py-3 + inner content.
+// If you change header height later, adjust this number.
+const HEADER_OFFSET_PX = 72;
+
 export default function HeroSection({ locale, slides }: Props) {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    if (!slides?.length) return;
+
+    const interval = window.setInterval(() => {
       setIndex((prev) => (prev + 1) % slides.length);
     }, 5000);
-    return () => clearInterval(interval);
-  }, [slides.length]);
 
-  const heroContent = slides[0];
+    return () => window.clearInterval(interval);
+  }, [slides]);
+
+  const heroContent = slides?.length ? slides[index] : null;
 
   // RTL-safe offset (your old issue)
   const cardOffset =
-    locale === "ar" ? "md:translate-x-[60px] translate-x-[30px]" : "md:-translate-x-[60px] -translate-x-[30px]";
+    locale === "ar"
+      ? "md:translate-x-[60px] translate-x-[30px]"
+      : "md:-translate-x-[60px] -translate-x-[30px]";
 
   const bullionHref = locale === "ar" ? "/ar/bullion" : "/bullion";
   const giftsHref = locale === "ar" ? "/ar/gifts" : "/gifts";
 
+  const dir = locale === "ar" ? "rtl" : "ltr";
+
+  const fallbackBg = useMemo(
+    () => "linear-gradient(to right,#111827,#1f2937)",
+    []
+  );
+
   return (
-    <section className="relative min-h-[520px] md:min-h-[620px] lg:min-h-[720px]">
+    <section
+      className="relative min-h-[520px] md:min-h-[620px] lg:min-h-[720px]"
+      dir={dir}
+      // KEY FIX:
+      // - Pull the hero up behind the fixed header
+      // - Keep content visually in the same place with paddingTop
+      style={{
+        marginTop: `-${HEADER_OFFSET_PX}px`,
+        paddingTop: `${HEADER_OFFSET_PX}px`,
+      }}
+    >
+      {/* Background slider */}
       <div className="absolute inset-0 overflow-hidden">
-        {slides.map((slide, i) => (
+        {slides?.map((slide, i) => (
           <div
             key={slide.id}
-            className={`absolute inset-0 bg-cover bg-center hero-zoom transition-opacity duration-700 ease-out ${
-              i === index ? "opacity-100" : "opacity-0"
-            }`}
+            className={[
+              "absolute inset-0 bg-cover bg-center hero-zoom transition-opacity duration-700 ease-out",
+              i === index ? "opacity-100" : "opacity-0",
+            ].join(" ")}
             style={{
-              backgroundImage: slide.image
-                ? `url('${slide.image}')`
-                : "linear-gradient(to right,#111827,#1f2933)",
+              backgroundImage: slide.image ? `url('${slide.image}')` : fallbackBg,
             }}
           />
         ))}
+
+        {/* Dark overlay (keeps header readable and matches your current style) */}
         <div className="absolute inset-0 bg-black/60" />
       </div>
 
-      <div className="relative mx-auto flex max-w-6xl min-h-[520px] flex-col justify-center px-4 pb-20 pt-12 md:min-h-[620px] md:pt-16">
-        <div
-          className={[
-            "max-w-xl rounded-3xl bg-black/10 backdrop-blur-[1px]",
-            "px-6 py-6 md:px-8 md:py-8 text-white shadow-none text-center",
-            "transform-gpu",
-            cardOffset,
-          ].join(" ")}
-        >
-          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-gray-200">
-            {heroContent.label}
-          </p>
+      {/* Content */}
+      <div className="relative">
+        <div className="mx-auto max-w-6xl px-4">
+          <div className="flex min-h-[520px] md:min-h-[620px] lg:min-h-[720px] items-center">
+            {/* Floating hero card */}
+            <div
+  className={[
+    "w-full max-w-xl rounded-3xl",
+    "border border-white/10",
+    "bg-black/20 backdrop-blur-3xl", // ← more transparent + smoother blur
+    "shadow-[0_14px_32px_rgba(0,0,0,0.25)]", // ← lighter shadow
+    "px-7 py-8 md:px-10 md:py-10",
+    cardOffset,
+  ].join(" ")}
+>
 
-          <h1 className="mt-4 text-4xl font-extrabold tracking-[0.12em] md:text-5xl lg:text-6xl">
-            {heroContent.title}
-          </h1>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/75">
+                {heroContent?.label ?? " "}
+              </p>
 
-          <p className="mt-4 text-sm text-gray-100 md:text-base">
-            {heroContent.subtitle}
-          </p>
+              <h1 className="mt-3 text-4xl md:text-5xl font-semibold tracking-[0.06em] text-white">
+                {heroContent?.title ?? "WAHAJ GOLD"}
+              </h1>
 
-          <div className="mt-7 flex flex-wrap gap-4 justify-center">
-            <Link
-              href={bullionHref}
-              className="rounded-full bg-[#d12b2b] px-7 py-3 text-xs font-semibold uppercase tracking-[0.22em] text-white shadow-md hover:bg-[#b81f1f]"
-            >
-              Bullion
-            </Link>
-            <Link
-              href={giftsHref}
-              className="rounded-full border border-white/20 bg-white/10 backdrop-blur px-7 py-3 text-xs font-semibold uppercase tracking-[0.22em] text-white shadow-sm hover:bg-white/20"
-            >
-              Gift Collections
-            </Link>
+              <p className="mt-4 text-sm md:text-[15px] leading-relaxed text-white/80">
+                {heroContent?.subtitle ??
+                  "Secure, simple and transparent buying online. Discover certified bullion & gift collections."}
+              </p>
+
+              <div className="mt-8 flex flex-wrap items-center gap-3">
+                <Link
+                  href={bullionHref}
+                  className="inline-flex items-center justify-center rounded-full bg-white px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-900 transition hover:bg-white/90"
+                >
+                  Explore Bullion
+                </Link>
+
+                <Link
+                  href={giftsHref}
+                  className="inline-flex items-center justify-center rounded-full border border-white/35 bg-transparent px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-white transition hover:border-white/55 hover:bg-white/10"
+                >
+                  Gift Collections
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </div>
