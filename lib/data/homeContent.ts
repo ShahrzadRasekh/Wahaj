@@ -68,7 +68,7 @@ export const brandIntro: BrandIntro = {
   titleEn: "Wahaj Gold",
   titleAr: "وهـاج جولد",
   bodyEn:
-    "A modern bullion destination built for clarity, trust, and convenience. Explore thoughtfully curated bars and gift-ready pieces with a premium experience from browsing to delivery.",
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In eget sagittis lacus, pretium congue sem. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Maecenas sed arcu eget risus accumsan eleifend quis et magna. Maecenas convallis, dolor eu venenatis feugiat, lacus dolor luctus turpis, sed elementum odio erat nec mi. Donec in egestas elit. Maecenas varius dolor massa, tempus vestibulum tellus convallis aliquam. Duis sed lacinia diam, sed commodo diam. Sed condimentum ligula sit amet lacus congue eleifend. Sed pretium, massa et lacinia finibus, justo elit ullamcorper eros, vel lobortis orci ipsum eget arcu.",
   bodyAr:
     "وجهة حديثة للسبائك مبنية على الوضوح والثقة وسهولة الشراء. اكتشف سبائك مختارة بعناية وقطعًا مناسبة للهدايا ضمن تجربة مميزة من التصفح حتى التسليم.",
 };
