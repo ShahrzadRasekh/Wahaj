@@ -1,8 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
-
-import { featuredProducts } from "@/lib/data/homeContent";
+import { allFeaturedProducts } from "@/lib/data/homeContent";
 import type { Locale } from "@/lib/i18n";
 import { getDict } from "@/lib/i18n";
 
@@ -19,7 +18,7 @@ function absUrl(path: string) {
 export async function generateStaticParams() {
   const locales: Locale[] = ["en", "ar"];
   return locales.flatMap((locale) =>
-    featuredProducts.map((p) => ({
+  allFeaturedProducts.map((p) => ({
       locale,
       slug: p.slug,
     }))
@@ -32,7 +31,7 @@ export async function generateMetadata({
   params: { locale: string; slug: string };
 }): Promise<Metadata> {
   const locale = (params.locale === "ar" ? "ar" : "en") as Locale;
-  const product = featuredProducts.find((p) => p.slug === params.slug);
+  const product = allFeaturedProducts.find((p) => p.slug === params.slug);
 
   if (!product) return {};
 
@@ -83,7 +82,7 @@ export default function ProductPage({
   const locale = (params.locale === "ar" ? "ar" : "en") as Locale;
   const t = getDict(locale);
 
-  const product = featuredProducts.find((p) => p.slug === params.slug);
+  const product = allFeaturedProducts.find((p) => p.slug === params.slug);
   if (!product) notFound();
 
   const isArabic = locale === "ar";
@@ -153,7 +152,7 @@ export default function ProductPage({
             description: product.description,
             image: product.image,
           }}
-          products={featuredProducts.map((p) => ({
+          products={allFeaturedProducts.map((p) => ({
             id: p.id,
             slug: p.slug,
             name: p.name,

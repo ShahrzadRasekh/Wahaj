@@ -1,4 +1,5 @@
-// lib/data/homeContent.ts
+// lib/data/content.ts
+// New unified content file (clean + compatible with your current structures)
 
 export type BadgeVariant = "gold" | "ruby" | "black";
 
@@ -9,17 +10,19 @@ export type ProductBadge =
       variant?: BadgeVariant;
     };
 
-    export type FeaturedProduct = {
-      id: number;
-      slug: string;            // ✅ add this
-      name: string;
-      price: string;           // you’re not showing it now, but keep if needed later
-      image: string;
-      description?: string;
-      badge?: ProductBadge;
-    };
-    
+// ✅ Featured products (now supports Gold/Silver tabs on homepage)
+export type FeaturedProduct = {
+  id: number;
+  slug: string;
+  name: string;
+  price: string; // keep for later (not shown now)
+  image: string;
+  description?: string;
+  badge?: ProductBadge;
+  metal: "Gold" | "Silver";
+};
 
+// ✅ Hero (keep, since your site uses it now)
 export type HeroSlide = {
   id: number;
   label: string;
@@ -28,6 +31,7 @@ export type HeroSlide = {
   image: string;
 };
 
+// ✅ Keeping these for backward compatibility (even if Home won’t use them)
 export type PromoSlide = {
   id: number;
   title: string;
@@ -51,6 +55,99 @@ export type NewsItem = {
   source: string;
   image: string;
 };
+
+// ✅ NEW: Brand intro section data
+export type BrandIntro = {
+  titleEn: string;
+  titleAr: string;
+  bodyEn: string;
+  bodyAr: string;
+};
+
+export const brandIntro: BrandIntro = {
+  titleEn: "Wahaj Gold",
+  titleAr: "وهـاج جولد",
+  bodyEn:
+    "A modern bullion destination built for clarity, trust, and convenience. Explore thoughtfully curated bars and gift-ready pieces with a premium experience from browsing to delivery.",
+  bodyAr:
+    "وجهة حديثة للسبائك مبنية على الوضوح والثقة وسهولة الشراء. اكتشف سبائك مختارة بعناية وقطعًا مناسبة للهدايا ضمن تجربة مميزة من التصفح حتى التسليم.",
+};
+
+// ✅ NEW: Key value pillars
+export type ValuePillarIcon = "delivery" | "secure" | "certified" | "support";
+
+export type ValuePillar = {
+  icon: ValuePillarIcon;
+  titleEn: string;
+  titleAr: string;
+  bodyEn: string;
+  bodyAr: string;
+};
+
+export const valuePillars: ValuePillar[] = [
+  {
+    icon: "delivery",
+    titleEn: "Fast Delivery",
+    titleAr: "توصيل سريع",
+    bodyEn: "Reliable delivery flow designed for speed and peace of mind.",
+    bodyAr: "عملية توصيل موثوقة مصممة للسرعة وراحة البال.",
+  },
+  {
+    icon: "secure",
+    titleEn: "Secure Ordering",
+    titleAr: "طلب آمن",
+    bodyEn: "A clean checkout journey with security-first best practices.",
+    bodyAr: "تجربة شراء سلسة مع أفضل ممارسات الأمان.",
+  },
+  {
+    icon: "certified",
+    titleEn: "Certified Products",
+    titleAr: "منتجات معتمدة",
+    bodyEn: "Carefully selected items with clear product presentation.",
+    bodyAr: "اختيارات مدروسة مع عرض واضح لمواصفات المنتج.",
+  },
+  {
+    icon: "support",
+    titleEn: "Customer Support",
+    titleAr: "دعم العملاء",
+    bodyEn: "A responsive team ready to assist throughout your purchase.",
+    bodyAr: "فريق متجاوب لمساعدتك خلال رحلة الشراء.",
+  },
+];
+
+// ✅ NEW: Trust & compliance highlights
+export type TrustHighlight = {
+  titleEn: string;
+  titleAr: string;
+  bodyEn: string;
+  bodyAr: string;
+};
+
+export const trustHighlights: TrustHighlight[] = [
+  {
+    titleEn: "Responsible sourcing mindset",
+    titleAr: "نهج توريد مسؤول",
+    bodyEn:
+      "We prioritize transparency and responsible practices across the experience.",
+    bodyAr: "نُعطي الأولوية للشفافية والممارسات المسؤولة ضمن تجربة الشراء.",
+  },
+  {
+    titleEn: "Clear policies & guidance",
+    titleAr: "سياسات وإرشادات واضحة",
+    bodyEn: "Straightforward product details and customer guidance you can rely on.",
+    bodyAr: "تفاصيل منتج واضحة وإرشادات يمكن الاعتماد عليها.",
+  },
+  {
+    titleEn: "Secure platform standards",
+    titleAr: "معايير منصة آمنة",
+    bodyEn: "Built with modern web security patterns and safe operational defaults.",
+    bodyAr: "مبنية وفق أنماط أمان حديثة وإعدادات تشغيل آمنة.",
+  },
+];
+
+// -------------------------
+// EXISTING CONTENT (kept)
+// -------------------------
 
 export const heroSlides: HeroSlide[] = [
   {
@@ -79,7 +176,8 @@ export const heroSlides: HeroSlide[] = [
   },
 ];
 
-export const featuredProducts: FeaturedProduct[] = [
+// ✅ Gold featured (your existing ones, now marked as Gold)
+export const featuredGoldProducts: FeaturedProduct[] = [
   {
     id: 1,
     slug: "strength",
@@ -88,6 +186,7 @@ export const featuredProducts: FeaturedProduct[] = [
     image: "/products/LionKing.jpg",
     description:
       "Roaring with power and leadership, Strength represents the fearless ruler of the plains, guiding with wisdom and courage.",
+    metal: "Gold",
   },
   {
     id: 2,
@@ -98,6 +197,7 @@ export const featuredProducts: FeaturedProduct[] = [
     image: "/products/Bouquet.jpg",
     description:
       "My Love immortalizes the fleeting beauty of flowers in gold, creating an eternal symbol of affection. Just as love endures, this bouquet remains forever fresh",
+    metal: "Gold",
   },
   {
     id: 3,
@@ -107,6 +207,7 @@ export const featuredProducts: FeaturedProduct[] = [
     image: "/products/Mermaid.jpg",
     description:
       "Embodying the calm yet unpredictable beauty of the sea, Sea Queen exudes the strength and mystery of its ruler, the mermaid.",
+    metal: "Gold",
   },
   {
     id: 4,
@@ -116,6 +217,7 @@ export const featuredProducts: FeaturedProduct[] = [
     image: "/products/MyMother.jpg",
     description:
       "My Mother captures the essence of a mother’s embrace—the first source of love, trust, and protection a daughter feels.",
+    metal: "Gold",
   },
   {
     id: 5,
@@ -125,6 +227,7 @@ export const featuredProducts: FeaturedProduct[] = [
     image: "/products/MyHeart.jpg",
     description:
       "A tribute to the nurturing bond between mother and son, My Heart reflects the gentle wisdom and enduring care that protects and guides.",
+    metal: "Gold",
   },
   {
     id: 6,
@@ -134,6 +237,7 @@ export const featuredProducts: FeaturedProduct[] = [
     image: "/products/makkahbar.jpg",
     description:
       "Makkah is “the fountain head and cradle of Islam”. It’s Islam’s holiest city, as it is the birthplace of Prophet Muhmmad (PBUH) and the faith itself.",
+    metal: "Gold",
   },
   {
     id: 7,
@@ -144,6 +248,7 @@ export const featuredProducts: FeaturedProduct[] = [
     image: "/products/MoonFlower.jpg",
     description:
       "Just like the moon, everything in life has its own cycle. The moon rises as the day ends for us and we begin our recovery from it",
+    metal: "Gold",
   },
   {
     id: 8,
@@ -153,9 +258,36 @@ export const featuredProducts: FeaturedProduct[] = [
     image: "/products/Love-Tree.jpg",
     description:
       "Trees are used to represent life, wisdom, power, growth, and prosperity. While many believe that flowers are the only symbol that represent love",
+    metal: "Gold",
   },
 ];
 
+// ✅ Silver featured (add more later; for now, at least one real one you already have)
+export const featuredSilverProducts: FeaturedProduct[] = [
+  {
+    id: 101,
+    slug: "emirates-silver-10g",
+    name: "10 g Silver Bar – Emirates Gold",
+    price: "158.68",
+    image: "/products/emirates-silver-10g.jpg",
+    description:
+      "A refined silver bar designed for collectors and investors who value clean form and clarity.",
+    metal: "Silver",
+  },
+];
+
+// ✅ Use this everywhere for product pages / slug routes (Gold + Silver)
+export const allFeaturedProducts: FeaturedProduct[] = [
+  ...featuredGoldProducts,
+  ...featuredSilverProducts,
+];
+
+// --------- Backward-compatible exports (optional but safe) ---------
+
+// Keeps old import paths working if any file still uses `featuredProducts`
+export const featuredProducts: FeaturedProduct[] = allFeaturedProducts;
+
+// Kept for compatibility (not used on new homepage)
 export const promoSlides: PromoSlide[] = [
   {
     id: 1,
