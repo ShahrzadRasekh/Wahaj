@@ -100,10 +100,10 @@ export type ValuePillar = {
 export const valuePillars: ValuePillar[] = [
   {
     icon: "delivery",
-    titleEn: "Fast Delivery",
-    titleAr: "توصيل سريع",
-    bodyEn: "Reliable delivery flow designed for speed and peace of mind.",
-    bodyAr: "عملية توصيل موثوقة مصممة للسرعة وراحة البال.",
+    titleEn: "1. Compliance & Global Standards",
+    titleAr: "الامتثال والمعايير العالمية",
+    bodyEn: "At Wahaj Al Jawaher, we operate in alignment with internationally recognized standards for precious metals, applying compliance, due diligence, and risk management principles as a foundation of our business, not as a marketing claim.",
+    bodyAr: "نلتزم في وهج الجواهر بالعمل وفق معايير عالمية معترف بها في تجارة المعادن الثمينة، مع تطبيق مبادئ الامتثال، العناية الواجبة، وإدارة المخاطر. الامتثال عندنا مو إضافة تسويقية، بل أساس العمل.",
   },
   {
     icon: "secure",
@@ -140,25 +140,32 @@ export type TrustHighlight = {
 
 export const trustHighlights: TrustHighlight[] = [
   {
-    titleEn: "Responsible Sourcing Approach",
-    titleAr: "نهج توريد مسؤول",
+    titleEn: "1.Compliance & Global Standards",
+    titleAr: "الامتثال والمعايير العالمية",
     bodyEn:
-      "We prioritize transparency and responsible sourcing practices across the buying experience.",
-    bodyAr: "نُعطي الأولوية للشفافية والممارسات المسؤولة ضمن تجربة الشراء.",
+      "At Wahaj Al Jawaher, we operate in alignment with internationally recognized standards for precious metals, applying compliance, due diligence, and risk management principles as a foundation of our business, not as a marketing claim. ",
+    bodyAr: "نلتزم في وهج الجواهر بالعمل وفق معايير عالمية معترف بها في تجارة المعادن الثمينة، مع تطبيق مبادئ الامتثال، العناية الواجبة، وإدارة المخاطر. الامتثال عندنا مو إضافة تسويقية، بل أساس العمل.",
   },
   {
-    titleEn: "Clear Policies & Guidance",
-    titleAr: "سياسات وإرشادات واضحة",
+    titleEn: "2.Purity & Quality",
+    titleAr: "النقاء والجودة",
     bodyEn:
-      "Product details, ordering guidance, and customer support designed to keep decisions clear and confident.",
-    bodyAr: "تفاصيل منتج واضحة وإرشادات يمكن الاعتماد عليها.",
+      "We deliver high-purity gold and silver minted bars, produced with precise specifications and supported by verifiable documentation. Quality is not a promise. It is the result of disciplined sourcing and production..",
+    bodyAr: "نقدّم سبائك ذهب وفضة عالية النقاء، مصكوكة وفق مواصفات دقيقة، مع توثيق واضح يمكن التحقق منه. الجودة عندنا مو وعد، بل نتيجة عملية إنتاج واختيار صارمة.",
   },
   {
-    titleEn: "Secure Platform Standards",
-    titleAr: "معايير منصة آمنة",
+    titleEn: "3.Transparency & Trust",
+    titleAr: "الشفافية والثقة",
     bodyEn:
-      "Built using modern security patterns and safe operational defaults for web platforms.",
-    bodyAr: "مبنية وفق أنماط أمان حديثة وإعدادات تشغيل آمنة.",
+      "We believe trust is built through clarity. Our products, sourcing principles, and specifications are communicated with accuracy and honesty, enabling informed decisions without exaggeration or ambiguity.",
+    bodyAr: "نؤمن أن الثقة تُبنى بالوضوح. لذلك نحرص على تقديم معلومات دقيقة عن منتجاتنا، مصادرها، ومواصفاتها، بدون مبالغة أو غموض، ليكون قرار الشراء مبنيًا على معرفة حقيقية. .",
+  },
+  {
+    titleEn: "4.Responsible Sourcing & Enduring Value",
+    titleAr: "التوريد المسؤول والقيمة المستدامة",
+    bodyEn:
+      "We are committed to responsible sourcing and clean metals, supported by ethical and traceable supply chains. Our focus is on delivering long-term value that respects people, markets, and the future.",
+    bodyAr: "نلتزم بالتوريد المسؤول والمعادن النظيفة، مع التركيز على سلاسل إمداد أخلاقية وقابلة للتتبع. هدفنا تقديم قيمة طويلة الأمد تحترم الإنسان، السوق، والمستقبل.",
   },
 ];
 

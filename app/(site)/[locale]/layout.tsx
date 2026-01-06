@@ -1,23 +1,24 @@
 // app/(site)/[locale]/layout.tsx
+import type { ReactNode } from "react";
 import type { Locale } from "@/lib/i18n";
-import MainHeader from "@/components/MainHeader";
-import HtmlLangDir from "@/components/HtmlLangDir";
 
-export default async function LocaleLayout({
+import MainHeader from "@/components/MainHeader";
+import Footer from "@/components/Footer";
+
+export default function SiteLayout({
   children,
   params,
 }: {
-  children: React.ReactNode;
-  params: Promise<{ locale: string }>;
+  children: ReactNode;
+  params: { locale: Locale };
 }) {
-  const { locale: rawLocale } = await params;
-  const locale: Locale = rawLocale === "ar" ? "ar" : "en";
+  const { locale } = params;
 
   return (
     <>
-      <HtmlLangDir locale={locale} />
       <MainHeader locale={locale} />
-      <main className="pt-16">{children}</main>
+      {children}
+      <Footer locale={locale} />
     </>
   );
 }
