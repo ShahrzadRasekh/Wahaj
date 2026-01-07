@@ -1,5 +1,5 @@
-import BullionCataloguePage from "@/components/pages/BullionCataloguePage";
+import { redirect } from "next/navigation";
 
 export default function Page() {
-  return <BullionCataloguePage locale="en" />;
+  redirect("/minted-bars");
 }
