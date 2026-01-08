@@ -6,7 +6,7 @@ const PUBLIC_FILE = /\.(.*)$/;
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // Skip Next internals + files
+  // Skip Next internals + API + public files
   if (
     pathname.startsWith("/_next") ||
     pathname.startsWith("/api") ||
@@ -15,22 +15,21 @@ export function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // Already localized -> allow
-  if (pathname === "/en" || pathname.startsWith("/en/")) return NextResponse.next();
-  if (pathname === "/ar" || pathname.startsWith("/ar/")) return NextResponse.next();
-
-  // Redirect "/" -> "/en"
-  if (pathname === "/") {
+  // If someone lands on /en or /en/... -> redirect to default (no prefix)
+  if (pathname === "/en" || pathname.startsWith("/en/")) {
     const url = req.nextUrl.clone();
-    url.pathname = "/en";
+    const stripped = pathname.replace(/^\/en(\/|$)/, "/");
+    url.pathname = stripped === "" ? "/" : stripped;
     return NextResponse.redirect(url);
   }
 
-  // Any non-localized route -> prefix with "/en"
-  // e.g. "/bullion" -> "/en/bullion"
-  const url = req.nextUrl.clone();
-  url.pathname = `/en${pathname}`;
-  return NextResponse.redirect(url);
+  // Arabic routes are valid as-is
+  if (pathname === "/ar" || pathname.startsWith("/ar/")) {
+    return NextResponse.next();
+  }
+
+  // Everything else: allow (English default, no prefix)
+  return NextResponse.next();
 }
 
 export const config = {

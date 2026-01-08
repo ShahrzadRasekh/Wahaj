@@ -6,7 +6,7 @@ import type { Locale } from "@/lib/i18n";
 
 export default function Footer({ locale }: { locale: Locale }) {
   const isArabic = locale === "ar";
-  const prefix = `/${locale}`;
+  const prefix = locale === "en" ? "" : `/${locale}`;
 
   const ui = {
     aboutTitle: isArabic ? "نبذة عن وهـاج" : "About Wahaj Gold",
@@ -17,16 +17,19 @@ export default function Footer({ locale }: { locale: Locale }) {
     linksTitle: isArabic ? "روابط سريعة" : "Quick Links",
     complianceTitle: isArabic ? "الامتثال والثقة" : "Compliance & Trust",
     complianceText: isArabic
-      ? "جميع المنتجات معروضة لأغراض معلوماتية فقط. الأسعار والمؤشرات غير ملزمة وقد تخضع للتغيير."
-      : "All products are presented for informational purposes only. Prices and indicators are non-binding and subject to change.",
+    ? "المرحلة الأولى: موقع معلوماتي لبناء الموثوقية والمعايير. سيتم تفعيل التجارة الإلكترونية الآمنة في المرحلة الثانية."
+    : "Phase 1: informational site for credibility and standards. Secure e-commerce will be enabled in Phase 2.",
+
 
     follow: isArabic ? "تابعنا" : "Follow Us",
   };
 
   const links = [
-    { href: `${prefix}`, labelEn: "Home", labelAr: "الرئيسية" },
-    { href: `${prefix}/bullion`, labelEn: "Bullion", labelAr: "السبائك" },
-    { href: `${prefix}/about`, labelEn: "About", labelAr: "من نحن" },
+    { href: `${prefix}/`, labelEn: "Home", labelAr: "الرئيسية" },
+    { href: `${prefix}/minted-bars`, labelEn: "Minted Bars", labelAr: "السبائك" },
+    { href: `${prefix}/standards-traceability`, labelEn: "Standards & Traceability", labelAr: "المعايير والتتبع" },
+    { href: `${prefix}/about`, labelEn: "About Wahaj", labelAr: "عن وهج" },
+    { href: `${prefix}/business`, labelEn: "Business", labelAr: "الأعمال" },
     { href: `${prefix}/contact`, labelEn: "Contact", labelAr: "تواصل معنا" },
   ];
 
